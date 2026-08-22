@@ -1,0 +1,8 @@
+node_modules
+dist
+.vinext
+.wrangler
+.next
+.claude
+pnpm-lock.yaml
+wrangler.jsonc

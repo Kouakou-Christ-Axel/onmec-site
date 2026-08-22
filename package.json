@@ -4,30 +4,44 @@
   "private": true,
   "packageManager": "pnpm@10.33.2",
   "dependencies": {
-    "react": "latest",
-    "react-dom": "latest",
-    "vinext": "latest",
-    "react-server-dom-webpack": "latest",
-    "@vinext/cloudflare": "latest"
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "vinext": "1.0.0-beta.8",
+    "react-server-dom-webpack": "19.2.8",
+    "@vinext/cloudflare": "1.0.0-beta.6"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "latest",
-    "@types/node": "latest",
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "tailwindcss": "latest",
-    "typescript": "latest",
-    "vite": "latest",
-    "@vitejs/plugin-react": "latest",
-    "@vitejs/plugin-rsc": "latest",
-    "@cloudflare/vite-plugin": "latest",
-    "wrangler": "latest"
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/node": "26.2.0",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "tailwindcss": "4.3.3",
+    "typescript": "6.0.3",
+    "vite": "8.2.2",
+    "@vitejs/plugin-react": "6.1.0",
+    "@vitejs/plugin-rsc": "0.5.34",
+    "@cloudflare/vite-plugin": "1.53.1",
+    "wrangler": "4.125.0",
+    "@eslint/js": "9.39.5",
+    "eslint": "9.39.5",
+    "typescript-eslint": "8.67.0",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "17.11.0",
+    "prettier": "3.9.6",
+    "vitest": "4.1.11"
   },
   "type": "module",
   "scripts": {
     "dev": "vinext dev",
     "build": "vinext build",
     "start": "wrangler dev --config dist/server/wrangler.json",
-    "deploy": "vinext-cloudflare deploy --config dist/server/wrangler.json"
+    "deploy": "vinext-cloudflare deploy --config dist/server/wrangler.json",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   }
 }
