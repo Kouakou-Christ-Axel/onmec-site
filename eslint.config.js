@@ -14,6 +14,7 @@ export default tseslint.config(
       ".wrangler/**",
       "next-env.d.ts",
       ".next/**",
+      ".claude/**",
     ],
   },
   js.configs.recommended,
