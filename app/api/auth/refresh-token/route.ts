@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { apiFetch, ApiError } from "@/lib/api/client";
+import { refreshTokenRequest } from "@/features/auth/requests/refresh-token";
 import {
   setAuthCookies,
   clearAuthCookies,
   getRefreshToken,
-  type AuthTokens,
-} from "@/lib/api/auth-cookies";
+} from "@/features/auth/lib/auth-cookies";
+import { toErrorResponse } from "@/features/auth/lib/to-error-response";
 
 export async function GET() {
   const refreshToken = await getRefreshToken();
@@ -15,19 +15,11 @@ export async function GET() {
   }
 
   try {
-    const tokens = await apiFetch<AuthTokens>("/auth/refresh-token", {
-      method: "GET",
-      headers: { Authorization: `Bearer ${refreshToken}` },
-      auth: false,
-    });
-
+    const tokens = await refreshTokenRequest(refreshToken);
     await setAuthCookies(tokens);
     return NextResponse.json({ ok: true });
   } catch (error) {
-    if (error instanceof ApiError) {
-      await clearAuthCookies();
-      return NextResponse.json(error.body, { status: error.status });
-    }
-    throw error;
+    await clearAuthCookies();
+    return toErrorResponse(error);
   }
 }

@@ -1,39 +1,21 @@
 import { NextResponse } from "next/server";
-import { apiFetch, ApiError } from "@/lib/api/client";
-import { setAuthCookies, type AuthTokens } from "@/lib/api/auth-cookies";
-
-interface LoginPayload {
-  email: string;
-  password: string;
-}
-
-interface AuthResponse extends AuthTokens {
-  id: string;
-  email: string;
-  fullname: string;
-  phone?: string | null;
-  role: string;
-  permissions: string[];
-}
+import { parseJsonBody } from "@/lib/parse-json-body";
+import { loginSchema } from "@/features/auth/schemas/login-schema";
+import { loginRequest } from "@/features/auth/requests/login";
+import { setAuthCookies } from "@/features/auth/lib/auth-cookies";
+import { toErrorResponse } from "@/features/auth/lib/to-error-response";
 
 export async function POST(request: Request) {
-  const payload = (await request.json()) as LoginPayload;
+  const parsed = await parseJsonBody(request, loginSchema);
+  if (!parsed.success) return parsed.response;
 
   try {
-    const auth = await apiFetch<AuthResponse>("/auth/login", {
-      method: "POST",
-      body: JSON.stringify(payload),
-      auth: false,
-    });
-
+    const auth = await loginRequest(parsed.data);
     await setAuthCookies(auth);
 
     const { token: _token, refreshToken: _refreshToken, ...user } = auth;
     return NextResponse.json(user);
   } catch (error) {
-    if (error instanceof ApiError) {
-      return NextResponse.json(error.body, { status: error.status });
-    }
-    throw error;
+    return toErrorResponse(error);
   }
 }
