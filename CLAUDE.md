@@ -18,31 +18,54 @@ documents, quiz éducatifs, gamification). Consomme l'API du backend NestJS **on
   `API_BASE_URL`), `process.env` classique via `.env` (voir `.env.example`) reste correct : c'est
   ce que vinext charge nativement.
 
+## Architecture
+
+Voir [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) pour la règle de layering complète
+(`config/`/`lib/`/`features/<domaine>/`/`components/`), le schéma en deux niveaux de requête pour
+l'auth, la frontière fetch RSC vs TanStack Query, le contrat d'erreur, et les décisions actuelles
+(pas de CSRF, pas de garde edge, pas de design system pour l'instant).
+
 ## Convention d'appel à l'API (règle la plus importante du projet)
 
 onmec-site est un **BFF** (backend-for-frontend) : le navigateur ne parle jamais directement à
 `api.mec-ci.org`.
 
-- **Un seul point d'entrée** vers l'API : `apiFetch()` dans [lib/api/client.ts](lib/api/client.ts).
-  Aucun `fetch` brut vers `api.mec-ci.org` ailleurs dans le code.
+- **Un seul point d'entrée serveur** vers l'API : `apiFetch()` dans
+  [lib/api-client.ts](lib/api-client.ts). Aucun `fetch` brut vers `api.mec-ci.org` ailleurs dans le
+  code. Ce module est **server-only** (dépend de `next/headers`) — jamais importé par un fichier
+  `"use client"`.
 - Le backend renvoie le JWT en **JSON** (`{ token, refreshToken }`), il ne pose **pas** de cookie
   lui-même. C'est onmec-site qui transforme ces tokens en cookies **httpOnly** via
-  [lib/api/auth-cookies.ts](lib/api/auth-cookies.ts). Le JS client ne voit jamais le token.
-- Route handlers `app/api/auth/*` = proxys vers `onmec_backend/src/modules/auth` (login, register,
-  verify-email, refresh-token). Si un nouvel endpoint auth est ajouté côté backend
-  (`forgot-password`, `reset-password`, `resend-email-otp`...), suivre exactement le même patron.
+  [features/auth/lib/auth-cookies.ts](features/auth/lib/auth-cookies.ts). Le JS client ne voit
+  jamais le token. `setAuthCookies`/`clearAuthCookies` ne sont appelables que depuis un route
+  handler ou une Server Action, jamais depuis le render d'un composant.
+- Route handlers `app/api/auth/*` = proxys vers `onmec_backend/src/modules/auth`, via
+  `features/auth/requests/*` (login, register, verify-email, refresh-token). Si un nouvel endpoint
+  auth est ajouté côté backend (`forgot-password`, `reset-password`, `resend-email-otp`...), suivre
+  exactement le même patron : schema Zod → request serveur → route handler → cookies.
+- Côté client, les mutations (`features/<domaine>/mutations`, TanStack Query) appellent les route
+  handlers de onmec-site lui-même via [lib/fetch-json.ts](lib/fetch-json.ts) — jamais le backend
+  directement (le cookie httpOnly est invisible au JS).
 - Séparation public / authentifié :
-  - **Public** (actualités, librairie, quiz en lecture) : fetch direct en Server Component,
-    cache/`revalidate` normal, pas de cookie requis.
-  - **Authentifié** (profil, gamification, signalement citoyen, modération) : passe obligatoirement
-    par `apiFetch()` (cookie httpOnly) ; cookie absent → redirect login. Le JS client authentifié
-    passe par les route handlers du site (même origine), jamais par un appel direct au backend.
+  - **Public** (actualités, librairie, quiz en lecture) : fetch direct en Server Component via
+    `apiFetch()`, cache/`revalidate` normal, pas de cookie requis. **Jamais** remplacé par React
+    Query.
+  - **Authentifié** (profil, gamification, signalement citoyen, modération) : `apiFetch()` côté
+    serveur (cookie httpOnly) pour le rendu, `features/<domaine>/mutations` côté client pour les
+    interactions (formulaires, soumissions).
 
 ## Structure
 
 - `app/` — App Router (pages, layouts, route handlers)
 - `app/api/auth/*/route.ts` — proxys BFF vers l'auth du backend
-- `lib/api/` — `client.ts` (apiFetch unique) et `auth-cookies.ts` (gestion cookies httpOnly)
+- `config/` — configuration transverse (`env.ts`, `auth.ts`)
+- `lib/` — transport/utils agnostiques du domaine (`api-client.ts` server-only, `fetch-json.ts`
+  browser-safe, `api-error.ts`, `parse-json-body.ts`, `query-client.ts`)
+- `features/<domaine>/` — logique métier (`types/`, `schemas/`, `requests/` serveur, `mutations/`
+  client, `lib/`)
+- `components/providers/` — providers React (`query-provider.tsx`)
+- `components/features/<domaine>/`, `components/ui/` — UI (pas encore peuplés, voir
+  `docs/ARCHITECTURE.md`)
 
 ## Commandes
 
@@ -71,6 +94,12 @@ architectural) — ne pas le redécrire ici, juste l'appliquer :
 - **Bounded** (petit composant, fix, ajustement UI sur une page existante) : design court en chat +
   approbation explicite, pas de fichier.
 - Pas de code touchant à la structure ou à l'intégration API sans design validé au préalable.
+
+## Conventions
+
+Kebab-case partout, fichiers de 200 lignes maximum sauf nécessité réelle (voir
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)). À la fin de chaque tâche d'implémentation non
+triviale, lancer une revue `convention-drift-check` sur le diff avant de committer.
 
 ## Hooks & permissions
 
