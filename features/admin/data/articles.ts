@@ -7,6 +7,10 @@ export interface Article {
   vues: string;
 }
 
+export const RUBRIQUES = ["Terrain", "Éducation civique", "Vie du mouvement", "Communiqué"] as const;
+
+export const MOMENTS_PUBLICATION = ["Publier maintenant", "Demain 08 h 00", "Vendredi 08 h 00"] as const;
+
 export const ARTICLES: Article[] = [
   { titre: "Trois idées fausses sur le vote des étudiants", statut: "Publié", tone: "blue", auteur: "Aminata Traoré", date: "18/08/2026", vues: "1 240" },
   { titre: "Retour sur la caravane citoyenne de Bouaké", statut: "Brouillon", tone: "orange", auteur: "Nadia Koffi", date: "—", vues: "—" },

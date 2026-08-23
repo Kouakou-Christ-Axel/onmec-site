@@ -81,9 +81,10 @@ s'importent directement depuis `lucide-react` (déjà en dépendance) sans wrapp
 
 ### Tokens à ajouter à `app/globals.css`
 
-Le fichier existant ne couvre que les pages publiques. À ajouter dans `@theme` et `:root`, en
-suivant la convention déjà en place (semantic tokens en `:root`, pas dans `@theme` puisqu'ils ne
-génèrent pas d'utilitaires Tailwind directement, seulement des `var(...)` en style/arbitraire) :
+Le fichier existant ne couvre que les pages publiques. À ajouter dans `@theme` (Tailwind v4 a besoin
+de `@theme` pour générer les utilitaires `bg-surface-page`, `text-muted-foreground`, `shadow-overlay`
+etc. que les écrans consomment directement — les mettre dans `:root` ne produirait que des
+`var(...)` sans classes utilitaires, ce qui n'est pas le besoin ici) :
 
 ```
 --surface-page, --surface-card, --surface-sunken, --surface-deep, --surface-deep-soft

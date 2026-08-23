@@ -7,14 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Tag } from "@/components/ui/tag";
 import { Select } from "@/components/ui/select";
 import { SignalementDrawer } from "@/components/features/admin/signalement-drawer";
-import { SIGNALEMENTS, CATEGORIES_SIGNALEMENT, type Signalement, type SignalementStatut } from "@/features/admin/data/signalements";
-
-const STATUT_META: Record<SignalementStatut, { label: string; tone: "orange" | "blue" | "neutral" | "outline" }> = {
-  validation: { label: "En validation", tone: "orange" },
-  encours: { label: "En cours", tone: "blue" },
-  resolu: { label: "Résolu", tone: "neutral" },
-  rejete: { label: "Rejeté", tone: "outline" },
-};
+import {
+  SIGNALEMENTS,
+  CATEGORIES_SIGNALEMENT,
+  STATUT_META,
+  updatesLabel,
+  type Signalement,
+  type SignalementStatut,
+} from "@/features/admin/data/signalements";
 
 type Filtre = "tous" | SignalementStatut;
 
@@ -105,7 +105,7 @@ export default function SignalementsPage() {
               <span className="flex min-w-0 flex-col gap-0.5">
                 <span className="truncate font-medium text-ink">{r.sujet}</span>
                 <span className="truncate text-xs text-muted-foreground">
-                  {r.lieu} · {r.updates.length === 0 ? "aucune mise à jour" : r.updates.length === 1 ? "1 mise à jour" : `${r.updates.length} mises à jour`}
+                  {r.lieu} · {updatesLabel(r.updates.length)}
                 </span>
               </span>
               <span className="truncate text-[0.8125rem] text-muted-foreground">{r.categorie}</span>

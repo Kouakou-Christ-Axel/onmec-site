@@ -205,3 +205,22 @@ export const CATEGORIES_SIGNALEMENT = [
 ] as const;
 
 export const RESPONSABLES = ["Aminata Traoré", "Konan Yao", "Salif Ouattara", "Mariam Bakayoko"] as const;
+
+export const STATUT_META: Record<SignalementStatut, { label: string; tone: "orange" | "blue" | "neutral" | "outline" }> = {
+  validation: { label: "En validation", tone: "orange" },
+  encours: { label: "En cours", tone: "blue" },
+  resolu: { label: "Résolu", tone: "neutral" },
+  rejete: { label: "Rejeté", tone: "outline" },
+};
+
+export function updatesLabel(count: number): string {
+  if (count === 0) return "aucune mise à jour";
+  if (count === 1) return "1 mise à jour";
+  return `${count} mises à jour`;
+}
+
+export const ETAPES: { statut: SignalementStatut; label: string }[] = [
+  { statut: "validation", label: "En validation" },
+  { statut: "encours", label: "En cours" },
+  { statut: "resolu", label: "Résolu" },
+];

@@ -2,27 +2,7 @@ import { Download } from "lucide-react";
 import { Stat } from "@/components/ui/stat";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-
-const PERIODES = ["Janvier → août 2026", "2e trimestre 2026", "Année scolaire 2025-2026"];
-
-const MOIS = [
-  { label: "Jan", hauteur: 38, orange: false },
-  { label: "Fév", hauteur: 46, orange: false },
-  { label: "Mar", hauteur: 58, orange: false },
-  { label: "Avr", hauteur: 74, orange: true },
-  { label: "Mai", hauteur: 62, orange: false },
-  { label: "Juin", hauteur: 88, orange: true },
-  { label: "Juil", hauteur: 34, orange: false },
-  { label: "Août", hauteur: 52, orange: false },
-];
-
-const REGIONS = [
-  { region: "Abidjan", seances: 18, personnes: "1 460", signalements: 26 },
-  { region: "Gbêkê (Bouaké)", seances: 11, personnes: "840", signalements: 9 },
-  { region: "Haut-Sassandra (Daloa)", seances: 6, personnes: "470", signalements: 5 },
-  { region: "Yamoussoukro", seances: 4, personnes: "280", signalements: 3 },
-  { region: "San-Pédro", seances: 2, personnes: "130", signalements: 1 },
-];
+import { PERIODES, MOIS, REGIONS } from "@/features/admin/data/statistiques";
 
 export default function StatistiquesPage() {
   return (

@@ -12,14 +12,22 @@ JSON plutôt que de poser un cookie.
 | `config/`                                 | Configuration transverse (env typé, constantes cookies)                    | rien d'autre                              |
 | `lib/`                                    | Transport/utils **agnostiques du domaine**                                 | `config/` uniquement, jamais `features/`  |
 | `features/<domaine>/types`, `schemas`     | Types et validation Zod du domaine                                         | `config/`                                 |
+| `features/<domaine>/data`                 | Données statiques/mockées du domaine (constantes + types, pas de logique)  | `types/`                                  |
 | `features/<domaine>/requests`             | Appels **serveur uniquement** vers `onmec_backend`                         | `lib/api-client.ts`, `types/`, `schemas/` |
 | `features/<domaine>/mutations`, `queries` | Hooks TanStack Query **client uniquement**                                 | `lib/fetch-json.ts`, `types/`, `schemas/` |
-| `features/<domaine>/lib`                  | Logique du domaine qui n'est ni request/mutation/schema (ex. cookies auth) | `config/`, `types/`                       |
+| `features/<domaine>/lib`                  | Logique du domaine qui n'est ni request/mutation/schema (ex. cookies auth, dérivation de données) | `config/`, `types/`, `data/`      |
 | `components/features/<domaine>/`          | UI pure, wire les hooks de `features/<domaine>/mutations` au JSX           | `features/<domaine>/mutations`            |
-| `components/ui/`                          | Primitives de design system génériques                                     | rien (pas encore peuplé — voir Décisions) |
+| `components/ui/`                          | Primitives de design system génériques (Button, Tag, Field, Drawer...)     | rien                                      |
 
 **Règle d'or** : une couche ne connaît que celle juste en dessous. Un composant n'appelle jamais une
 route handler ou l'API directement — toujours via un hook de `features/<domaine>/mutations`.
+
+**Exception assumée — domaines UI pure sans backend réel** (ex. `features/admin/` du dashboard
+admin, `docs/superpowers/specs/2026-08-23-dashboard-admin-design.md`) : sans endpoint `onmec_backend`
+correspondant, il n'y a ni `requests/` ni `mutations/` à écrire. `components/features/<domaine>/`
+consomme alors `features/<domaine>/data` et `features/<domaine>/lib` directement. Cette exception
+disparaît dès qu'un vrai flow d'API est branché sur le domaine — à ce moment-là, revenir à la règle
+générale (passer par `mutations/`).
 
 ## Deux niveaux de requête pour l'auth (divergence assumée vs le starter)
 
@@ -76,10 +84,14 @@ réellement.
 - **Pas de CSRF** : le cookie est déjà `sameSite=lax` (bloque les requêtes cross-site en mutation),
   et `onmec_backend` n'expose aucun endpoint `/csrf-token`. À revisiter si le backend en expose un
   jour, ou si `sameSite` doit passer à `none` pour un besoin cross-site.
-- **Pas de garde d'auth edge** (`middleware.ts`/`proxy.ts`, supporté par vinext) : aucune page
-  protégée n'existe encore. À poser dès la première page authentifiée réelle.
-- **Pas de design system** (shadcn/ui) : `components/ui/` reste vide tant qu'aucune page ne le
-  justifie.
+- **Pas de garde d'auth edge** (`middleware.ts`/`proxy.ts`, supporté par vinext) : le dashboard admin
+  (`app/admin/(shell)/*`) existe désormais mais reste **non protégé** — ce chantier était
+  explicitement UI pure (mock, pas de vrai flow d'auth, voir
+  `docs/superpowers/specs/2026-08-23-dashboard-admin-design.md`). La garde d'auth edge est toujours à
+  poser avant tout usage réel de ces routes.
+- **`components/ui/` est maintenant peuplé** (Button, IconButton, Tag, Field, Input, Textarea,
+  Select, Alert, Stat, Drawer, Dialog — voir le dashboard admin) : primitives Tailwind/JSX
+  réimplémentées depuis le design system Claude Design, pas un kit tiers comme shadcn/ui.
 - **Prérequis de déploiement** : `wrangler.jsonc` n'a actuellement aucun bloc `vars`. `API_BASE_URL`
   doit être fournie via les vars/secrets Cloudflare au déploiement — `config/env.ts` échoue
   bruyamment en production si elle manque (pas de fallback silencieux vers `localhost`).

@@ -72,7 +72,7 @@ export default function RessourcesPage() {
         })}
 
         {enValidation ? (
-          <div className="flex flex-col gap-3 rounded-lg border border-ink bg-surface-card p-4.5 shadow-[5px_5px_0_var(--color-blue-500)]">
+          <div className="flex flex-col gap-3 rounded-lg border border-ink bg-surface-card p-4.5 shadow-stamp">
             <GraduationCap size={32} />
             <span className="text-base leading-tight font-semibold text-ink">{enValidation.titre}</span>
             <span className="text-xs text-muted-foreground">{enValidation.meta}</span>

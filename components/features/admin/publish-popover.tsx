@@ -4,9 +4,7 @@ import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Select } from "@/components/ui/select";
-
-const RUBRIQUES = ["Terrain", "Éducation civique", "Vie du mouvement", "Communiqué"];
-const MOMENTS_PUBLICATION = ["Publier maintenant", "Demain 08 h 00", "Vendredi 08 h 00"];
+import { RUBRIQUES, MOMENTS_PUBLICATION } from "@/features/admin/data/articles";
 
 interface PublishPopoverProps {
   onClose: () => void;
