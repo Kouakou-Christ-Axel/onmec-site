@@ -12,12 +12,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
   return (
     <main>
-      <ArticleHeader article={article} />
-      {article.slug === "bilan" ? (
-        <ArticleBilanBody />
-      ) : (
-        <ArticleGenericBody article={article} />
-      )}
+      <div className="bg-surface-card pb-14 sm:pb-20 lg:pb-24">
+        <ArticleHeader article={article} />
+        {article.slug === "bilan" ? (
+          <ArticleBilanBody />
+        ) : (
+          <ArticleGenericBody article={article} />
+        )}
+      </div>
       <RelatedArticles articles={getRelatedArticles(article.slug)} />
     </main>
   );
