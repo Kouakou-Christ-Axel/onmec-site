@@ -1,6 +1,17 @@
 @import "tailwindcss";
 
 /*
+ * Thème sombre : porté depuis mec-dark.css (Claude Design). Scindé en deux —
+ * `data-mec-theme="dark"` sur <html> (piloté par components/features/site/theme-toggle.tsx),
+ * et un marqueur `data-mec-public` posé une seule fois par app/(public)/layout.tsx. Sans ce
+ * second marqueur, les variables de couleur redéfinies plus bas s'appliqueraient à tout le
+ * document (elles héritent le long de l'arbre DOM) — y compris /admin, qui réutilise les mêmes
+ * tokens (n-*, border-subtle, muted-foreground…) mais n'a pas été conçu ni vérifié pour le mode
+ * sombre. Le scope confine donc l'inversion de thème au site public uniquement.
+ */
+@custom-variant dark (&:where(html[data-mec-theme="dark"] [data-mec-public], html[data-mec-theme="dark"] [data-mec-public] *));
+
+/*
  * Tokens portés depuis le design system Claude Design "MEC-Citoyenneté"
  * (tokens/colors.css, typography.css, shape.css, motion.css). Les classes
  * .mec-* du design system ne sont PAS copiées : elles servent de spec,
@@ -47,18 +58,52 @@
   --color-surface-page: var(--color-n-50);
   --color-surface-card: var(--color-n-0);
   --color-surface-sunken: var(--color-n-100);
+  --color-surface-brand: var(--color-orange-500);
+  --color-surface-brand-soft: var(--color-orange-50);
   --color-surface-deep: var(--color-blue-800);
   --color-surface-deep-soft: var(--color-blue-50);
+  --color-surface-invert: var(--color-ink);
+  --color-fill-ink: var(--color-ink);
+  --color-surface-blur: rgba(250, 248, 245, 0.92);
+  --color-brand-flat: var(--color-orange-500);
   --color-border-subtle: rgb(14 27 46 / 0.1);
   --color-border-strong: rgb(14 27 46 / 0.24);
+  --color-border-brand: var(--color-orange-500);
+  --color-border-deep: var(--color-blue-500);
+  --color-border-invert: rgba(255, 255, 255, 0.24);
   --color-muted-foreground: #5e6878;
+  --color-text-strong: var(--color-ink);
+  --color-text-body: #2b3646;
+  --color-text-muted: #5e6878;
+  --color-text-invert: #ffffff;
+  --color-text-on-brand: #ffffff;
+  --color-text-accent: var(--color-blue-500);
+  --color-text-link: var(--color-blue-600);
+  --color-text-link-hover: var(--color-orange-700);
+  --color-action-primary-bg: var(--color-orange-500);
+  --color-action-primary-bg-hover: var(--color-orange-600);
+  --color-action-primary-bg-active: var(--color-orange-700);
+  --color-action-primary-fg: #ffffff;
+  --color-action-deep-bg: var(--color-blue-500);
+  --color-action-deep-bg-hover: var(--color-blue-600);
+  --color-action-deep-bg-active: var(--color-blue-700);
+  --color-action-deep-fg: #ffffff;
+  --color-action-ghost-fg: var(--color-ink);
+  --color-action-ghost-bg-hover: var(--color-n-100);
+  --color-focus-ring: var(--color-blue-500);
+  --color-overlay-scrim: rgba(7, 28, 57, 0.62);
   --color-verdict-true: #157f52;
   --color-verdict-true-bg: #e7f5ee;
   --color-verdict-false: #c42b1c;
   --color-verdict-false-bg: #fcebe9;
   --color-verdict-misleading: #8a4100;
   --color-verdict-misleading-bg: #fff0de;
+  --color-verdict-unchecked: #544e47;
+  --color-verdict-unchecked-bg: #f1eee9;
   --shadow-overlay: 0 24px 60px rgb(7 28 57 / 0.22);
+  --shadow-raise:
+    0 1px 2px rgb(14 27 46 / 0.06),
+    0 8px 24px rgb(14 27 46 / 0.08);
   --radius-control: 6px;
 
   /* Géométrie franche du logo : rayons petits, échelle sm/md/lg redéfinie */
@@ -133,10 +178,107 @@
 body {
   margin: 0;
   background: var(--color-n-50);
-  color: #2b3646;
+  color: var(--color-text-body);
 }
 
 ::selection {
   background: var(--color-orange-200);
   color: var(--color-ink);
+}
+
+/* Thème sombre — voir le commentaire sur @custom-variant plus haut pour le pourquoi du scope. */
+html[data-mec-theme="dark"] [data-mec-public] {
+  color-scheme: dark;
+
+  --color-n-50: #0d1622;
+  --color-n-100: #1a2637;
+  --color-n-200: #26344a;
+  --color-n-300: #3a4a64;
+  --color-n-400: #6b7a92;
+  --color-n-500: #8d9aaf;
+  --color-n-600: #aeb9c9;
+  --color-n-700: #cbd4e0;
+  --color-n-800: #e4eaf2;
+  --color-ink: #e9eff7;
+
+  --color-orange-50: #2b1d0b;
+  --color-orange-100: #3a2810;
+  --color-orange-200: #5c3f14;
+  --color-orange-600: #ff9126;
+  --color-orange-700: #ffa94d;
+  --color-orange-800: #ffc286;
+  --color-orange-900: #ffd9b0;
+
+  --color-blue-50: #152238;
+  --color-blue-100: #1b2b45;
+  --color-blue-200: #243652;
+  --color-blue-500: #6d9ae0;
+  --color-blue-600: #8fb3ec;
+  --color-blue-700: #a8c4f0;
+  --color-blue-800: #16243a;
+  --color-blue-900: #101b2c;
+
+  --color-text-strong: #f2f6fb;
+  --color-text-body: #c3cddb;
+  --color-text-muted: #8e9bae;
+  --color-text-accent: #7fa3e3;
+  --color-text-link: #8fb3ec;
+  --color-text-link-hover: var(--color-orange-400);
+
+  --color-surface-page: #0d1622;
+  --color-surface-card: #141f2e;
+  --color-surface-sunken: #1a2637;
+  --color-surface-brand-soft: #2a1d0c;
+  --color-surface-deep: #16243a;
+  --color-surface-deep-soft: #152238;
+  --color-surface-invert: #e9eff7;
+  --color-fill-ink: #2a3a52;
+  --color-surface-blur: rgba(13, 22, 34, 0.88);
+  --color-brand-flat: #b85700;
+
+  --color-border-subtle: rgba(233, 239, 247, 0.13);
+  --color-border-strong: rgba(233, 239, 247, 0.27);
+  --color-border-invert: rgba(233, 239, 247, 0.24);
+
+  --color-action-deep-bg: #2c63c4;
+  --color-action-deep-bg-hover: #3b74d8;
+  --color-action-deep-bg-active: #5088e0;
+  --color-action-ghost-fg: #e9eff7;
+  --color-action-ghost-bg-hover: #1a2637;
+
+  --color-focus-ring: #7fa3e3;
+  --color-overlay-scrim: rgba(4, 9, 16, 0.72);
+
+  --color-verdict-true: #4ecb93;
+  --color-verdict-true-bg: #10281d;
+  --color-verdict-false: #ff8b7d;
+  --color-verdict-false-bg: #2b1512;
+  --color-verdict-misleading: #ffb866;
+  --color-verdict-misleading-bg: #2b1d0b;
+  --color-verdict-unchecked: #a9b4c4;
+  --color-verdict-unchecked-bg: #1a2637;
+
+  --shadow-stamp: 5px 5px 0 var(--color-orange-500);
+  --shadow-raise: 0 4px 16px rgb(0 0 0 / 0.52);
+  --shadow-overlay: 0 14px 38px rgb(0 0 0 / 0.64);
+
+  --pattern-dots: radial-gradient(rgba(233, 239, 247, 0.13) 1px, transparent 1px);
+  --pattern-stripes: repeating-linear-gradient(
+    118deg,
+    rgba(255, 255, 255, 0.085) 0 2px,
+    transparent 2px 12px
+  );
+}
+
+/* Bouton de bascule de thème : un seul pictogramme visible selon le mode retenu.
+   Avant l'exécution du script anti-flash (app/layout.tsx), html n'a pas encore
+   [data-mec-mode] — l'icône "auto" sert de repli, jamais de flash d'icône vide. */
+[data-mec-theme-toggle] [data-mec-icon] {
+  display: none;
+}
+html[data-mec-mode="light"] [data-mec-icon="light"],
+html[data-mec-mode="dark"] [data-mec-icon="dark"],
+html[data-mec-mode="auto"] [data-mec-icon="auto"],
+html:not([data-mec-mode]) [data-mec-icon="auto"] {
+  display: inline-flex;
 }
