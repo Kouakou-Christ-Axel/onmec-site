@@ -51,7 +51,7 @@ choix esthétique.
 
 ## Règle cookies
 
-`setAuthCookies`/`clearAuthCookies` (écriture, `features/auth/lib/auth-cookies.ts`) ne sont
+`setAuthCookies`/`clearAuthCookies` (écriture, `lib/auth-cookies.ts`) ne sont
 appelables que depuis un route handler ou une Server Action — jamais depuis le render d'un Server
 Component/layout/page (`cookies().set()` lève une exception hors contexte de mutation). La lecture
 (`getRefreshToken`, et la lecture du token d'accès — privée dans `lib/api-client.ts`) est sans risque
@@ -61,16 +61,16 @@ partout côté serveur.
 
 - **Contenu public** (actualités, librairie, quiz en lecture) : fetch direct dans un Server Component
   via `lib/api-client.ts`, cache/`revalidate` normal. **Jamais** remplacé par React Query.
-- **Mutations et données réactives côté client** (login, register, verify-email, futur
-  quiz/commentaires/gamification) : TanStack Query via `features/<domaine>/mutations` (et futurs
-  `queries`).
+- **Mutations et données réactives côté client** (login, register, verify-email, connexion et
+  changement de mot de passe admin, futur quiz/commentaires/gamification) : TanStack Query via
+  `features/<domaine>/mutations` (et futurs `queries`).
 
 C'est une règle, pas une préférence — tout écart doit être justifié en revue.
 
 ## Contrat d'erreur
 
 Une seule classe d'erreur, `ApiError` (`lib/api-error.ts`), levée par `lib/api-client.ts` et
-`lib/fetch-json.ts`. `features/auth/lib/to-error-response.ts` convertit une `ApiError` en
+`lib/fetch-json.ts`. `lib/to-error-response.ts` convertit une `ApiError` en
 `NextResponse` ; toute autre erreur **doit** remonter en 500 via le framework, jamais être masquée
 silencieusement (`toErrorResponse` re-lève volontairement dans ce cas).
 
@@ -84,11 +84,10 @@ réellement.
 - **Pas de CSRF** : le cookie est déjà `sameSite=lax` (bloque les requêtes cross-site en mutation),
   et `onmec_backend` n'expose aucun endpoint `/csrf-token`. À revisiter si le backend en expose un
   jour, ou si `sameSite` doit passer à `none` pour un besoin cross-site.
-- **Pas de garde d'auth edge** (`middleware.ts`/`proxy.ts`, supporté par vinext) : le dashboard admin
-  (`app/admin/(shell)/*`) existe désormais mais reste **non protégé** — ce chantier était
-  explicitement UI pure (mock, pas de vrai flow d'auth, voir
-  `docs/superpowers/specs/2026-08-23-dashboard-admin-design.md`). La garde d'auth edge est toujours à
-  poser avant tout usage réel de ces routes.
+- **Garde d'auth edge posée** (`proxy.ts`, racine du projet) : `/admin/(shell)/*` et
+  `/admin/changer-mot-de-passe` exigent une session back-office valide (JWT + refresh
+  transparent via `POST /auth/admin/refresh-token`), sinon redirect vers `/admin/connexion`.
+  Voir `docs/superpowers/specs/2026-08-25-auth-admin-design.md`.
 - **`components/ui/` est maintenant peuplé** (Button, IconButton, Tag, Field, Input, Textarea,
   Select, Alert, Stat, Drawer, Dialog — voir le dashboard admin) : primitives Tailwind/JSX
   réimplémentées depuis le design system Claude Design, pas un kit tiers comme shadcn/ui.

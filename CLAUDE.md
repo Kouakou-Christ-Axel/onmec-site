@@ -36,7 +36,7 @@ onmec-site est un **BFF** (backend-for-frontend) : le navigateur ne parle jamais
   `"use client"`.
 - Le backend renvoie le JWT en **JSON** (`{ token, refreshToken }`), il ne pose **pas** de cookie
   lui-même. C'est onmec-site qui transforme ces tokens en cookies **httpOnly** via
-  [features/auth/lib/auth-cookies.ts](features/auth/lib/auth-cookies.ts). Le JS client ne voit
+  [lib/auth-cookies.ts](lib/auth-cookies.ts). Le JS client ne voit
   jamais le token. `setAuthCookies`/`clearAuthCookies` ne sont appelables que depuis un route
   handler ou une Server Action, jamais depuis le render d'un composant.
 - Route handlers `app/api/auth/*` = proxys vers `onmec_backend/src/modules/auth`, via
