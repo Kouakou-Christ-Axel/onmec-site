@@ -1,10 +1,11 @@
 "use client";
 
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import { ADMIN_ROLE_LABELS_LIST, type AdminRoleLabel } from "@/features/admin-auth/lib/map-admin-role";
 
-export type AdminRole = "Administrateur national" | "Chargée de communication" | "Modérateur";
+export type AdminRole = AdminRoleLabel;
 
-export const ADMIN_ROLES: AdminRole[] = ["Administrateur national", "Chargée de communication", "Modérateur"];
+export const ADMIN_ROLES: AdminRole[] = ADMIN_ROLE_LABELS_LIST;
 
 interface AdminShellState {
   role: AdminRole;

@@ -44,7 +44,10 @@ export function AdminSidebar() {
 
   function handleLogout() {
     logout.mutate(undefined, {
-      onSuccess: () => router.push("/admin/connexion"),
+      onSuccess: () => {
+        router.replace("/admin/connexion");
+        router.refresh();
+      },
     });
   }
 

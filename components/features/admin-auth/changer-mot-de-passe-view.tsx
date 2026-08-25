@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Lock } from "lucide-react";
 import { Field } from "@/components/ui/field";
@@ -16,7 +16,19 @@ export function ChangerMotDePasseView() {
   const [oldPassword, setOldPassword] = useState("");
   const [password, setPassword] = useState("");
 
+  const sessionExpired = changePassword.error instanceof ApiError && changePassword.error.status === 401;
+
+  // Si la session meurt en cours de route (401 du backend), l'utilisateur ne doit pas rester
+  // bloqué sur cet écran (c'est le seul qu'un admin avec mustChangePassword:true peut atteindre) :
+  // on le renvoie immédiatement vers la connexion plutôt que d'afficher un message générique.
+  useEffect(() => {
+    if (sessionExpired) {
+      router.replace("/admin/connexion");
+    }
+  }, [sessionExpired, router]);
+
   function handleSubmit(event: FormEvent) {
+    changePassword.reset();
     event.preventDefault();
     changePassword.mutate({ oldPassword, password }, { onSuccess: () => router.push("/admin") });
   }
@@ -77,8 +89,12 @@ export function ChangerMotDePasseView() {
 
 function errorMessageFor(error: unknown): string | null {
   if (!error) return null;
-  if (error instanceof ApiError && error.status === 400) {
-    return "Mot de passe actuel incorrect.";
+  if (error instanceof ApiError) {
+    if (error.status === 400) return "Mot de passe actuel incorrect.";
+    // 401 : redirection immédiate vers /admin/connexion gérée par le useEffect ci-dessus, pas de
+    // message à afficher (l'utilisateur ne reste pas sur cet écran).
+    if (error.status === 401) return null;
+    if (error.status === 429) return "Trop de tentatives. Réessayez plus tard.";
   }
   return "Une erreur est survenue. Réessayez.";
 }

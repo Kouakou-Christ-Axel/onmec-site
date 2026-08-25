@@ -20,6 +20,7 @@ export function ConnexionView({ onGoInscription }: ConnexionViewProps) {
   const [password, setPassword] = useState("");
 
   function handleSubmit(event: FormEvent) {
+    login.reset();
     event.preventDefault();
     login.mutate(
       { email, password },

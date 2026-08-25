@@ -18,6 +18,11 @@ interface RefreshedTokens {
  * si le token est expiré (ou sur le point de l'être). Un token absent, malformé ou indécodable est
  * traité comme expiré : la signature sera de toute façon vérifiée par le backend lors du véritable
  * appel de refresh, ceci n'est qu'une heuristique edge pour décider s'il faut tenter un refresh.
+ *
+ * Vérifie aussi la claim `type` du payload : le cookie `onmec_token` est partagé entre le domaine
+ * membre et le domaine admin, donc un JWT membre valide (non expiré) doit être traité comme invalide
+ * ici pour ne pas passer la garde edge de `/admin/*`. Un token dont `type !== "admin"` est donc
+ * considéré comme expiré, ce qui déclenche le même chemin refresh/redirect qu'un token expiré.
  */
 function isTokenExpired(token: string): boolean {
   try {
@@ -26,8 +31,9 @@ function isTokenExpired(token: string): boolean {
 
     const base64 = payloadSegment.replace(/-/g, "+").replace(/_/g, "/");
     const padded = base64 + "=".repeat((4 - (base64.length % 4)) % 4);
-    const payload = JSON.parse(atob(padded)) as { exp?: unknown };
+    const payload = JSON.parse(atob(padded)) as { exp?: unknown; type?: unknown };
 
+    if (payload.type !== "admin") return true;
     if (typeof payload.exp !== "number") return true;
     return payload.exp <= Date.now() / 1000 + EXPIRY_LEEWAY_SECONDS;
   } catch {
