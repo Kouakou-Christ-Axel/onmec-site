@@ -1,11 +1,7 @@
 import { NextResponse } from "next/server";
 import { refreshTokenRequest } from "@/features/auth/requests/refresh-token";
-import {
-  setAuthCookies,
-  clearAuthCookies,
-  getRefreshToken,
-} from "@/features/auth/lib/auth-cookies";
-import { toErrorResponse } from "@/features/auth/lib/to-error-response";
+import { setAuthCookies, clearAuthCookies, getRefreshToken } from "@/lib/auth-cookies";
+import { toErrorResponse } from "@/lib/to-error-response";
 
 export async function GET() {
   const refreshToken = await getRefreshToken();

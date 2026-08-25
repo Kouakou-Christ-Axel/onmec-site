@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { parseJsonBody } from "@/lib/parse-json-body";
 import { loginSchema } from "@/features/auth/schemas/login-schema";
 import { loginRequest } from "@/features/auth/requests/login";
-import { setAuthCookies } from "@/features/auth/lib/auth-cookies";
-import { toErrorResponse } from "@/features/auth/lib/to-error-response";
+import { setAuthCookies } from "@/lib/auth-cookies";
+import { toErrorResponse } from "@/lib/to-error-response";
 
 export async function POST(request: Request) {
   const parsed = await parseJsonBody(request, loginSchema);

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { parseJsonBody } from "@/lib/parse-json-body";
 import { registerSchema } from "@/features/auth/schemas/register-schema";
 import { registerRequest } from "@/features/auth/requests/register";
-import { toErrorResponse } from "@/features/auth/lib/to-error-response";
+import { toErrorResponse } from "@/lib/to-error-response";
 
 export async function POST(request: Request) {
   const parsed = await parseJsonBody(request, registerSchema);
