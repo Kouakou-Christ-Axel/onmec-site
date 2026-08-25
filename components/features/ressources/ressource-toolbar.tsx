@@ -80,43 +80,49 @@ export function RessourceToolbar({
           ))}
         </div>
 
-        <SelectInput
-          aria-label="Filtrer par format"
-          value={format}
-          onChange={(e) => onFormatChange(e.target.value as FormatFilter)}
-        >
-          <option value={ALL_FORMATS}>{ALL_FORMATS}</option>
-          {FORMATS.map((f) => (
-            <option key={f} value={f}>
-              {f}
-            </option>
-          ))}
-        </SelectInput>
+        <div className="w-[168px] flex-none">
+          <SelectInput
+            aria-label="Filtrer par format"
+            value={format}
+            onChange={(e) => onFormatChange(e.target.value as FormatFilter)}
+          >
+            <option value={ALL_FORMATS}>{ALL_FORMATS}</option>
+            {FORMATS.map((f) => (
+              <option key={f} value={f}>
+                {f}
+              </option>
+            ))}
+          </SelectInput>
+        </div>
 
-        <SelectInput
-          aria-label="Filtrer par accès"
-          value={acces}
-          onChange={(e) => onAccesChange(e.target.value as AccesFilter)}
-        >
-          <option value={ALL_ACCES}>{ALL_ACCES}</option>
-          {ACCES_VALUES.map((a) => (
-            <option key={a} value={a}>
-              {a}
-            </option>
-          ))}
-        </SelectInput>
+        <div className="w-[168px] flex-none">
+          <SelectInput
+            aria-label="Filtrer par accès"
+            value={acces}
+            onChange={(e) => onAccesChange(e.target.value as AccesFilter)}
+          >
+            <option value={ALL_ACCES}>{ALL_ACCES}</option>
+            {ACCES_VALUES.map((a) => (
+              <option key={a} value={a}>
+                {a}
+              </option>
+            ))}
+          </SelectInput>
+        </div>
 
-        <SelectInput
-          aria-label="Trier"
-          value={sort}
-          onChange={(e) => onSortChange(e.target.value as SortKey)}
-        >
-          {SORT_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </SelectInput>
+        <div className="w-[168px] flex-none">
+          <SelectInput
+            aria-label="Trier"
+            value={sort}
+            onChange={(e) => onSortChange(e.target.value as SortKey)}
+          >
+            {SORT_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </SelectInput>
+        </div>
 
         <span className="ml-auto text-[13px] text-text-muted">
           {resultCount} {resultCount > 1 ? "guides" : "guide"}
