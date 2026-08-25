@@ -40,7 +40,7 @@ export function RessourceTable({
               </Link>
               <p className="mt-1 line-clamp-1 text-xs text-text-muted">{ressource.excerpt}</p>
             </td>
-            <td className="py-3 pr-4 text-[0.75rem] font-semibold tracking-wide text-blue-600 uppercase">
+            <td className="py-3 pr-4 text-xs font-semibold tracking-wide text-blue-600 uppercase">
               {ressource.theme}
             </td>
             <td className="py-3 pr-4 text-text-muted">
