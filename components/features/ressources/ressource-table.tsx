@@ -11,7 +11,7 @@ export function RessourceTable({
   onPreview: (slug: string) => void;
 }) {
   return (
-    <table className="hidden w-full border-collapse text-sm lg:table">
+    <table className="hidden w-full border-collapse text-sm lg:mt-9 lg:table">
       <thead>
         <tr className="border-b border-ink/10 text-left text-[11px] font-semibold tracking-wide text-text-muted uppercase">
           <th className="w-20 py-3 pr-4 font-semibold">Couverture</th>
@@ -29,7 +29,7 @@ export function RessourceTable({
         {ressources.map((ressource) => (
           <tr key={ressource.slug} className="border-b border-ink/10 align-middle">
             <td className="py-3 pr-4">
-              <PhotoPlaceholder ratio="3/4" label="Couverture" className="w-14" />
+              <PhotoPlaceholder ratio="3/4" label="Couverture" className="w-14" compact />
             </td>
             <td className="py-3 pr-4">
               <Link
@@ -40,8 +40,13 @@ export function RessourceTable({
               </Link>
               <p className="mt-1 line-clamp-1 text-xs text-text-muted">{ressource.excerpt}</p>
             </td>
-            <td className="py-3 pr-4 text-text-muted">{ressource.theme}</td>
-            <td className="py-3 pr-4 text-text-muted">{ressource.format}</td>
+            <td className="py-3 pr-4 text-[0.75rem] font-semibold tracking-wide text-blue-600 uppercase">
+              {ressource.theme}
+            </td>
+            <td className="py-3 pr-4 text-text-muted">
+              {ressource.format} · {ressource.pages > 1 ? `${ressource.pages} pages` : "1 page"} ·{" "}
+              {ressource.weight}
+            </td>
             <td className="py-3 pr-4 text-text-muted">{ressource.acces}</td>
             <td className="py-3 pr-4 text-text-muted">{formatCount(ressource.downloads)}</td>
             <td className="py-3 pr-4 text-right">

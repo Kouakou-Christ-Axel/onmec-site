@@ -65,6 +65,10 @@ export function RessourceCatalog({ ressources }: { ressources: Ressource[] }) {
     setQuery(value);
     setPage(1);
   };
+  const handleSortChange = (value: SortKey) => {
+    setSort(value);
+    setPage(1);
+  };
 
   const clearFilters = () => {
     setTheme(ALL_THEMES);
@@ -86,7 +90,7 @@ export function RessourceCatalog({ ressources }: { ressources: Ressource[] }) {
         acces={acces}
         onAccesChange={handleAccesChange}
         sort={sort}
-        onSortChange={setSort}
+        onSortChange={handleSortChange}
         resultCount={filtered.length}
       />
 

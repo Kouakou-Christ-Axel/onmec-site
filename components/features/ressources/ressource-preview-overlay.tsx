@@ -16,7 +16,12 @@ export function RessourcePreviewOverlay({
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
+    const trigger = document.activeElement as HTMLElement | null;
     closeRef.current?.focus();
+    return () => trigger?.focus();
+  }, []);
+
+  useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
