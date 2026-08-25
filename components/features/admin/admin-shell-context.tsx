@@ -9,6 +9,8 @@ export const ADMIN_ROLES: AdminRole[] = ["Administrateur national", "Chargée de
 interface AdminShellState {
   role: AdminRole;
   setRole: (role: AdminRole) => void;
+  fullname: string;
+  email: string;
   canSig: boolean;
   canEdito: boolean;
   canUsers: boolean;
@@ -16,18 +18,32 @@ interface AdminShellState {
 
 const AdminShellContext = createContext<AdminShellState | null>(null);
 
-export function AdminShellProvider({ children }: { children: ReactNode }) {
-  const [role, setRole] = useState<AdminRole>("Administrateur national");
+interface AdminShellProviderProps {
+  children: ReactNode;
+  initialRole?: AdminRole;
+  fullname?: string;
+  email?: string;
+}
+
+export function AdminShellProvider({
+  children,
+  initialRole = "Administrateur national",
+  fullname = "",
+  email = "",
+}: AdminShellProviderProps) {
+  const [role, setRole] = useState<AdminRole>(initialRole);
 
   const value = useMemo<AdminShellState>(
     () => ({
       role,
       setRole,
+      fullname,
+      email,
       canSig: role !== "Chargée de communication",
       canEdito: role !== "Modérateur",
       canUsers: role === "Administrateur national",
     }),
-    [role],
+    [role, fullname, email],
   );
 
   return <AdminShellContext.Provider value={value}>{children}</AdminShellContext.Provider>;
