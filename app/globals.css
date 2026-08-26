@@ -101,9 +101,7 @@
   --color-verdict-unchecked: #544e47;
   --color-verdict-unchecked-bg: #f1eee9;
   --shadow-overlay: 0 24px 60px rgb(7 28 57 / 0.22);
-  --shadow-raise:
-    0 1px 2px rgb(14 27 46 / 0.06),
-    0 8px 24px rgb(14 27 46 / 0.08);
+  --shadow-raise: 0 1px 2px rgb(14 27 46 / 0.06), 0 8px 24px rgb(14 27 46 / 0.08);
   --radius-control: 6px;
 
   /* Géométrie franche du logo : rayons petits, échelle sm/md/lg redéfinie */
@@ -152,6 +150,7 @@
   --animate-mec-fade-out: mecFadeOut 150ms var(--ease-out) both;
   --animate-mec-pop: mecPop 160ms var(--ease-entrance) both;
   --animate-mec-pop-out: mecPopOut 110ms var(--ease-out) both;
+  --animate-mec-page: mecPage 260ms var(--ease-entrance) both;
 }
 
 :root {
@@ -248,6 +247,18 @@
   to {
     transform: scale(0.96);
     opacity: 0;
+  }
+}
+
+/* Entrée de page. Rejouée à chaque navigation grâce au remontage de template.tsx. */
+@keyframes mecPage {
+  from {
+    transform: translateY(6px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 
