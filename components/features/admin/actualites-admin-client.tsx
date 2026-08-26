@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { IconButton } from "@/components/ui/icon-button";
 import { Tag } from "@/components/ui/tag";
+import { ConfirmDialog } from "@/components/ui/alert-dialog";
 import { useAdminShell } from "@/components/features/admin/admin-shell-context";
 import { usePublierActualite } from "@/features/actualites-admin/mutations/use-publier-actualite";
 import { useDepublierActualite } from "@/features/actualites-admin/mutations/use-depublier-actualite";
@@ -40,6 +41,7 @@ export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClie
   const shell = useAdminShell();
   const router = useRouter();
   const [actualites, setActualites] = useState(initialActualites);
+  const [pendingDelete, setPendingDelete] = useState<ActualiteAdmin | null>(null);
 
   const publier = usePublierActualite();
   const depublier = useDepublierActualite();
@@ -57,11 +59,12 @@ export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClie
     });
   }
 
-  function handleDelete(actualite: ActualiteAdmin) {
-    if (!window.confirm(`Supprimer « ${actualite.title} » ?`)) return;
-    removeMutation.mutate(actualite.id, {
+  function handleConfirmDelete() {
+    if (!pendingDelete) return;
+    removeMutation.mutate(pendingDelete.id, {
       onSuccess: () => {
-        setActualites((prev) => prev.filter((item) => item.id !== actualite.id));
+        setActualites((prev) => prev.filter((item) => item.id !== pendingDelete.id));
+        setPendingDelete(null);
       },
       onError: () => {
         toast.error("Une erreur est survenue. Réessayez.");
@@ -157,7 +160,7 @@ export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClie
                         label="Supprimer"
                         size="sm"
                         disabled={rowPending}
-                        onClick={() => handleDelete(actualite)}
+                        onClick={() => setPendingDelete(actualite)}
                       />
                     </>
                   ) : null}
@@ -167,6 +170,19 @@ export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClie
           })}
         </div>
       </div>
+
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        onOpenChange={(next) => {
+          if (!next) setPendingDelete(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        title={`Supprimer « ${pendingDelete?.title ?? ""} » ?`}
+        description="Cette action est définitive."
+        confirmLabel="Supprimer"
+        destructive
+        confirmPending={removeMutation.isPending}
+      />
     </div>
   );
 }
