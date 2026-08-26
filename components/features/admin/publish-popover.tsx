@@ -29,6 +29,7 @@ export function PublishPopover({ existing, fields, image, onClose, onPublished }
 
   const [categorieId, setCategorieId] = useState(existing?.categorie?.id ?? "");
   const [error, setError] = useState<string | null>(null);
+  const [savedId, setSavedId] = useState<string | null>(existing?.id ?? null);
 
   const categories = categoriesQuery.data ?? [];
   const submitting = createMutation.isPending || updateMutation.isPending || publierMutation.isPending;
@@ -42,10 +43,15 @@ export function PublishPopover({ existing, fields, image, onClose, onPublished }
     setError(null);
     try {
       const formData = buildActualiteFormData(fields, categorieId, image);
-      const saved = existing
-        ? await updateMutation.mutateAsync({ id: existing.id, formData })
-        : await createMutation.mutateAsync(formData);
-      const published = await publierMutation.mutateAsync(saved.id);
+      let id = savedId;
+      if (id) {
+        await updateMutation.mutateAsync({ id, formData });
+      } else {
+        const created = await createMutation.mutateAsync(formData);
+        id = created.id;
+        setSavedId(id);
+      }
+      const published = await publierMutation.mutateAsync(id);
       onPublished(published);
     } catch {
       setError("Une erreur est survenue. Réessayez.");

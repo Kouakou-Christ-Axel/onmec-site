@@ -68,6 +68,9 @@ export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClie
       onSuccess: (updated) => {
         setActualites((prev) => prev.map((item) => (item.id === updated.id ? updated : item)));
       },
+      onError: () => {
+        window.alert("Une erreur est survenue. Réessayez.");
+      },
     });
   }
 
@@ -76,6 +79,9 @@ export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClie
     removeMutation.mutate(actualite.id, {
       onSuccess: () => {
         setActualites((prev) => prev.filter((item) => item.id !== actualite.id));
+      },
+      onError: () => {
+        window.alert("Une erreur est survenue. Réessayez.");
       },
     });
   }
@@ -111,37 +117,66 @@ export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClie
             <span>Engagement</span>
             <span className="text-right">Actions</span>
           </div>
-          {actualites.map((actualite) => (
-            <div
-              key={actualite.id}
-              className="grid grid-cols-[minmax(0,1fr)_120px_156px_116px_140px_150px] items-center gap-3.5 border-b border-border-subtle px-4 py-3 text-sm last:border-b-0"
-            >
-              <span className="font-medium text-ink">{actualite.title}</span>
-              <span>
-                <Tag tone={STATUT_TONES[actualite.statut]}>{STATUT_LABELS[actualite.statut]}</Tag>
-              </span>
-              <span className="text-[0.8125rem] text-muted-foreground">
-                {actualite.author?.fullname ?? "—"}
-              </span>
-              <span className="text-[0.8125rem] text-muted-foreground tabular-nums">
-                {formatDate(actualite.date)}
-              </span>
-              <span className="text-[0.8125rem] text-muted-foreground tabular-nums">
-                {actualite.likesCount} ❤ · {actualite.commentsCount} 💬
-              </span>
-              <span className="flex justify-end gap-1.5">
-                {shell.canEdito ? (
-                  <>
-                    <IconButton icon={Pencil} label="Modifier" size="sm" onClick={() => openEdit(actualite)} />
-                    <Button size="sm" variant="secondary" onClick={() => handleTogglePublication(actualite)}>
-                      {actualite.statut === "PUBLIEE" ? "Dépublier" : "Publier"}
-                    </Button>
-                    <IconButton icon={Trash2} label="Supprimer" size="sm" onClick={() => handleDelete(actualite)} />
-                  </>
-                ) : null}
-              </span>
-            </div>
-          ))}
+          {actualites.map((actualite) => {
+            const togglePending =
+              (publier.isPending && publier.variables === actualite.id) ||
+              (depublier.isPending && depublier.variables === actualite.id);
+            const deletePending = removeMutation.isPending && removeMutation.variables === actualite.id;
+            const rowPending = togglePending || deletePending;
+
+            return (
+              <div
+                key={actualite.id}
+                className="grid grid-cols-[minmax(0,1fr)_120px_156px_116px_140px_150px] items-center gap-3.5 border-b border-border-subtle px-4 py-3 text-sm last:border-b-0"
+              >
+                <span className="font-medium text-ink">{actualite.title}</span>
+                <span>
+                  <Tag tone={STATUT_TONES[actualite.statut]}>{STATUT_LABELS[actualite.statut]}</Tag>
+                </span>
+                <span className="text-[0.8125rem] text-muted-foreground">
+                  {actualite.author?.fullname ?? "—"}
+                </span>
+                <span className="text-[0.8125rem] text-muted-foreground tabular-nums">
+                  {formatDate(actualite.date)}
+                </span>
+                <span className="text-[0.8125rem] text-muted-foreground tabular-nums">
+                  {actualite.likesCount} ❤ · {actualite.commentsCount} 💬
+                </span>
+                <span className="flex justify-end gap-1.5">
+                  {shell.canEdito ? (
+                    <>
+                      <IconButton
+                        icon={Pencil}
+                        label="Modifier"
+                        size="sm"
+                        disabled={rowPending}
+                        onClick={() => openEdit(actualite)}
+                      />
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        disabled={rowPending}
+                        onClick={() => handleTogglePublication(actualite)}
+                      >
+                        {togglePending
+                          ? "..."
+                          : actualite.statut === "PUBLIEE"
+                            ? "Dépublier"
+                            : "Publier"}
+                      </Button>
+                      <IconButton
+                        icon={Trash2}
+                        label="Supprimer"
+                        size="sm"
+                        disabled={rowPending}
+                        onClick={() => handleDelete(actualite)}
+                      />
+                    </>
+                  ) : null}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
