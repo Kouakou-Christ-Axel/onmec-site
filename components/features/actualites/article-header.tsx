@@ -2,7 +2,9 @@ import Link from "next/link";
 import { Share2, Printer } from "lucide-react";
 import type { Article } from "@/features/actualites/types/article";
 import { CategoryTag } from "@/components/features/site/category-tag";
-import { PhotoPlaceholder } from "@/components/features/site/photo-placeholder";
+import { ArticleCover } from "@/components/features/site/article-cover";
+import { formatArticleDate } from "@/features/actualites/lib/format-article-date";
+import { estimateReadingTime } from "@/features/actualites/lib/estimate-reading-time";
 import { Reveal } from "@/components/features/site/reveal";
 
 const iconButtonClass =
@@ -22,10 +24,10 @@ export function ArticleHeader({ article }: { article: Article }) {
         <div className="mx-auto max-w-[1280px] px-5 sm:px-8 lg:px-16">
           <Reveal className="flex max-w-[920px] flex-col gap-5">
             <div className="flex items-center gap-3">
-              <CategoryTag category={article.category} />
+              <CategoryTag categorie={article.categorie} />
               <span className="text-[13px] text-text-muted">
-                {article.date} · {article.readingTime} de lecture
-                {article.service ? ` · ${article.service}` : ""}
+                {formatArticleDate(article.date)} · {estimateReadingTime(article.content)} de
+                lecture
               </span>
             </div>
             <h1 className="text-5xl leading-[0.96] font-semibold tracking-tight text-ink text-pretty sm:text-6xl lg:text-7xl">
@@ -36,7 +38,9 @@ export function ArticleHeader({ article }: { article: Article }) {
             </p>
           </Reveal>
           <div className="mt-7 flex items-center gap-4 border-t border-b border-ink/10 py-5">
-            <span className="text-sm font-semibold text-ink">Rédaction MEC</span>
+            <span className="text-sm font-semibold text-ink">
+              {article.author?.fullname ?? "Rédaction MEC"}
+            </span>
             <span className="ml-auto flex gap-2">
               <button type="button" aria-label="Partager l’article" className={iconButtonClass}>
                 <Share2 className="h-4 w-4" aria-hidden />
@@ -49,7 +53,13 @@ export function ArticleHeader({ article }: { article: Article }) {
         </div>
       </header>
       <div className="mx-auto mb-9 max-w-[1280px] px-5 sm:px-8 lg:mb-16 lg:px-16">
-        <PhotoPlaceholder ratio="21/9" duotone label="Photo d’en-tête à fournir" />
+        <ArticleCover
+          src={article.imageUrl}
+          alt=""
+          ratio="21/9"
+          duotone
+          placeholderLabel="Photo d’en-tête à fournir"
+        />
       </div>
     </>
   );

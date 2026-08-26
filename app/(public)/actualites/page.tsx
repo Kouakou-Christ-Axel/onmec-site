@@ -1,8 +1,22 @@
-import { ARTICLES } from "@/features/actualites/data/articles";
-import { NewsFilter } from "@/components/features/actualites/news-filter";
+import { listActualites } from "@/features/actualites/requests/list-actualites";
+import { listCategoriesActualite } from "@/features/actualites/requests/list-categories-actualite";
+import { NewsList } from "@/components/features/actualites/news-list";
 import { NewsletterCta } from "@/components/features/actualites/newsletter-cta";
 
-export default function ActualitesPage() {
+interface ActualitesPageProps {
+  searchParams: Promise<{ categorie?: string; page?: string }>;
+}
+
+export default async function ActualitesPage({ searchParams }: ActualitesPageProps) {
+  const { categorie, page } = await searchParams;
+  const pageCourante = Math.max(1, Number(page) || 1);
+
+  // Les deux appels sont indépendants : les lancer en parallèle plutôt qu'en cascade.
+  const [liste, categories] = await Promise.all([
+    listActualites({ page: pageCourante, categorie }),
+    listCategoriesActualite(),
+  ]);
+
   return (
     <main>
       <section className="border-b border-ink/10 bg-surface-card py-11 sm:py-14 lg:py-20">
@@ -22,7 +36,12 @@ export default function ActualitesPage() {
         </div>
       </section>
       <div className="mx-auto max-w-[1280px] px-5 pb-14 sm:px-8 sm:pb-20 lg:px-16 lg:pb-24">
-        <NewsFilter articles={ARTICLES} />
+        <NewsList
+          articles={liste.data}
+          categories={categories}
+          meta={liste.meta}
+          categorieActive={categorie}
+        />
       </div>
       <NewsletterCta />
     </main>

@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { ARTICLES } from "@/features/actualites/data/articles";
+import { listActualites } from "@/features/actualites/requests/list-actualites";
 import { ArticleCard } from "@/components/features/site/article-card";
 import { Reveal } from "@/components/features/site/reveal";
 
-export function RecentNews() {
-  const recent = ARTICLES.slice(0, 3);
+export async function RecentNews() {
+  const { data: recent } = await listActualites({ limit: 3 });
 
   return (
     <section className="border-y border-ink/10 bg-surface-card py-16 sm:py-20 lg:py-28">
