@@ -111,6 +111,9 @@ export function Dialog({
       <RadixDialog.Portal container={container}>
         <RadixDialog.Overlay
           className={cn(
+            // Échelle z du projet : drawer 80 < dialog 90 < éditeur plein écran 95 < 100.
+            // Un overlay ouvert DEPUIS l'éditeur doit surcharger `overlayClassName="z-100"`,
+            // sinon son portail (document.body) se retrouve derrière lui.
             "fixed inset-0 z-90 grid place-items-center overflow-y-auto bg-overlay-scrim p-6",
             "data-[state=open]:animate-mec-fade data-[state=closed]:animate-mec-fade-out",
             overlayClassName,

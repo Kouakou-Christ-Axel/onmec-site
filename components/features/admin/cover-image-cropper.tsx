@@ -60,6 +60,9 @@ export function CoverImageCropper({
       open={open}
       onClose={onCancel}
       wide
+      // Ouvert depuis article-editor, qui est un plein écran opaque en z-95 : avec le z-90 par
+      // défaut du Dialog, le portail atterrit sur document.body derrière lui et rien n'apparaît.
+      overlayClassName="z-100"
       className="gap-4 border-transparent bg-surface-card p-5"
     >
       <DialogTitle asChild>
