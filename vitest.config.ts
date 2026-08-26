@@ -1,17 +1,17 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import path from "path";
+import { fileURLToPath } from "url";
 import { defineConfig } from "vitest/config";
 
-const rootDir = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  resolve: {
-    alias: {
-      "@": rootDir,
-    },
-  },
   test: {
     environment: "node",
-    passWithNoTests: true,
+  },
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./"),
+      "next/headers": path.resolve(__dirname, "./lib/__mocks__/next-headers.ts"),
+    },
   },
 });
