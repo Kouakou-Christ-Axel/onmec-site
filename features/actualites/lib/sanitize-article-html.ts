@@ -8,7 +8,7 @@ import sanitize from "ultrahtml/transformers/sanitize";
 const ALLOWED_ELEMENTS = [
   "p", "br", "strong", "em", "s", "u", "code", "pre",
   "blockquote", "h1", "h2", "h3", "h4", "h5", "h6",
-  "ul", "ol", "li", "hr", "a", "img", "span",
+  "ul", "ol", "li", "hr", "a", "img", "span", "figure", "figcaption",
 ];
 
 /** Attributs conservés, par balise. Tout le reste est retiré, gestionnaires d'évènement compris. */

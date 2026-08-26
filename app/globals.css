@@ -312,6 +312,18 @@
   height: auto;
 }
 
+.mec-article-body figure {
+  margin: 0;
+}
+
+.mec-article-body figcaption {
+  margin-top: 0.5em;
+  text-align: center;
+  font-size: 0.875rem;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
 .mec-article-body pre {
   background: var(--color-surface-sunken);
   border-radius: var(--radius-md);

@@ -4,7 +4,6 @@ import { useId } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import { FloatingMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
-import Image from "@tiptap/extension-image";
 import { Placeholder } from "@tiptap/extensions";
 import DragHandle from "@tiptap/extension-drag-handle-react";
 import { GripVertical, Plus } from "lucide-react";
@@ -14,6 +13,7 @@ import { ApiError } from "@/lib/api-error";
 import { MAX_IMAGE_BYTES, MAX_IMAGE_LABEL } from "@/features/actualites-admin/lib/image-limits";
 import { convertToWebp } from "@/features/actualites-admin/lib/convert-to-webp";
 import { SlashCommand } from "@/features/actualites-admin/lib/slash-command-extension";
+import { ImageCaption } from "@/features/actualites-admin/lib/image-caption-extension";
 import { ArticleFormatMenu } from "@/components/features/admin/article-format-menu";
 
 interface ArticleBodyEditorProps {
@@ -28,7 +28,7 @@ export function ArticleBodyEditor({ initialContent = "", onChange }: ArticleBody
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Image,
+      ImageCaption,
       Placeholder.configure({
         placeholder: "Commencez à écrire votre article…",
       }),
@@ -40,7 +40,7 @@ export function ArticleBodyEditor({ initialContent = "", onChange }: ArticleBody
     onUpdate: ({ editor }) => onChange(editor.getHTML(), editor.getText()),
     editorProps: {
       attributes: {
-        class: "min-h-[44vh] font-sans text-lg leading-relaxed text-[#2b3646] outline-none",
+        class: "mec-article-body min-h-[44vh] font-sans text-lg leading-relaxed text-text-body outline-none",
       },
     },
   });
