@@ -105,6 +105,15 @@ réellement.
   un `#mec-overlay-root` dans ce marqueur (`app/(public)/layout.tsx`) que les portails ciblent via
   `useOverlayContainer()`. Côté `/admin`, portail sur `body` : `dark:` y est inerte, ne pas en
   écrire.
+- **Tester ces overlays : deux pièges.** (1) Chrome **gèle l'horloge des animations CSS dans un
+  onglet non visible**. Radix attend `animationend` pour démonter : dans un onglet caché, une modale
+  correctement fermée reste montée indéfiniment et donne l'illusion d'un bug. En pilotage automatisé
+  du navigateur, injecter `[data-state="closed"]{animation:none !important}` **avant** de mesurer,
+  systématiquement — piège rencontré quatre fois pendant la mise en place. (2) Radix ne restaure le
+  focus de lui-même que s'il connaît le déclencheur (`Dialog.Trigger`). Nos overlays étant pilotés
+  depuis un parent (ligne de tableau, sélection de fichier), `ui/dialog.tsx` capture explicitement la
+  cible dans `onOpenAutoFocus` et la restitue dans `onCloseAutoFocus` : sans ce filet, le focus
+  retombe sur `<body>` à la fermeture. Ne pas le retirer.
 - **Prérequis de déploiement** : `wrangler.jsonc` n'a actuellement aucun bloc `vars`. `API_BASE_URL`
   doit être fournie via les vars/secrets Cloudflare au déploiement — `config/env.ts` échoue
   bruyamment en production si elle manque (pas de fallback silencieux vers `localhost`).
