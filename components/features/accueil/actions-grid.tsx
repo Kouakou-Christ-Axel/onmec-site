@@ -47,10 +47,10 @@ export function ActionsGrid() {
           {PROGRAMS.map((program, i) => (
             <Reveal key={program.title} delay={i * 80}>
               <div
-                className={`flex h-full flex-col gap-4 rounded-md border bg-surface-card p-7 ${
+                className={`flex h-full flex-col gap-4 rounded-md border bg-surface-card p-7 transition duration-150 ease-out hover:-translate-y-1 ${
                   program.highlight
                     ? "border-ink shadow-stamp"
-                    : "border-ink/10 transition-transform hover:-translate-y-0.5 hover:border-orange-500"
+                    : "border-ink/10 hover:border-orange-500 hover:shadow-stamp-sm"
                 }`}
               >
                 <program.icon className={`h-9 w-9 ${program.iconClass}`} aria-hidden />

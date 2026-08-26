@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { X } from "lucide-react";
 import type { Ressource } from "@/features/ressources/types/ressource";
 import { PhotoPlaceholder } from "@/components/features/site/photo-placeholder";
-import { Dialog, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogTitle, useLastNonNull } from "@/components/ui/dialog";
 
 export function RessourcePreviewOverlay({
   ressource,
@@ -14,18 +13,14 @@ export function RessourcePreviewOverlay({
   ressource: Ressource | null;
   onClose: () => void;
 }) {
-  // Radix garde le contenu monté le temps de l'animation de sortie : on conserve la dernière
-  // ressource affichée pour avoir quoi rendre pendant que la modale se referme.
-  // Ajustement d'état pendant le rendu — le patron documenté par React pour dériver d'une prop.
-  const [shown, setShown] = useState<Ressource | null>(ressource);
-  if (ressource && ressource !== shown) setShown(ressource);
+  const shown = useLastNonNull(ressource);
   if (!shown) return null;
 
   return (
     <Dialog
       open={ressource !== null}
       onClose={onClose}
-      overlayClassName="bg-overlay-scrim p-5"
+      overlayClassName="p-5"
       className="grid max-w-[640px] grid-cols-1 gap-6 rounded-md border-ink bg-surface-card p-7 shadow-stamp sm:grid-cols-[200px_1fr]"
     >
       <button

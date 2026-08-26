@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import { cn } from "@/components/ui/cn";
 
 type TagTone = "neutral" | "orange" | "blue" | "solid" | "outline" | "invert";
 type TagSize = "sm" | "md";
@@ -41,7 +42,16 @@ export function Tag({
   return (
     <Comp
       onClick={onClick}
-      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full font-semibold tracking-[0.06em] uppercase ${TONE_CLASSES[tone]} ${SIZE_CLASSES[size]} ${interactive ? "cursor-pointer transition-colors hover:border-ink" : ""} ${active ? "border-ink bg-ink text-white" : ""} ${className}`}
+      aria-pressed={interactive ? active : undefined}
+      className={cn(
+        "inline-flex items-center gap-1.5 whitespace-nowrap rounded-full font-semibold tracking-[0.06em] uppercase",
+        TONE_CLASSES[tone],
+        SIZE_CLASSES[size],
+        interactive &&
+          "cursor-pointer transition-colors duration-150 ease-out hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
+        active && "border-ink bg-ink text-white",
+        className,
+      )}
     >
       {Icon ? <Icon size={12} /> : null}
       {children}

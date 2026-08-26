@@ -8,6 +8,7 @@ import {
   SelectInput,
   TextareaInput,
   CheckboxItem,
+  SubmitButton,
 } from "@/components/features/site/form-controls";
 import { ContactConfirmation } from "@/components/features/contact/contact-confirmation";
 
@@ -97,13 +98,9 @@ export function ContactForm() {
           />
 
           <div className="flex flex-col gap-2">
-            <button
-              type="submit"
-              disabled={!consent}
-              className="inline-flex h-[54px] w-fit items-center gap-2.5 rounded-sm bg-orange-500 px-7 text-[1.0625rem] font-semibold text-white transition-colors hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-45"
-            >
-              Envoyer le message <span>→</span>
-            </button>
+            <SubmitButton disabled={!consent} className="w-fit">
+              Envoyer le message
+            </SubmitButton>
             <span className="text-sm text-text-muted">
               Vos coordonnées ne servent qu’à cette réponse. Aucun envoi commercial.
             </span>

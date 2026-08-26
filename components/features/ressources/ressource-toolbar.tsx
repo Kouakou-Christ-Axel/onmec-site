@@ -6,6 +6,11 @@ import { THEMES, FORMATS, ACCES_VALUES } from "@/features/ressources/data/ressou
 import { SORT_OPTIONS, type SortKey } from "@/features/ressources/lib/sort-ressources";
 import { SelectInput } from "@/components/features/site/form-controls";
 
+const pillClass = (isActive: boolean) =>
+  `inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold tracking-wide uppercase transition-colors duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring ${
+    isActive ? "bg-ink text-surface-page" : "bg-n-100 text-text-body hover:bg-n-200"
+  }`;
+
 export const ALL_THEMES = "Tous les thèmes" as const;
 export const ALL_FORMATS = "Tous les formats" as const;
 export const ALL_ACCES = "Tous les accès" as const;
@@ -58,11 +63,8 @@ export function RessourceToolbar({
           <button
             type="button"
             onClick={() => onThemeChange(ALL_THEMES)}
-            className={`inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold tracking-wide uppercase transition-colors ${
-              theme === ALL_THEMES
-                ? "bg-ink text-surface-page"
-                : "bg-n-100 text-text-body hover:bg-n-200"
-            }`}
+            aria-pressed={theme === ALL_THEMES}
+            className={pillClass(theme === ALL_THEMES)}
           >
             {ALL_THEMES}
           </button>
@@ -71,9 +73,8 @@ export function RessourceToolbar({
               key={t}
               type="button"
               onClick={() => onThemeChange(t)}
-              className={`inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold tracking-wide uppercase transition-colors ${
-                theme === t ? "bg-ink text-surface-page" : "bg-n-100 text-text-body hover:bg-n-200"
-              }`}
+              aria-pressed={theme === t}
+              className={pillClass(theme === t)}
             >
               {t}
             </button>

@@ -5,8 +5,15 @@ import { CategoryTag } from "@/components/features/site/category-tag";
 
 export function ArticleCard({ article }: { article: Article }) {
   return (
-    <Link href={`/actualites/${article.slug}`} className="group flex flex-col gap-4">
-      <PhotoPlaceholder ratio="3/2" label="Photo à fournir" />
+    <Link
+      href={`/actualites/${article.slug}`}
+      className="group flex flex-col gap-4 rounded-sm transition-transform duration-150 ease-out hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
+    >
+      <PhotoPlaceholder
+        ratio="3/2"
+        label="Photo à fournir"
+        className="transition-shadow duration-150 ease-out group-hover:shadow-stamp-sm"
+      />
       <div className="flex flex-wrap items-center gap-3 text-xs text-text-muted">
         <CategoryTag category={article.category} />
         <span>{article.date}</span>

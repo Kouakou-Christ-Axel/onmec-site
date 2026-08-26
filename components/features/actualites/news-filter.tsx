@@ -5,7 +5,15 @@ import type { Article, ArticleCategory } from "@/features/actualites/types/artic
 import { CATEGORIES } from "@/features/actualites/data/articles";
 import { ArticleCard } from "@/components/features/site/article-card";
 import { PhotoPlaceholder } from "@/components/features/site/photo-placeholder";
+import { Reveal } from "@/components/features/site/reveal";
 import Link from "next/link";
+
+const pillClass = (isActive: boolean) =>
+  `inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold tracking-wide uppercase transition-colors duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring ${
+    isActive
+      ? "border-ink bg-ink text-surface-page"
+      : "border-ink/24 bg-transparent text-text-body hover:bg-n-100"
+  }`;
 
 const ALL = "Toutes" as const;
 type Filter = ArticleCategory | typeof ALL;
@@ -25,11 +33,8 @@ export function NewsFilter({ articles }: { articles: Article[] }) {
         <button
           type="button"
           onClick={() => setCategory(ALL)}
-          className={`inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold tracking-wide uppercase transition-colors ${
-            category === ALL
-              ? "border-ink bg-ink text-surface-page"
-              : "border-ink/24 bg-transparent text-text-body hover:bg-n-100"
-          }`}
+          aria-pressed={category === ALL}
+          className={pillClass(category === ALL)}
         >
           Toutes
         </button>
@@ -38,11 +43,8 @@ export function NewsFilter({ articles }: { articles: Article[] }) {
             key={cat}
             type="button"
             onClick={() => setCategory(cat)}
-            className={`inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold tracking-wide uppercase transition-colors ${
-              category === cat
-                ? "border-ink bg-ink text-surface-page"
-                : "border-ink/24 bg-transparent text-text-body hover:bg-n-100"
-            }`}
+            aria-pressed={category === cat}
+            className={pillClass(category === cat)}
           >
             {cat}
           </button>
@@ -53,11 +55,17 @@ export function NewsFilter({ articles }: { articles: Article[] }) {
       </div>
 
       {featured ? (
-        <div
-          className="mt-9 grid grid-cols-1 items-center gap-6 border-b border-ink/10 pb-9 lg:grid-cols-[3fr_5fr] lg:gap-12"
-        >
-          <Link href={`/actualites/${featured.slug}`} className="group">
-            <PhotoPlaceholder ratio="16/9" duotone label="Photo de l’activité à fournir" />
+        <div className="mt-9 grid grid-cols-1 items-center gap-6 border-b border-ink/10 pb-9 lg:grid-cols-[3fr_5fr] lg:gap-12">
+          <Link
+            href={`/actualites/${featured.slug}`}
+            className="group rounded-sm transition-transform duration-150 ease-out hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
+          >
+            <PhotoPlaceholder
+              ratio="16/9"
+              duotone
+              label="Photo de l’activité à fournir"
+              className="transition-shadow duration-150 ease-out group-hover:shadow-stamp-sm"
+            />
           </Link>
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
@@ -76,7 +84,7 @@ export function NewsFilter({ articles }: { articles: Article[] }) {
             </p>
             <Link
               href={`/actualites/${featured.slug}`}
-              className="w-fit border-b-2 border-orange-500 pb-0.5 text-base font-semibold text-ink"
+              className="w-fit border-b-2 border-orange-500 pb-0.5 text-base font-semibold text-ink transition-colors duration-150 ease-out hover:text-orange-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
             >
               Lire l’article →
             </Link>
@@ -85,8 +93,10 @@ export function NewsFilter({ articles }: { articles: Article[] }) {
       ) : null}
 
       <div className="mt-9 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-        {rest.map((article) => (
-          <ArticleCard key={article.slug} article={article} />
+        {rest.map((article, i) => (
+          <Reveal key={article.slug} delay={i * 80}>
+            <ArticleCard article={article} />
+          </Reveal>
         ))}
       </div>
       {!filtered.length ? (

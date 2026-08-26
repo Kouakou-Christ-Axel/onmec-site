@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useCallback, useRef, useState, type ReactNode } from "react";
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { cn } from "@/components/ui/cn";
 
@@ -24,6 +24,48 @@ export function useOverlayContainer(): HTMLElement | undefined {
   return container;
 }
 
+/**
+ * Rend le focus à l'élément qui l'avait avant l'ouverture.
+ *
+ * Radix ne restaure le focus tout seul que s'il connaît le déclencheur, c'est-à-dire via
+ * `Dialog.Trigger`. Or la plupart de nos overlays sont pilotés depuis un parent (une ligne de
+ * tableau, une sélection de fichier) et n'ont pas de trigger co-localisé : sans ce filet, le focus
+ * retombe sur `<body>` à la fermeture. On capture donc la cible dans `onOpenAutoFocus`, seul moment
+ * où l'élément extérieur a encore le focus.
+ */
+export function useFocusRestore(onOpenAutoFocus?: (event: Event) => void) {
+  const previous = useRef<HTMLElement | null>(null);
+
+  const handleOpenAutoFocus = useCallback(
+    (event: Event) => {
+      previous.current = document.activeElement as HTMLElement | null;
+      onOpenAutoFocus?.(event);
+    },
+    [onOpenAutoFocus],
+  );
+
+  const handleCloseAutoFocus = useCallback((event: Event) => {
+    const target = previous.current;
+    if (!target || !document.body.contains(target)) return;
+    event.preventDefault();
+    target.focus();
+  }, []);
+
+  return { handleOpenAutoFocus, handleCloseAutoFocus };
+}
+
+/**
+ * Conserve la dernière valeur non nulle. Radix garde le contenu monté le temps de l'animation de
+ * sortie : sans ça, un parent qui repasse à `null` en fermant n'aurait plus rien à rendre pendant
+ * que l'overlay se referme.
+ */
+export function useLastNonNull<T>(value: T | null): T | null {
+  // Ajustement d'état pendant le rendu — le patron documenté par React pour dériver d'une prop.
+  const [shown, setShown] = useState<T | null>(value);
+  if (value !== null && value !== shown) setShown(value);
+  return value ?? shown;
+}
+
 /** À poser sur le titre visible déjà présent dans le contenu : `<DialogTitle asChild><h2 …>`. */
 export const DialogTitle = RadixDialog.Title;
 
@@ -36,6 +78,16 @@ interface DialogProps {
   title?: string;
   className?: string;
   overlayClassName?: string;
+  /** Redirige le focus initial (par défaut Radix focus le premier élément focusable du contenu). */
+  onOpenAutoFocus?: (event: Event) => void;
+  /**
+   * Déclencheur, rendu dans `Dialog.Trigger asChild`. À privilégier sur un bouton externe :
+   * c'est ce qui donne à Radix la référence vers laquelle rendre le focus à la fermeture. Sans
+   * lui, un `onOpenAutoFocus` qui appelle `preventDefault()` fait perdre la restauration du focus.
+   */
+  trigger?: ReactNode;
+  /** Appelé quand le déclencheur ouvre le dialogue. Requis dès qu'on fournit `trigger`. */
+  onOpen?: () => void;
 }
 
 export function Dialog({
@@ -46,21 +98,28 @@ export function Dialog({
   title,
   className,
   overlayClassName,
+  onOpenAutoFocus,
+  trigger,
+  onOpen,
 }: DialogProps) {
   const container = useOverlayContainer();
+  const { handleOpenAutoFocus, handleCloseAutoFocus } = useFocusRestore(onOpenAutoFocus);
 
   return (
-    <RadixDialog.Root open={open} onOpenChange={(next) => !next && onClose()}>
+    <RadixDialog.Root open={open} onOpenChange={(next) => (next ? onOpen?.() : onClose())}>
+      {trigger ? <RadixDialog.Trigger asChild>{trigger}</RadixDialog.Trigger> : null}
       <RadixDialog.Portal container={container}>
         <RadixDialog.Overlay
           className={cn(
-            "fixed inset-0 z-90 grid place-items-center overflow-y-auto bg-blue-900/62 p-6",
+            "fixed inset-0 z-90 grid place-items-center overflow-y-auto bg-overlay-scrim p-6",
             "data-[state=open]:animate-mec-fade data-[state=closed]:animate-mec-fade-out",
             overlayClassName,
           )}
         >
           <RadixDialog.Content
             aria-describedby={undefined}
+            onOpenAutoFocus={handleOpenAutoFocus}
+            onCloseAutoFocus={handleCloseAutoFocus}
             className={cn(
               "relative flex w-full flex-col rounded-lg border border-border-strong bg-surface-page shadow-overlay",
               "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
@@ -69,9 +128,7 @@ export function Dialog({
               className,
             )}
           >
-            {title ? (
-              <RadixDialog.Title className="sr-only">{title}</RadixDialog.Title>
-            ) : null}
+            {title ? <RadixDialog.Title className="sr-only">{title}</RadixDialog.Title> : null}
             {children}
           </RadixDialog.Content>
         </RadixDialog.Overlay>

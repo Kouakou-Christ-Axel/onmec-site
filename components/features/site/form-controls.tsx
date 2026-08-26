@@ -5,6 +5,7 @@ import {
   type SelectHTMLAttributes,
   type TextareaHTMLAttributes,
 } from "react";
+import { cn } from "@/components/ui/cn";
 
 const inputClass =
   "w-full rounded-md border border-ink/10 bg-surface-card px-4 text-sm text-ink shadow-[0_1px_2px_rgba(14,27,46,0.04)] outline-none transition-colors placeholder:text-n-400 hover:border-ink/24 focus:border-blue-500 focus:ring-3 focus:ring-blue-500/25";
@@ -87,7 +88,9 @@ export function RadioCard({
   return (
     <label
       className={`flex cursor-pointer items-start gap-3 rounded-md border p-5 transition-colors ${
-        checked ? "border-orange-500 bg-orange-50" : "border-ink/10 bg-surface-card hover:border-ink/24"
+        checked
+          ? "border-orange-500 bg-orange-50"
+          : "border-ink/10 bg-surface-card hover:border-ink/24"
       }`}
     >
       <input
@@ -102,5 +105,36 @@ export function RadioCard({
         <span className="text-sm text-text-muted">{desc}</span>
       </span>
     </label>
+  );
+}
+
+/**
+ * Bouton d'envoi partagé par join-form.tsx et contact-form.tsx : bascule sur un état de
+ * chargement discret (spinner + libellé) pendant la simulation d'envoi, faute de backend
+ * confirmé pour ces formulaires.
+ */
+export function SubmitButton({
+  disabled,
+  className,
+  children,
+}: {
+  disabled?: boolean;
+  className?: string;
+  children: ReactNode;
+}) {
+  // Pas d'état de chargement : ni ce formulaire ni celui d'adhésion n'appellent de backend
+  // aujourd'hui. Un spinner sur une soumission synchrone serait du théâtre. À rebrancher le jour
+  // où un endpoint existe, avec une vraie attente.
+  return (
+    <button
+      type="submit"
+      disabled={disabled}
+      className={cn(
+        "inline-flex h-[54px] items-center gap-2.5 rounded-sm bg-orange-500 px-7 text-[1.0625rem] font-semibold text-white transition-colors duration-150 ease-out hover:bg-orange-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring disabled:cursor-not-allowed disabled:opacity-45",
+        className,
+      )}
+    >
+      {children}
+    </button>
   );
 }

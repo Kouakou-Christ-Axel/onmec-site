@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import * as Popover from "@radix-ui/react-popover";
+import { cn } from "@/components/ui/cn";
 import { Select } from "@/components/ui/select";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -81,14 +83,23 @@ export function PublishPopover({
   }
 
   return (
-    <div className="absolute inset-0 z-10">
-      <button
-        type="button"
-        aria-label="Fermer"
-        onClick={onClose}
-        className="absolute inset-0 bg-blue-900/28"
-      />
-      <div className="absolute top-18.5 right-4 flex w-[min(360px,92vw)] flex-col gap-4 rounded-[10px] border border-border-strong bg-surface-card p-5 shadow-overlay md:right-8">
+    <Popover.Portal>
+      {/* z-100 : Radix recopie le z-index calculé du Content sur son wrapper positionné
+          (react-popper). L'éditeur parent est en z-95 — en dessous, le popover passerait derrière. */}
+      <Popover.Content
+        side="bottom"
+        align="end"
+        sideOffset={8}
+        collisionPadding={16}
+        onEscapeKeyDown={onClose}
+        onPointerDownOutside={onClose}
+        style={{ transformOrigin: "var(--radix-popover-content-transform-origin)" }}
+        className={cn(
+          "z-100 flex w-[min(360px,92vw)] flex-col gap-4 rounded-[10px] border border-border-strong bg-surface-card p-5 shadow-overlay",
+          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
+          "data-[state=open]:animate-mec-pop data-[state=closed]:animate-mec-pop-out",
+        )}
+      >
         <span className="text-[0.6875rem] font-semibold tracking-[0.13em] text-muted-foreground uppercase">
           Publication
         </span>
@@ -126,7 +137,7 @@ export function PublishPopover({
         <span className="text-xs leading-relaxed text-muted-foreground">
           L’article part sur la page Actualités du site. Vous pourrez le dépublier à tout moment.
         </span>
-      </div>
-    </div>
+      </Popover.Content>
+    </Popover.Portal>
   );
 }

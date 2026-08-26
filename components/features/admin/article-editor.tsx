@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import * as Popover from "@radix-ui/react-popover";
 import { IconButton } from "@/components/ui/icon-button";
 import { Button } from "@/components/ui/button";
 import { CoverImageField } from "@/components/features/admin/cover-image-field";
@@ -44,14 +45,22 @@ export function ArticleEditor({ existing }: ArticleEditorProps) {
           <span className="text-xs whitespace-nowrap text-muted-foreground tabular-nums">
             {motCount} mots
           </span>
-          <Button
-            variant="primary"
-            size="sm"
-            disabled={!titre.trim()}
-            onClick={() => setShowPublish(true)}
-          >
-            Publier
-          </Button>
+          <Popover.Root open={showPublish} onOpenChange={setShowPublish}>
+            <Popover.Trigger asChild>
+              <Button variant="primary" size="sm" disabled={!titre.trim()}>
+                Publier
+              </Button>
+            </Popover.Trigger>
+            <PublishPopover
+              existing={existing}
+              savedId={savedId}
+              onSavedIdChange={setSavedId}
+              fields={{ title: titre, excerpt: chapo, content: corps }}
+              image={image}
+              onClose={() => setShowPublish(false)}
+              onPublished={handlePublished}
+            />
+          </Popover.Root>
         </span>
       </div>
 
@@ -83,18 +92,6 @@ export function ArticleEditor({ existing }: ArticleEditorProps) {
             }}
           />
         </div>
-
-        {showPublish ? (
-          <PublishPopover
-            existing={existing}
-            savedId={savedId}
-            onSavedIdChange={setSavedId}
-            fields={{ title: titre, excerpt: chapo, content: corps }}
-            image={image}
-            onClose={() => setShowPublish(false)}
-            onPublished={handlePublished}
-          />
-        ) : null}
       </div>
     </div>
   );

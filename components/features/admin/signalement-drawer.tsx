@@ -2,12 +2,18 @@
 
 import { X, Check } from "lucide-react";
 import { Drawer } from "@/components/ui/drawer";
+import { DialogTitle, useLastNonNull } from "@/components/ui/dialog";
 import { Tag } from "@/components/ui/tag";
 import { Button } from "@/components/ui/button";
 import { IconButton } from "@/components/ui/icon-button";
 import { SignalementModerationPanel } from "@/components/features/admin/signalement-moderation-panel";
 import { SignalementUpdatesPanel } from "@/components/features/admin/signalement-updates-panel";
-import { ETAPES, STATUT_META, type Signalement, type SignalementStatut } from "@/features/admin/data/signalements";
+import {
+  ETAPES,
+  STATUT_META,
+  type Signalement,
+  type SignalementStatut,
+} from "@/features/admin/data/signalements";
 
 interface SignalementDrawerProps {
   signalement: Signalement | null;
@@ -16,21 +22,22 @@ interface SignalementDrawerProps {
 }
 
 export function SignalementDrawer({ signalement, onClose, onChange }: SignalementDrawerProps) {
-  if (!signalement) return null;
+  const shown = useLastNonNull(signalement);
+  if (!shown) return null;
 
   const order: SignalementStatut[] = ["validation", "encours", "resolu"];
-  const currentIndex = order.indexOf(signalement.statut);
+  const currentIndex = order.indexOf(shown.statut);
 
   return (
-    <Drawer open={Boolean(signalement)} onClose={onClose}>
+    <Drawer open={signalement !== null} onClose={onClose}>
       <div className="flex items-center justify-between gap-3.5 border-b border-border-subtle bg-surface-card px-5.5 py-4.5">
         <span className="flex flex-col gap-0.5">
           <span className="text-[0.6875rem] font-semibold tracking-[0.13em] text-muted-foreground uppercase">
             Signalement citoyen
           </span>
           <span className="flex items-center gap-2.5">
-            <span className="text-base font-semibold text-ink tabular-nums">{signalement.id}</span>
-            <Tag tone={STATUT_META[signalement.statut].tone}>{STATUT_META[signalement.statut].label}</Tag>
+            <span className="text-base font-semibold text-ink tabular-nums">{shown.id}</span>
+            <Tag tone={STATUT_META[shown.statut].tone}>{STATUT_META[shown.statut].label}</Tag>
           </span>
         </span>
         <IconButton icon={X} label="Fermer" onClick={onClose} />
@@ -42,44 +49,52 @@ export function SignalementDrawer({ signalement, onClose, onChange }: Signalemen
             <span key={etape.statut} className="flex flex-col gap-2">
               <span
                 className={`h-2.5 w-2.5 rounded-full border-2 ${
-                  i < currentIndex ? "border-verdict-true bg-verdict-true" : i === currentIndex ? "border-orange-500 bg-orange-500" : "border-n-300 bg-transparent"
+                  i < currentIndex
+                    ? "border-verdict-true bg-verdict-true"
+                    : i === currentIndex
+                      ? "border-orange-500 bg-orange-500"
+                      : "border-n-300 bg-transparent"
                 }`}
               />
-              <span className={`text-xs ${i === currentIndex ? "font-semibold text-ink" : "text-muted-foreground"}`}>
+              <span
+                className={`text-xs ${i === currentIndex ? "font-semibold text-ink" : "text-muted-foreground"}`}
+              >
                 {etape.label}
               </span>
             </span>
           ))}
         </div>
 
-        <h2 className="text-[1.375rem] leading-tight font-semibold tracking-[-0.026em] text-ink">
-          {signalement.sujet}
-        </h2>
+        <DialogTitle asChild>
+          <h2 className="text-[1.375rem] leading-tight font-semibold tracking-[-0.026em] text-ink">
+            {shown.sujet}
+          </h2>
+        </DialogTitle>
 
         <div className="grid grid-cols-2 gap-3.5 rounded-lg border border-border-subtle bg-surface-card p-4 text-[0.8125rem]">
           <span className="flex flex-col gap-0.5">
             <span className="text-muted-foreground">Catégorie</span>
-            <span className="font-semibold text-ink">{signalement.categorie}</span>
+            <span className="font-semibold text-ink">{shown.categorie}</span>
           </span>
           <span className="flex flex-col gap-0.5">
             <span className="text-muted-foreground">Reçu le</span>
-            <span className="font-semibold text-ink">{signalement.recu}</span>
+            <span className="font-semibold text-ink">{shown.recu}</span>
           </span>
           <span className="flex flex-col gap-0.5">
             <span className="text-muted-foreground">Localisation</span>
-            <span className="font-semibold text-ink">{signalement.lieu}</span>
+            <span className="font-semibold text-ink">{shown.lieu}</span>
           </span>
           <span className="flex flex-col gap-0.5">
             <span className="text-muted-foreground">Signalé par</span>
-            <span className="font-semibold text-ink">{signalement.auteur}</span>
+            <span className="font-semibold text-ink">{shown.auteur}</span>
           </span>
           <span className="flex flex-col gap-0.5">
             <span className="text-muted-foreground">Visible dans l’app</span>
-            <span className="font-semibold text-ink">{signalement.publie ? "Publié" : "Masqué"}</span>
+            <span className="font-semibold text-ink">{shown.publie ? "Publié" : "Masqué"}</span>
           </span>
           <span className="flex flex-col gap-0.5">
             <span className="text-muted-foreground">Responsable</span>
-            <span className="font-semibold text-ink">{signalement.responsable || "—"}</span>
+            <span className="font-semibold text-ink">{shown.responsable || "—"}</span>
           </span>
         </div>
 
@@ -87,19 +102,19 @@ export function SignalementDrawer({ signalement, onClose, onChange }: Signalemen
           <span className="text-xs font-semibold tracking-[0.13em] text-muted-foreground uppercase">
             Description du citoyen
           </span>
-          <p className="text-[0.9375rem] leading-relaxed text-[#2b3646]">{signalement.contenu}</p>
+          <p className="text-[0.9375rem] leading-relaxed text-[#2b3646]">{shown.contenu}</p>
         </div>
 
-        <SignalementModerationPanel signalement={signalement} onChange={onChange} />
+        <SignalementModerationPanel signalement={shown} onChange={onChange} />
 
-        <SignalementUpdatesPanel signalement={signalement} onChange={onChange} />
+        <SignalementUpdatesPanel signalement={shown} onChange={onChange} />
       </div>
 
       <div className="flex flex-none flex-wrap items-center gap-2.5 border-t border-border-subtle bg-surface-card px-5.5 py-4">
         <Button variant="primary" icon={Check} onClick={onClose}>
           Enregistrer et fermer
         </Button>
-        <Button variant="ghost" onClick={() => onChange(signalement.id, { statut: "rejete" })}>
+        <Button variant="ghost" onClick={() => onChange(shown.id, { statut: "rejete" })}>
           Rejeter le signalement
         </Button>
         <span className="flex-[1_0_100%] text-xs text-muted-foreground">

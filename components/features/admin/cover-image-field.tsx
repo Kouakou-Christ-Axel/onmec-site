@@ -106,17 +106,16 @@ export function CoverImageField({ file, onChange, existingUrl }: CoverImageField
         />
       </div>
 
-      {pendingFile && pendingUrl ? (
-        <CoverImageCropper
-          imageSrc={pendingUrl}
-          fileName={pendingFile.name}
-          onCancel={() => setPendingFile(null)}
-          onConfirm={(croppedFile) => {
-            onChange(croppedFile);
-            setPendingFile(null);
-          }}
-        />
-      ) : null}
+      <CoverImageCropper
+        open={pendingFile !== null}
+        imageSrc={pendingUrl}
+        fileName={pendingFile?.name ?? ""}
+        onCancel={() => setPendingFile(null)}
+        onConfirm={(croppedFile) => {
+          onChange(croppedFile);
+          setPendingFile(null);
+        }}
+      />
     </>
   );
 }

@@ -89,8 +89,22 @@ réellement.
   transparent via `POST /auth/admin/refresh-token`), sinon redirect vers `/admin/connexion`.
   Voir `docs/superpowers/specs/2026-08-25-auth-admin-design.md`.
 - **`components/ui/` est maintenant peuplé** (Button, IconButton, Tag, Field, Input, Textarea,
-  Select, Alert, Stat, Drawer, Dialog — voir le dashboard admin) : primitives Tailwind/JSX
-  réimplémentées depuis le design system Claude Design, pas un kit tiers comme shadcn/ui.
+  Select, Alert, Stat, Drawer, Dialog) : primitives Tailwind/JSX réimplémentées depuis le design
+  system Claude Design. **Pas de kit tiers** — ni shadcn/ui, ni `components.json`, ni cva : les
+  tokens (`surface-*`, `text-*`, `action-*`, `shadow-stamp`, typo fluide) et les classes restent
+  les nôtres.
+  **Nuance assumée : Radix fournit le *comportement* des overlays, pas leur style.** `Dialog`,
+  `Drawer` et le popover de publication s'appuient sur `@radix-ui/react-{dialog,popover}` pour le
+  piège de focus, Escape, `aria-modal`, le verrou de scroll et l'ancrage réel — six comportements
+  qu'aucune des cinq coquilles de modale maison n'avait, et que Radix retarde proprement le temps
+  d'une animation de sortie. Les primitives sans comportement (Button, Input, Textarea, Select,
+  Field, Tag, Alert, Stat) restent 100 % maison. En particulier `ui/select.tsx` est un `<select>`
+  natif : meilleur que Radix Select en accessibilité et sans JS, on n'y touche pas.
+  Point de vigilance : Radix portalise vers `document.body`, or le thème sombre est scopé à
+  `html[data-mec-theme="dark"] [data-mec-public]` et ses tokens s'héritent. Le site public rend donc
+  un `#mec-overlay-root` dans ce marqueur (`app/(public)/layout.tsx`) que les portails ciblent via
+  `useOverlayContainer()`. Côté `/admin`, portail sur `body` : `dark:` y est inerte, ne pas en
+  écrire.
 - **Prérequis de déploiement** : `wrangler.jsonc` n'a actuellement aucun bloc `vars`. `API_BASE_URL`
   doit être fournie via les vars/secrets Cloudflare au déploiement — `config/env.ts` échoue
   bruyamment en production si elle manque (pas de fallback silencieux vers `localhost`).

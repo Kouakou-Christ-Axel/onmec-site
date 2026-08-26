@@ -16,7 +16,7 @@ export function CiblesSection() {
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
             {CIBLES.map((cible, i) => (
               <Reveal key={cible.title} delay={i * 80}>
-                <div className="flex h-full flex-col gap-4 rounded-md border border-ink/10 bg-surface-card p-7">
+                <div className="flex h-full flex-col gap-4 rounded-md border border-ink/10 bg-surface-card p-7 transition duration-150 ease-out hover:-translate-y-1 hover:border-orange-500 hover:shadow-stamp-sm">
                   <cible.icon className={`h-8 w-8 ${cible.colorClass}`} aria-hidden />
                   <div>
                     <h3 className="text-lg font-semibold tracking-tight text-ink">

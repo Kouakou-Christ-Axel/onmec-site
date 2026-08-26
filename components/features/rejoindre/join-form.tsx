@@ -9,6 +9,7 @@ import {
   TextareaInput,
   CheckboxItem,
   RadioCard,
+  SubmitButton,
 } from "@/components/features/site/form-controls";
 import { FormSidebar } from "@/components/features/rejoindre/form-sidebar";
 import { Confirmation } from "@/components/features/rejoindre/confirmation";
@@ -168,13 +169,9 @@ export function JoinForm() {
                       onChange={setIndependance}
                     />
                     <div className="mt-2.5 flex flex-wrap items-center gap-4">
-                      <button
-                        type="submit"
-                        disabled={!consent || !independance}
-                        className="inline-flex h-[54px] items-center gap-2.5 rounded-sm bg-orange-500 px-7 text-[1.0625rem] font-semibold text-white transition-colors hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-45"
-                      >
-                        Envoyer ma demande <span>→</span>
-                      </button>
+                      <SubmitButton disabled={!consent || !independance}>
+                        Envoyer ma demande
+                      </SubmitButton>
                       <span className="text-sm text-text-muted">
                         Aucune cotisation — l’adhésion au MEC est gratuite.
                       </span>

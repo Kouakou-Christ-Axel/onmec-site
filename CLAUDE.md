@@ -23,7 +23,8 @@ documents, quiz éducatifs, gamification). Consomme l'API du backend NestJS **on
 Voir [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) pour la règle de layering complète
 (`config/`/`lib/`/`features/<domaine>/`/`components/`), le schéma en deux niveaux de requête pour
 l'auth, la frontière fetch RSC vs TanStack Query, le contrat d'erreur, et les décisions actuelles
-(pas de CSRF, pas de garde edge, pas de design system pour l'instant).
+(pas de CSRF, garde d'auth edge dans `proxy.ts`, design system maison avec Radix sous le seul
+comportement des overlays).
 
 ## Convention d'appel à l'API (règle la plus importante du projet)
 
@@ -64,8 +65,9 @@ onmec-site est un **BFF** (backend-for-frontend) : le navigateur ne parle jamais
 - `features/<domaine>/` — logique métier (`types/`, `schemas/`, `requests/` serveur, `mutations/`
   client, `lib/`)
 - `components/providers/` — providers React (`query-provider.tsx`)
-- `components/features/<domaine>/`, `components/ui/` — UI (pas encore peuplés, voir
-  `docs/ARCHITECTURE.md`)
+- `components/features/<domaine>/` — UI par domaine ; `components/ui/` — primitives du design
+  system maison (`cn.ts`, Button, IconButton, Tag, Field, Input, Textarea, Select, Alert, Stat,
+  Dialog, Drawer). Voir `docs/ARCHITECTURE.md` pour la frontière avec Radix.
 
 ## Commandes
 
