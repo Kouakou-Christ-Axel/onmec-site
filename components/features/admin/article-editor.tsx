@@ -12,13 +12,14 @@ interface ArticleEditorProps {
   existing: ActualiteAdmin | null;
   onClose: () => void;
   onSaved: (actualite: ActualiteAdmin) => void;
+  onDraftCreated: (actualite: ActualiteAdmin) => void;
 }
 
 function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-export function ArticleEditor({ existing, onClose, onSaved }: ArticleEditorProps) {
+export function ArticleEditor({ existing, onClose, onSaved, onDraftCreated }: ArticleEditorProps) {
   const [titre, setTitre] = useState(existing?.title ?? "");
   const [chapo, setChapo] = useState(existing?.excerpt ?? "");
   const [date, setDate] = useState(existing?.date.slice(0, 10) ?? todayIso());
@@ -26,6 +27,7 @@ export function ArticleEditor({ existing, onClose, onSaved }: ArticleEditorProps
   const [motCount, setMotCount] = useState(0);
   const [image, setImage] = useState<File | null>(null);
   const [showPublish, setShowPublish] = useState(false);
+  const [savedId, setSavedId] = useState<string | null>(existing?.id ?? null);
 
   return (
     <div className="fixed inset-0 z-95 flex flex-col bg-surface-page">
@@ -95,9 +97,12 @@ export function ArticleEditor({ existing, onClose, onSaved }: ArticleEditorProps
         {showPublish ? (
           <PublishPopover
             existing={existing}
+            savedId={savedId}
+            onSavedIdChange={setSavedId}
             fields={{ title: titre, excerpt: chapo, content: corps, date }}
             image={image}
             onClose={() => setShowPublish(false)}
+            onDraftCreated={onDraftCreated}
             onPublished={(actualite) => {
               setShowPublish(false);
               onSaved(actualite);

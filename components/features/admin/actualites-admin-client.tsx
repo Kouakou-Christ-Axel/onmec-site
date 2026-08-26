@@ -52,14 +52,22 @@ export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClie
     setShowEditor(true);
   }
 
-  function handleSaved(actualite: ActualiteAdmin) {
+  function upsertActualite(actualite: ActualiteAdmin) {
     setActualites((prev) => {
       const exists = prev.some((item) => item.id === actualite.id);
       return exists
         ? prev.map((item) => (item.id === actualite.id ? actualite : item))
         : [actualite, ...prev];
     });
+  }
+
+  function handleSaved(actualite: ActualiteAdmin) {
+    upsertActualite(actualite);
     setShowEditor(false);
+  }
+
+  function handleDraftCreated(actualite: ActualiteAdmin) {
+    upsertActualite(actualite);
   }
 
   function handleTogglePublication(actualite: ActualiteAdmin) {
@@ -181,7 +189,12 @@ export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClie
       </div>
 
       {showEditor ? (
-        <ArticleEditor existing={editing} onClose={() => setShowEditor(false)} onSaved={handleSaved} />
+        <ArticleEditor
+          existing={editing}
+          onClose={() => setShowEditor(false)}
+          onSaved={handleSaved}
+          onDraftCreated={handleDraftCreated}
+        />
       ) : null}
     </div>
   );

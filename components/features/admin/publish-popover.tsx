@@ -15,13 +15,25 @@ import type { ActualiteAdmin } from "@/features/actualites-admin/types/actualite
 
 interface PublishPopoverProps {
   existing: ActualiteAdmin | null;
+  savedId: string | null;
+  onSavedIdChange: (id: string) => void;
   fields: { title: string; excerpt: string; content: string; date: string };
   image: File | null;
   onClose: () => void;
   onPublished: (actualite: ActualiteAdmin) => void;
+  onDraftCreated: (actualite: ActualiteAdmin) => void;
 }
 
-export function PublishPopover({ existing, fields, image, onClose, onPublished }: PublishPopoverProps) {
+export function PublishPopover({
+  existing,
+  savedId,
+  onSavedIdChange,
+  fields,
+  image,
+  onClose,
+  onPublished,
+  onDraftCreated,
+}: PublishPopoverProps) {
   const categoriesQuery = useCategories();
   const createMutation = useCreateActualite();
   const updateMutation = useUpdateActualite();
@@ -29,7 +41,6 @@ export function PublishPopover({ existing, fields, image, onClose, onPublished }
 
   const [categorieId, setCategorieId] = useState(existing?.categorie?.id ?? "");
   const [error, setError] = useState<string | null>(null);
-  const [savedId, setSavedId] = useState<string | null>(existing?.id ?? null);
 
   const categories = categoriesQuery.data ?? [];
   const submitting = createMutation.isPending || updateMutation.isPending || publierMutation.isPending;
@@ -42,14 +53,15 @@ export function PublishPopover({ existing, fields, image, onClose, onPublished }
     }
     setError(null);
     try {
-      const formData = buildActualiteFormData(fields, categorieId, image);
+      const formData = buildActualiteFormData(parsed.data, categorieId, image);
       let id = savedId;
       if (id) {
         await updateMutation.mutateAsync({ id, formData });
       } else {
         const created = await createMutation.mutateAsync(formData);
         id = created.id;
-        setSavedId(id);
+        onSavedIdChange(id);
+        onDraftCreated(created);
       }
       const published = await publierMutation.mutateAsync(id);
       onPublished(published);
@@ -70,7 +82,11 @@ export function PublishPopover({ existing, fields, image, onClose, onPublished }
         <span className="text-[0.6875rem] font-semibold tracking-[0.13em] text-muted-foreground uppercase">
           Publication
         </span>
-        {error ? <Alert tone="danger">{error}</Alert> : null}
+        {error || categoriesQuery.isError ? (
+          <Alert tone="danger">
+            {error ?? "Impossible de charger les catégories. Réessayez."}
+          </Alert>
+        ) : null}
         <Field label="Rubrique">
           <Select
             value={categorieId}
