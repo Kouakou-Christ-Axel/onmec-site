@@ -1,5 +1,6 @@
-import type { ButtonHTMLAttributes } from "react";
+import type { ButtonHTMLAttributes, Ref } from "react";
 import type { LucideIcon } from "lucide-react";
+import { cn } from "@/components/ui/cn";
 
 type IconButtonVariant = "ghost" | "outline" | "primary" | "deep" | "invert";
 type IconButtonSize = "sm" | "md" | "lg";
@@ -23,6 +24,7 @@ interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   label: string;
   variant?: IconButtonVariant;
   size?: IconButtonSize;
+  ref?: Ref<HTMLButtonElement>;
 }
 
 export function IconButton({
@@ -30,14 +32,21 @@ export function IconButton({
   label,
   variant = "ghost",
   size = "md",
-  className = "",
+  className,
   ...props
 }: IconButtonProps) {
   return (
     <button
       aria-label={label}
       title={label}
-      className={`inline-grid place-items-center rounded-sm transition-colors disabled:pointer-events-none disabled:opacity-45 ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
+      className={cn(
+        "inline-grid place-items-center rounded-sm transition-colors duration-150 ease-out",
+        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
+        "disabled:pointer-events-none disabled:opacity-45",
+        VARIANT_CLASSES[variant],
+        SIZE_CLASSES[size],
+        className,
+      )}
       {...props}
     >
       <Icon size={size === "lg" ? 20 : 16} />

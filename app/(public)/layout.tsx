@@ -10,6 +10,12 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
       <SiteHeader />
       {children}
       <SiteFooter />
+      {/*
+        Cible des portails Radix côté public. Doit rester DANS [data-mec-public] : les tokens du
+        thème sombre sont des custom properties redéfinies sur cet ancêtre, elles s'héritent.
+        Portalisé sur `body`, un overlay retomberait sur les valeurs claires.
+      */}
+      <div id="mec-overlay-root" />
     </div>
   );
 }

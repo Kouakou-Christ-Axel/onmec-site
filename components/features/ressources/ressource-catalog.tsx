@@ -121,12 +121,10 @@ export function RessourceCatalog({ ressources }: { ressources: Ressource[] }) {
 
       <RessourcePagination page={currentPage} totalPages={totalPages} onChange={setPage} />
 
-      {previewRessource ? (
-        <RessourcePreviewOverlay
-          ressource={previewRessource}
-          onClose={() => setPreviewSlug(null)}
-        />
-      ) : null}
+      <RessourcePreviewOverlay
+        ressource={previewRessource ?? null}
+        onClose={() => setPreviewSlug(null)}
+      />
     </>
   );
 }

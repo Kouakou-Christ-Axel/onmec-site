@@ -141,6 +141,17 @@
   --text-stat--letter-spacing: -0.03em;
   --text-label: 0.75rem;
   --text-label--line-height: 1.2;
+
+  /* Animations d'overlay — entrée + sortie. Durées de sortie plus courtes que l'entrée.
+     Consommées via data-[state=open]:animate-mec-rise / data-[state=closed]:animate-mec-sink. */
+  --animate-mec-rise: mecRise 220ms var(--ease-entrance) both;
+  --animate-mec-sink: mecSink 150ms var(--ease-out) both;
+  --animate-mec-drawer: mecDrawer 260ms var(--ease-entrance) both;
+  --animate-mec-drawer-out: mecDrawerOut 190ms var(--ease-out) both;
+  --animate-mec-fade: mecFade 200ms var(--ease-out) both;
+  --animate-mec-fade-out: mecFadeOut 150ms var(--ease-out) both;
+  --animate-mec-pop: mecPop 160ms var(--ease-entrance) both;
+  --animate-mec-pop-out: mecPopOut 110ms var(--ease-out) both;
 }
 
 :root {
@@ -172,6 +183,84 @@
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+/* Pendants de sortie de mecRise/mecDrawer. Radix retarde le démontage tant qu'une animation
+   CSS tourne : sans ces keyframes, les overlays disparaissent d'un coup. */
+@keyframes mecSink {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+}
+
+@keyframes mecDrawerOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(28px);
+    opacity: 0;
+  }
+}
+
+@keyframes mecFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes mecFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Popover : s'ouvre depuis son ancre via --radix-popover-content-transform-origin. */
+@keyframes mecPop {
+  from {
+    transform: scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes mecPopOut {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.96);
+    opacity: 0;
+  }
+}
+
+/* Garde-fou global. Reveal gère déjà le cas en JS, mais aucune des animations CSS
+   (overlays, survols) n'était couverte. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 

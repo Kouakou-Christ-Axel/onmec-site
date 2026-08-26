@@ -1,5 +1,6 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes, ReactNode, Ref } from "react";
 import type { LucideIcon } from "lucide-react";
+import { cn } from "@/components/ui/cn";
 
 type ButtonVariant = "primary" | "secondary" | "ghost" | "deep" | "invert" | "outline-invert";
 type ButtonSize = "sm" | "md" | "lg";
@@ -27,6 +28,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: LucideIcon;
   full?: boolean;
   children: ReactNode;
+  /** Requis pour que `Popover.Trigger asChild` puisse ancrer son contenu sur ce bouton. */
+  ref?: Ref<HTMLButtonElement>;
 }
 
 export function Button({
@@ -34,13 +37,21 @@ export function Button({
   size = "md",
   icon: Icon,
   full = false,
-  className = "",
+  className,
   children,
   ...props
 }: ButtonProps) {
   return (
     <button
-      className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm font-semibold tracking-[-0.005em] transition-colors disabled:pointer-events-none disabled:opacity-45 ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${full ? "w-full" : ""} ${className}`}
+      className={cn(
+        "inline-flex items-center justify-center whitespace-nowrap rounded-sm font-semibold tracking-[-0.005em] transition-colors duration-150 ease-out",
+        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
+        "disabled:pointer-events-none disabled:opacity-45",
+        VARIANT_CLASSES[variant],
+        SIZE_CLASSES[size],
+        full && "w-full",
+        className,
+      )}
       {...props}
     >
       {Icon ? <Icon size={ICON_SIZE[size]} /> : null}
