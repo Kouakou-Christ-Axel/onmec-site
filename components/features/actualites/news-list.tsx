@@ -76,6 +76,7 @@ export function NewsList({ articles, categories, meta, categorieActive }: NewsLi
               alt=""
               ratio="16/9"
               duotone
+              sizes="(min-width: 1024px) 460px, 100vw"
               placeholderLabel="Photo de l’activité à fournir"
               className="transition-shadow duration-150 ease-out group-hover:shadow-stamp-sm"
             />

@@ -58,6 +58,8 @@ export function ArticleHeader({ article }: { article: Article }) {
           alt=""
           ratio="21/9"
           duotone
+          sizes="(min-width: 1280px) 1216px, 100vw"
+          priority
           placeholderLabel="Photo d’en-tête à fournir"
         />
       </div>

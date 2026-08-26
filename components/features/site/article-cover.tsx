@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { PhotoPlaceholder } from "@/components/features/site/photo-placeholder";
 import { cn } from "@/components/ui/cn";
 
@@ -8,15 +9,22 @@ interface ArticleCoverProps {
   ratio?: string;
   duotone?: boolean;
   placeholderLabel?: string;
+  /** Largeur rendue selon le point de rupture — sert au choix de la variante par l'optimiseur. */
+  sizes?: string;
+  priority?: boolean;
   className?: string;
 }
 
 /**
  * Couverture d'article : vraie image quand l'API en fournit une, repli sur le placeholder sinon.
  *
- * `<img>` natif plutôt que `next/image` : les images viennent du domaine de l'API, qui diffère
- * entre local et production, et aucun `images.remotePatterns` n'est déclaré dans next.config.ts.
- * Passer par l'optimiseur demanderait cette configuration — à faire séparément.
+ * `next/image` avec `fill` plutôt que des dimensions fixes : les ratios varient d'un emplacement à
+ * l'autre (3/2 en carte, 16/9 à la une, 21/9 en tête d'article) et l'API ne renvoie pas les
+ * dimensions de l'image. Le conteneur porte donc le ratio.
+ *
+ * L'optimisation passe par `/_next/image`, branché sur le binding Cloudflare Images
+ * (`imagesOptimizer()` dans vite.config.ts) : redimensionnement et AVIF/WebP à l'edge. L'hôte de
+ * l'API doit être listé dans `images.remotePatterns` (next.config.ts), sinon l'optimisation échoue.
  */
 export function ArticleCover({
   src,
@@ -24,6 +32,8 @@ export function ArticleCover({
   ratio = "3/2",
   duotone = false,
   placeholderLabel,
+  sizes = "(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw",
+  priority = false,
   className,
 }: ArticleCoverProps) {
   if (!src) {
@@ -38,12 +48,11 @@ export function ArticleCover({
   }
 
   return (
-    <img
-      src={src}
-      alt={alt}
-      loading="lazy"
+    <div
       style={{ aspectRatio: ratio }}
-      className={cn("w-full rounded-sm object-cover", className)}
-    />
+      className={cn("relative w-full overflow-hidden rounded-sm", className)}
+    >
+      <Image src={src} alt={alt} fill sizes={sizes} priority={priority} className="object-cover" />
+    </div>
   );
 }
