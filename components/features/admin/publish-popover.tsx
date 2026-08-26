@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Select } from "@/components/ui/select";
 import { Field } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert } from "@/components/ui/alert";
 import { useCategories } from "@/features/actualites-admin/queries/use-categories";
@@ -11,17 +12,22 @@ import { useUpdateActualite } from "@/features/actualites-admin/mutations/use-up
 import { usePublierActualite } from "@/features/actualites-admin/mutations/use-publier-actualite";
 import { buildActualiteFormData } from "@/features/actualites-admin/lib/build-actualite-form-data";
 import { actualiteFormSchema } from "@/features/actualites-admin/schemas/actualite-form-schema";
+import { MAX_IMAGE_LABEL } from "@/features/actualites-admin/lib/image-limits";
+import { ApiError } from "@/lib/api-error";
 import type { ActualiteAdmin } from "@/features/actualites-admin/types/actualite-admin";
+
+function todayIso(): string {
+  return new Date().toISOString().slice(0, 10);
+}
 
 interface PublishPopoverProps {
   existing: ActualiteAdmin | null;
   savedId: string | null;
   onSavedIdChange: (id: string) => void;
-  fields: { title: string; excerpt: string; content: string; date: string };
+  fields: { title: string; excerpt: string; content: string };
   image: File | null;
   onClose: () => void;
   onPublished: (actualite: ActualiteAdmin) => void;
-  onDraftCreated: (actualite: ActualiteAdmin) => void;
 }
 
 export function PublishPopover({
@@ -32,7 +38,6 @@ export function PublishPopover({
   image,
   onClose,
   onPublished,
-  onDraftCreated,
 }: PublishPopoverProps) {
   const categoriesQuery = useCategories();
   const createMutation = useCreateActualite();
@@ -40,13 +45,15 @@ export function PublishPopover({
   const publierMutation = usePublierActualite();
 
   const [categorieId, setCategorieId] = useState(existing?.categorie?.id ?? "");
+  const [date, setDate] = useState(existing?.date.slice(0, 10) ?? todayIso());
   const [error, setError] = useState<string | null>(null);
 
   const categories = categoriesQuery.data ?? [];
-  const submitting = createMutation.isPending || updateMutation.isPending || publierMutation.isPending;
+  const submitting =
+    createMutation.isPending || updateMutation.isPending || publierMutation.isPending;
 
   async function handlePublish() {
-    const parsed = actualiteFormSchema.safeParse({ ...fields, categorieId });
+    const parsed = actualiteFormSchema.safeParse({ ...fields, date, categorieId });
     if (!parsed.success) {
       setError(parsed.error.issues[0]?.message ?? "Formulaire invalide.");
       return;
@@ -61,12 +68,15 @@ export function PublishPopover({
         const created = await createMutation.mutateAsync(formData);
         id = created.id;
         onSavedIdChange(id);
-        onDraftCreated(created);
       }
       const published = await publierMutation.mutateAsync(id);
       onPublished(published);
-    } catch {
-      setError("Une erreur est survenue. Réessayez.");
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 413) {
+        setError(`Image de couverture trop lourde (maximum ${MAX_IMAGE_LABEL}).`);
+      } else {
+        setError("Une erreur est survenue. Réessayez.");
+      }
     }
   }
 
@@ -83,9 +93,7 @@ export function PublishPopover({
           Publication
         </span>
         {error || categoriesQuery.isError ? (
-          <Alert tone="danger">
-            {error ?? "Impossible de charger les catégories. Réessayez."}
-          </Alert>
+          <Alert tone="danger">{error ?? "Impossible de charger les catégories. Réessayez."}</Alert>
         ) : null}
         <Field label="Rubrique">
           <Select
@@ -101,10 +109,18 @@ export function PublishPopover({
             ))}
           </Select>
         </Field>
+        <Field label="Date de publication">
+          <Input type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+        </Field>
         <p className="text-xs leading-relaxed text-muted-foreground">
           Les membres de l’app seront notifiés automatiquement à la publication.
         </p>
-        <Button variant="primary" full disabled={submitting || !categorieId} onClick={handlePublish}>
+        <Button
+          variant="primary"
+          full
+          disabled={submitting || !categorieId}
+          onClick={handlePublish}
+        >
           {submitting ? "Publication..." : "Publier l’article"}
         </Button>
         <span className="text-xs leading-relaxed text-muted-foreground">

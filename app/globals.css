@@ -282,3 +282,14 @@ html[data-mec-mode="auto"] [data-mec-icon="auto"],
 html:not([data-mec-mode]) [data-mec-icon="auto"] {
   display: inline-flex;
 }
+
+/* Éditeur d'article (Tiptap) : le placeholder n'est fourni par l'extension
+   qu'en tant qu'attribut data-placeholder — le rendu visuel via ::before
+   reste à la charge du consommateur, non inclus dans le CSS de l'extension. */
+.tiptap p.is-editor-empty:first-child::before {
+  float: left;
+  height: 0;
+  color: var(--color-muted-foreground);
+  content: attr(data-placeholder);
+  pointer-events: none;
+}

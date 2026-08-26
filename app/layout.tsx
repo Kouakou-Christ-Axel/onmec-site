@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { Toaster } from "sonner";
 import { QueryProvider } from "@/components/providers/query-provider";
 import "./globals.css";
+import "sonner/dist/styles.css";
 
 export const metadata: Metadata = {
   title: "MEC — Mouvement pour l'Éducation à la Citoyenneté",
@@ -37,6 +39,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body className="bg-n-50 font-sans text-text-body antialiased">
         <QueryProvider>{children}</QueryProvider>
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );

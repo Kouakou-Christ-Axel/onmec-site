@@ -1,16 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { PenLine, Pencil, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { IconButton } from "@/components/ui/icon-button";
 import { Tag } from "@/components/ui/tag";
-import { ArticleEditor } from "@/components/features/admin/article-editor";
 import { useAdminShell } from "@/components/features/admin/admin-shell-context";
 import { usePublierActualite } from "@/features/actualites-admin/mutations/use-publier-actualite";
 import { useDepublierActualite } from "@/features/actualites-admin/mutations/use-depublier-actualite";
 import { useDeleteActualite } from "@/features/actualites-admin/mutations/use-delete-actualite";
-import type { ActualiteAdmin, StatutActualite } from "@/features/actualites-admin/types/actualite-admin";
+import type {
+  ActualiteAdmin,
+  StatutActualite,
+} from "@/features/actualites-admin/types/actualite-admin";
 
 const STATUT_LABELS: Record<StatutActualite, string> = {
   BROUILLON: "Brouillon",
@@ -34,41 +38,12 @@ interface ActualitesAdminClientProps {
 
 export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClientProps) {
   const shell = useAdminShell();
+  const router = useRouter();
   const [actualites, setActualites] = useState(initialActualites);
-  const [editing, setEditing] = useState<ActualiteAdmin | null>(null);
-  const [showEditor, setShowEditor] = useState(false);
 
   const publier = usePublierActualite();
   const depublier = useDepublierActualite();
   const removeMutation = useDeleteActualite();
-
-  function openCreate() {
-    setEditing(null);
-    setShowEditor(true);
-  }
-
-  function openEdit(actualite: ActualiteAdmin) {
-    setEditing(actualite);
-    setShowEditor(true);
-  }
-
-  function upsertActualite(actualite: ActualiteAdmin) {
-    setActualites((prev) => {
-      const exists = prev.some((item) => item.id === actualite.id);
-      return exists
-        ? prev.map((item) => (item.id === actualite.id ? actualite : item))
-        : [actualite, ...prev];
-    });
-  }
-
-  function handleSaved(actualite: ActualiteAdmin) {
-    upsertActualite(actualite);
-    setShowEditor(false);
-  }
-
-  function handleDraftCreated(actualite: ActualiteAdmin) {
-    upsertActualite(actualite);
-  }
 
   function handleTogglePublication(actualite: ActualiteAdmin) {
     const mutation = actualite.statut === "PUBLIEE" ? depublier : publier;
@@ -77,7 +52,7 @@ export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClie
         setActualites((prev) => prev.map((item) => (item.id === updated.id ? updated : item)));
       },
       onError: () => {
-        window.alert("Une erreur est survenue. Réessayez.");
+        toast.error("Une erreur est survenue. Réessayez.");
       },
     });
   }
@@ -89,7 +64,7 @@ export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClie
         setActualites((prev) => prev.filter((item) => item.id !== actualite.id));
       },
       onError: () => {
-        window.alert("Une erreur est survenue. Réessayez.");
+        toast.error("Une erreur est survenue. Réessayez.");
       },
     });
   }
@@ -109,7 +84,11 @@ export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClie
           </p>
         </div>
         {shell.canEdito ? (
-          <Button variant="primary" icon={PenLine} onClick={openCreate}>
+          <Button
+            variant="primary"
+            icon={PenLine}
+            onClick={() => router.push("/admin/actualites/nouveau")}
+          >
             Nouvel article
           </Button>
         ) : null}
@@ -129,7 +108,8 @@ export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClie
             const togglePending =
               (publier.isPending && publier.variables === actualite.id) ||
               (depublier.isPending && depublier.variables === actualite.id);
-            const deletePending = removeMutation.isPending && removeMutation.variables === actualite.id;
+            const deletePending =
+              removeMutation.isPending && removeMutation.variables === actualite.id;
             const rowPending = togglePending || deletePending;
 
             return (
@@ -158,7 +138,7 @@ export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClie
                         label="Modifier"
                         size="sm"
                         disabled={rowPending}
-                        onClick={() => openEdit(actualite)}
+                        onClick={() => router.push(`/admin/actualites/${actualite.id}/modifier`)}
                       />
                       <Button
                         size="sm"
@@ -187,15 +167,6 @@ export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClie
           })}
         </div>
       </div>
-
-      {showEditor ? (
-        <ArticleEditor
-          existing={editing}
-          onClose={() => setShowEditor(false)}
-          onSaved={handleSaved}
-          onDraftCreated={handleDraftCreated}
-        />
-      ) : null}
     </div>
   );
 }

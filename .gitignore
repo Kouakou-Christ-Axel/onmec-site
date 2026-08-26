@@ -7,3 +7,4 @@ next-env.d.ts
 .vinext/
 .wrangler/
 *.tsbuildinfo
+.claude/worktrees/

@@ -1,9 +1,20 @@
 "use client";
 
+import { useId } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
+import { FloatingMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
-import { Bold, Italic, Heading2, List, ListOrdered, Link as LinkIcon } from "lucide-react";
-import { IconButton } from "@/components/ui/icon-button";
+import Image from "@tiptap/extension-image";
+import { Placeholder } from "@tiptap/extensions";
+import DragHandle from "@tiptap/extension-drag-handle-react";
+import { GripVertical, Plus } from "lucide-react";
+import { toast } from "sonner";
+import { useUploadActualiteImage } from "@/features/actualites-admin/mutations/use-upload-actualite-image";
+import { ApiError } from "@/lib/api-error";
+import { MAX_IMAGE_BYTES, MAX_IMAGE_LABEL } from "@/features/actualites-admin/lib/image-limits";
+import { convertToWebp } from "@/features/actualites-admin/lib/convert-to-webp";
+import { SlashCommand } from "@/features/actualites-admin/lib/slash-command-extension";
+import { ArticleFormatMenu } from "@/components/features/admin/article-format-menu";
 
 interface ArticleBodyEditorProps {
   initialContent?: string;
@@ -11,8 +22,18 @@ interface ArticleBodyEditorProps {
 }
 
 export function ArticleBodyEditor({ initialContent = "", onChange }: ArticleBodyEditorProps) {
+  const imageInputId = useId();
+  const uploadImage = useUploadActualiteImage();
+
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      Image,
+      Placeholder.configure({
+        placeholder: "Commencez à écrire votre article…",
+      }),
+      SlashCommand,
+    ],
     content: initialContent,
     immediatelyRender: false,
     onCreate: ({ editor }) => onChange(editor.getHTML(), editor.getText()),
@@ -26,61 +47,75 @@ export function ArticleBodyEditor({ initialContent = "", onChange }: ArticleBody
 
   if (!editor) return null;
 
-  function setLink() {
-    const url = window.prompt("URL du lien");
-    if (url) {
-      editor?.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
-    } else {
-      editor?.chain().focus().unsetLink().run();
+  async function handleImageFile(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file || !editor) return;
+
+    let webpFile: File;
+    try {
+      webpFile = await convertToWebp(file);
+    } catch {
+      toast.error("Impossible de traiter cette image. Réessayez.");
+      return;
     }
+
+    if (webpFile.size > MAX_IMAGE_BYTES) {
+      toast.error(
+        `Image trop lourde (maximum ${MAX_IMAGE_LABEL}). Choisissez une image plus légère.`,
+      );
+      return;
+    }
+    const formData = new FormData();
+    formData.set("image", webpFile);
+    uploadImage.mutate(formData, {
+      onSuccess: ({ url }) => {
+        editor.chain().focus().setImage({ src: url }).run();
+      },
+      onError: (error) => {
+        if (error instanceof ApiError && error.status === 413) {
+          toast.error(
+            `Image trop lourde (maximum ${MAX_IMAGE_LABEL}). Choisissez une image plus légère.`,
+          );
+        } else {
+          toast.error("Impossible d’ajouter l’image. Réessayez.");
+        }
+      },
+    });
   }
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center gap-1 border-b border-border-subtle pb-2.5">
-        <IconButton
-          icon={Bold}
-          label="Gras"
-          size="sm"
-          variant={editor.isActive("bold") ? "outline" : "ghost"}
-          onClick={() => editor.chain().focus().toggleBold().run()}
-        />
-        <IconButton
-          icon={Italic}
-          label="Italique"
-          size="sm"
-          variant={editor.isActive("italic") ? "outline" : "ghost"}
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-        />
-        <IconButton
-          icon={Heading2}
-          label="Titre de section"
-          size="sm"
-          variant={editor.isActive("heading", { level: 2 }) ? "outline" : "ghost"}
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        />
-        <IconButton
-          icon={List}
-          label="Liste à puces"
-          size="sm"
-          variant={editor.isActive("bulletList") ? "outline" : "ghost"}
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-        />
-        <IconButton
-          icon={ListOrdered}
-          label="Liste numérotée"
-          size="sm"
-          variant={editor.isActive("orderedList") ? "outline" : "ghost"}
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        />
-        <IconButton
-          icon={LinkIcon}
-          label="Lien"
-          size="sm"
-          variant={editor.isActive("link") ? "outline" : "ghost"}
-          onClick={setLink}
-        />
-      </div>
+      <ArticleFormatMenu editor={editor} />
+
+      <FloatingMenu editor={editor}>
+        <label
+          htmlFor={imageInputId}
+          title="Ajouter une image"
+          className={`inline-grid h-8 w-8 cursor-pointer place-items-center rounded-sm border border-ink/24 bg-transparent text-ink transition-colors hover:border-ink hover:bg-n-100 ${
+            uploadImage.isPending ? "pointer-events-none opacity-45" : ""
+          }`}
+        >
+          <span className="sr-only">Ajouter une image</span>
+          <Plus size={16} />
+        </label>
+      </FloatingMenu>
+
+      <input
+        id={imageInputId}
+        type="file"
+        accept="image/*"
+        disabled={uploadImage.isPending}
+        className="hidden"
+        onChange={handleImageFile}
+      />
+
+      <DragHandle editor={editor}>
+        <div className="inline-grid h-6 w-6 cursor-grab place-items-center rounded-sm text-muted-foreground hover:bg-n-100 active:cursor-grabbing">
+          <GripVertical size={14} />
+        </div>
+      </DragHandle>
+
       <EditorContent editor={editor} />
     </div>
   );
