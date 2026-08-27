@@ -252,13 +252,22 @@ interface ListLibrairiePublicParams {
  * `auth: false` volontairement — sans lui `apiFetch` appelle `cookies()`, ce qui rendrait la page
  * dynamique alors qu'elle est publique et cacheable (meme raison que `list-actualites.ts`).
  */
-export function listLibrairiePublic({
+export async function listLibrairiePublic({
   categorie,
   limit = CATALOG_LIMIT,
 }: ListLibrairiePublicParams = {}): Promise<PublicLibrairieListResponse> {
   const query = new URLSearchParams({ limit: String(limit) });
   if (categorie) query.set("categorie", categorie);
-  return apiFetch<PublicLibrairieListResponse>(`/librairie/public?${query}`, { auth: false });
+  const response = await apiFetch<PublicLibrairieListResponse>(`/librairie/public?${query}`, {
+    auth: false,
+  });
+  // Normalisation defensive : le backend peut omettre pageCount plutot que de le poser a `null`
+  // (champ pas encore livre au moment de l'implementation) — sans ce mapping, `undefined` passerait
+  // le check `!== null` cote UI et s'afficherait litteralement comme "undefined p.".
+  return {
+    ...response,
+    data: response.data.map((doc) => ({ ...doc, pageCount: doc.pageCount ?? null })),
+  };
 }
 ```
 
@@ -277,7 +286,10 @@ import type { PublicLibrairieDocument } from "@/features/librairie/types/documen
  */
 export async function getLibrairiePublic(id: string): Promise<PublicLibrairieDocument | null> {
   try {
-    return await apiFetch<PublicLibrairieDocument>(`/librairie/public/${id}`, { auth: false });
+    const document = await apiFetch<PublicLibrairieDocument>(`/librairie/public/${id}`, {
+      auth: false,
+    });
+    return { ...document, pageCount: document.pageCount ?? null };
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) return null;
     throw error;
