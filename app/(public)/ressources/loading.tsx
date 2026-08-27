@@ -40,7 +40,7 @@ export default function Loading() {
 
           <div className="mt-9 flex flex-col">
             <div className="flex gap-4 border-b border-ink/10 py-3">
-              {Array.from({ length: 6 }).map((_, i) => (
+              {Array.from({ length: 5 }).map((_, i) => (
                 <Skeleton key={i} className="h-3 flex-1" />
               ))}
             </div>
@@ -48,7 +48,6 @@ export default function Loading() {
               <div key={i} className="flex items-center gap-4 border-b border-ink/10 py-4">
                 <Skeleton className="h-16 w-14 rounded-xs" />
                 <Skeleton className="h-4 flex-[3]" />
-                <Skeleton className="h-4 flex-1" />
                 <Skeleton className="h-4 flex-1" />
                 <Skeleton className="h-8 w-20 rounded-sm" />
               </div>

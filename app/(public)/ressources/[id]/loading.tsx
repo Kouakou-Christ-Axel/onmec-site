@@ -12,7 +12,7 @@ export default function Loading() {
             <Skeleton className="h-12 w-full max-w-[560px]" />
             <Skeleton className="h-5 w-full max-w-[480px]" />
             <div className="mt-4 grid grid-cols-2 gap-6 border-y border-ink/10 py-6 sm:grid-cols-4">
-              {Array.from({ length: 4 }).map((_, i) => (
+              {Array.from({ length: 2 }).map((_, i) => (
                 <div key={i} className="flex flex-col gap-2">
                   <Skeleton className="h-6 w-24" />
                   <Skeleton className="h-3 w-20" />
@@ -20,7 +20,6 @@ export default function Loading() {
               ))}
             </div>
             <Skeleton className="mt-2 h-[54px] w-56 rounded-sm" />
-            <Skeleton className="h-4 w-full max-w-[420px]" />
           </div>
         </div>
       </main>
