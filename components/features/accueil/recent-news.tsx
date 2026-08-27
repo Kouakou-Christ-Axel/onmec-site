@@ -4,7 +4,13 @@ import { ArticleCard } from "@/components/features/site/article-card";
 import { Reveal } from "@/components/features/site/reveal";
 
 export async function RecentNews() {
-  const { data: recent } = await listActualites({ limit: 3 });
+  let recent;
+  try {
+    ({ data: recent } = await listActualites({ limit: 3 }));
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 
   return (
     <section className="border-y border-ink/10 bg-surface-card py-16 sm:py-20 lg:py-28">
