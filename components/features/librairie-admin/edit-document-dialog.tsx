@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { X } from "lucide-react";
 import { Dialog, DialogTitle, useLastNonNull } from "@/components/ui/dialog";
 import { IconButton } from "@/components/ui/icon-button";
@@ -24,24 +24,42 @@ export function EditDocumentDialog({
   onUpdated,
 }: EditDocumentDialogProps) {
   const shown = useLastNonNull(document);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [categorie, setCategorie] = useState("");
-  const updateDocument = useUpdateDocument();
-
-  // Re-initialise les champs a chaque nouveau document edite — comportement attendu d'un formulaire
-  // controle par une prop externe, pas une derivation a bannir.
-  useEffect(() => {
-    if (!document) return;
-    setTitle(document.title);
-    setDescription(document.description ?? "");
-    setCategorie(document.categorie ?? "");
-  }, [document]);
-
   if (!shown) return null;
 
+  return (
+    <Dialog open={document !== null} onClose={onClose}>
+      {/* key force le remount (donc la reinitialisation de l'etat local) a chaque nouveau
+          document — evite le useEffect de synchronisation d'etat depuis une prop, cf. React
+          docs "You Might Not Need an Effect". */}
+      <EditDocumentForm
+        key={shown.id}
+        document={shown}
+        categories={categories}
+        onClose={onClose}
+        onUpdated={onUpdated}
+      />
+    </Dialog>
+  );
+}
+
+function EditDocumentForm({
+  document,
+  categories,
+  onClose,
+  onUpdated,
+}: {
+  document: AdminLibrairieDocument;
+  categories: string[];
+  onClose: () => void;
+  onUpdated: (document: AdminLibrairieDocument) => void;
+}) {
+  const [title, setTitle] = useState(document.title);
+  const [description, setDescription] = useState(document.description ?? "");
+  const [categorie, setCategorie] = useState(document.categorie ?? "");
+  const updateDocument = useUpdateDocument();
+
   function submit() {
-    if (!document || !title.trim()) return;
+    if (!title.trim()) return;
     updateDocument.mutate(
       { id: document.id, title: title.trim(), description, categorie },
       { onSuccess: (updated) => onUpdated(updated) },
@@ -51,11 +69,11 @@ export function EditDocumentDialog({
   const pending = updateDocument.isPending;
 
   return (
-    <Dialog open={document !== null} onClose={onClose}>
+    <>
       <div className="flex items-start justify-between gap-3.5 rounded-t-[10px] border-b border-border-subtle bg-surface-card px-5.5 py-5">
         <DialogTitle asChild>
           <span className="text-xl font-semibold tracking-[-0.026em] text-ink">
-            Modifier « {shown.title} »
+            Modifier « {document.title} »
           </span>
         </DialogTitle>
         <IconButton icon={X} label="Fermer" onClick={onClose} />
@@ -96,6 +114,6 @@ export function EditDocumentDialog({
           Annuler
         </Button>
       </div>
-    </Dialog>
+    </>
   );
 }
