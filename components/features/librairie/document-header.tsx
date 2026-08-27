@@ -3,6 +3,7 @@ import { FileText, Link2, Share2 } from "lucide-react";
 import type { PublicLibrairieDocument } from "@/features/librairie/types/document";
 import { DocumentCover } from "@/components/features/librairie/document-cover";
 import { DocumentDownloadLink } from "@/components/features/librairie/document-download-link";
+import { formatArticleDate } from "@/features/actualites/lib/format-article-date";
 
 const SHARE_LINKS = [
   { icon: Share2, label: "Partager sur Facebook" },
@@ -56,7 +57,7 @@ export function DocumentHeader({ document }: { document: PublicLibrairieDocument
               <div className="grid grid-cols-2 gap-6 border-y border-ink/10 py-6 sm:grid-cols-4">
                 <div>
                   <div className="text-lg font-semibold tabular-nums text-ink">
-                    {new Date(document.uploadedAt).toLocaleDateString("fr-FR")}
+                    {formatArticleDate(document.uploadedAt)}
                   </div>
                   <div className="mt-1 text-xs text-text-muted">Publié le</div>
                 </div>

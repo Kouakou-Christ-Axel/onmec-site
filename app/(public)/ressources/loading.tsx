@@ -25,7 +25,7 @@ export default function Loading() {
         </section>
 
         <div className="mx-auto max-w-[1280px] px-5 pb-14 sm:px-8 sm:pb-18 lg:px-16 lg:pb-24">
-          {/* Barre d'outils : recherche, pastilles de thème, puis les trois sélecteurs. */}
+          {/* Barre d'outils : recherche, pastilles de thème, puis le sélecteur de tri. */}
           <div className="flex flex-wrap items-center gap-3">
             <Skeleton className="h-11 w-full max-w-[285px] rounded-full" />
             {Array.from({ length: 6 }).map((_, i) => (
@@ -33,9 +33,7 @@ export default function Loading() {
             ))}
           </div>
           <div className="mt-4 flex flex-wrap items-center gap-3">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <Skeleton key={i} className="h-11 w-40 rounded-sm" />
-            ))}
+            <Skeleton className="h-11 w-40 rounded-sm" />
           </div>
 
           <div className="mt-9 flex flex-col">
@@ -48,6 +46,7 @@ export default function Loading() {
               <div key={i} className="flex items-center gap-4 border-b border-ink/10 py-4">
                 <Skeleton className="h-16 w-14 rounded-xs" />
                 <Skeleton className="h-4 flex-[3]" />
+                <Skeleton className="h-4 flex-1" />
                 <Skeleton className="h-4 flex-1" />
                 <Skeleton className="h-8 w-20 rounded-sm" />
               </div>

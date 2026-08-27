@@ -87,6 +87,12 @@ export function LibrairieCatalog({
             ))}
           </div>
         </>
+      ) : documents.length === 0 ? (
+        <div className="mt-9 flex flex-col items-start gap-3 rounded-md border border-dashed border-ink/20 bg-surface-card p-8">
+          <p className="text-lg font-semibold text-ink">
+            Aucun document n&apos;est disponible pour le moment.
+          </p>
+        </div>
       ) : (
         <div className="mt-9 flex flex-col items-start gap-3 rounded-md border border-dashed border-ink/20 bg-surface-card p-8">
           <p className="text-lg font-semibold text-ink">Aucun guide ne correspond.</p>

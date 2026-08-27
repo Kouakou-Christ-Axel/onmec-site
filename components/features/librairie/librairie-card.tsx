@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { PublicLibrairieDocument } from "@/features/librairie/types/document";
 import { DocumentCover } from "@/components/features/librairie/document-cover";
+import { formatArticleDate } from "@/features/actualites/lib/format-article-date";
 
 export function LibrairieCard({ document }: { document: PublicLibrairieDocument }) {
   return (
@@ -23,7 +24,7 @@ export function LibrairieCard({ document }: { document: PublicLibrairieDocument 
         <p className="text-sm leading-relaxed text-text-muted">{document.description}</p>
       ) : null}
       <div className="flex flex-wrap items-center gap-3 text-xs text-text-muted">
-        <span>{new Date(document.uploadedAt).toLocaleDateString("fr-FR")}</span>
+        <span>{formatArticleDate(document.uploadedAt)}</span>
         {document.pageCount !== null ? (
           <>
             <span>·</span>

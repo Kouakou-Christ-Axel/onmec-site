@@ -9,9 +9,12 @@ import type { PublicLibrairieDocument } from "@/features/librairie/types/documen
  */
 export async function getLibrairiePublic(id: string): Promise<PublicLibrairieDocument | null> {
   try {
-    const document = await apiFetch<PublicLibrairieDocument>(`/librairie/public/${id}`, {
-      auth: false,
-    });
+    const document = await apiFetch<PublicLibrairieDocument>(
+      `/librairie/public/${encodeURIComponent(id)}`,
+      {
+        auth: false,
+      },
+    );
     return { ...document, pageCount: document.pageCount ?? null };
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) return null;
