@@ -16,7 +16,6 @@ export function ArticleCard({ article }: { article: Article }) {
         alt=""
         ratio="3/2"
         placeholderLabel="Photo à fournir"
-        className="transition-shadow duration-150 ease-out group-hover:shadow-stamp-sm"
       />
       <div className="flex flex-wrap items-center gap-3 text-xs text-text-muted">
         <CategoryTag categorie={article.categorie} />

@@ -10,11 +10,7 @@ export function RessourceCard({ ressource }: { ressource: Ressource }) {
       className="group flex flex-col gap-4 rounded-sm transition-transform duration-150 ease-out hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
     >
       <div className="relative">
-        <PhotoPlaceholder
-          ratio="3/4"
-          label="Couverture à fournir"
-          className="transition-shadow duration-150 ease-out group-hover:shadow-stamp-sm"
-        />
+        <PhotoPlaceholder ratio="3/4" label="Couverture à fournir" />
         <span className="absolute top-3 right-3 inline-flex items-center rounded-full bg-surface-card px-2.5 py-1 text-[10px] font-semibold tracking-wide text-text-muted uppercase">
           {ressource.format}
         </span>

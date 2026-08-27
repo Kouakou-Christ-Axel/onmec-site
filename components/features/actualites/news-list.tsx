@@ -78,7 +78,6 @@ export function NewsList({ articles, categories, meta, categorieActive }: NewsLi
               duotone
               sizes="(min-width: 1024px) 460px, 100vw"
               placeholderLabel="Photo de l’activité à fournir"
-              className="transition-shadow duration-150 ease-out group-hover:shadow-stamp-sm"
             />
           </Link>
           <div className="flex flex-col gap-4">

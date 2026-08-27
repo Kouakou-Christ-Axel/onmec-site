@@ -50,7 +50,7 @@ export function ActionsGrid() {
                 className={`flex h-full flex-col gap-4 rounded-md border bg-surface-card p-7 transition duration-150 ease-out hover:-translate-y-1 ${
                   program.highlight
                     ? "border-ink shadow-stamp"
-                    : "border-ink/10 hover:border-orange-500 hover:shadow-stamp-sm"
+                    : "border-ink/10 hover:border-orange-500"
                 }`}
               >
                 <program.icon className={`h-9 w-9 ${program.iconClass}`} aria-hidden />

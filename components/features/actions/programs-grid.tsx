@@ -8,7 +8,7 @@ export function ProgramsGrid() {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           {PROGRAMMES.map((programme, i) => (
             <Reveal key={programme.title} delay={i * 80}>
-              <div className="flex h-full flex-col gap-4 rounded-md border border-ink/10 bg-surface-card p-7 transition duration-150 ease-out hover:-translate-y-1 hover:border-orange-500 hover:shadow-stamp-sm">
+              <div className="flex h-full flex-col gap-4 rounded-md border border-ink/10 bg-surface-card p-7 transition duration-150 ease-out hover:-translate-y-1 hover:border-orange-500">
                 <programme.icon className="h-9 w-9 text-orange-600" aria-hidden />
                 <h2 className="text-h3 font-semibold text-ink">{programme.title}</h2>
                 <p className="text-sm leading-relaxed text-text-muted">{programme.desc}</p>
