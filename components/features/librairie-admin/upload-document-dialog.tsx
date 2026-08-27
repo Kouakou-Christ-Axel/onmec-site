@@ -36,6 +36,7 @@ export function UploadDocumentDialog({
   const [file, setFile] = useState<File | null>(null);
   const [cover, setCover] = useState<File | null>(null);
   const [step, setStep] = useState<CreateDocumentStep | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
 
   const createDocument = useCreateDocument();
 
@@ -46,16 +47,29 @@ export function UploadDocumentDialog({
     setFile(null);
     setCover(null);
     setStep(null);
+    setFileError(null);
     createDocument.reset();
   }
 
   function handleClose() {
+    if (createDocument.isPending) return;
     reset();
     onClose();
   }
 
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-    setFile(event.target.files?.[0] ?? null);
+    const selected = event.target.files?.[0] ?? null;
+    if (
+      selected &&
+      (!selected.name.toLowerCase().endsWith(".pdf") || selected.type !== "application/pdf")
+    ) {
+      setFile(null);
+      setFileError("Le fichier doit être un PDF valide.");
+      event.target.value = "";
+      return;
+    }
+    setFileError(null);
+    setFile(selected);
   }
 
   function handleCoverChange(event: ChangeEvent<HTMLInputElement>) {
@@ -119,6 +133,7 @@ export function UploadDocumentDialog({
         <Field label="Fichier PDF" hint="Obligatoire">
           <Input type="file" accept="application/pdf" onChange={handleFileChange} disabled={pending} />
         </Field>
+        {fileError ? <p className="text-sm text-verdict-false">{fileError}</p> : null}
         <Field label="Couverture" hint="Facultatif — jpg, png ou webp">
           <Input
             type="file"
@@ -127,7 +142,7 @@ export function UploadDocumentDialog({
             disabled={pending}
           />
         </Field>
-        {step ? <p className="text-sm text-muted-foreground">{STEP_LABELS[step]}</p> : null}
+        {pending && step ? <p className="text-sm text-muted-foreground">{STEP_LABELS[step]}</p> : null}
         {createDocument.isError ? (
           <p className="text-sm text-verdict-false">
             Échec{step ? ` pendant : ${STEP_LABELS[step]}` : ""} — réessayez.
