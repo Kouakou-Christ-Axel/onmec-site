@@ -4,7 +4,7 @@
 
 **Goal:** Remplacer le mock local de l'écran admin "Signalements" par un branchement réel sur `onmec_backend` (module `signalement-citoyen`), en suivant les conventions déjà établies pour `quiz-admin`/`membres-admin`.
 
-**Architecture:** Nouvelle couche `features/signalements-admin/` (types, requests server-only via `apiFetch`, queries/mutations client via TanStack Query), deux route handlers BFF (`app/api/admin/signalements`), composants déplacés de `components/features/admin/` vers `components/features/signalements-admin/`. Filtres/pagination côté client (jamais `router.push`/`router.refresh`, cf. règle `docs/ARCHITECTURE.md`). Le panneau "Mises à jour" reste en state local non persisté (gap backend documenté, prompt déjà transmis).
+**Architecture:** Nouvelle couche `features/signalements-admin/` (types, requests server-only via `apiFetch`, queries/mutations client via TanStack Query), quatre route handlers BFF (`app/api/admin/signalements`), composants déplacés de `components/features/admin/` vers `components/features/signalements-admin/`. Filtres/pagination côté client (jamais `router.push`/`router.refresh`, cf. règle `docs/ARCHITECTURE.md`). Le panneau "Mises à jour" est branché sur le vrai journal de suivi (`SignalementUpdate`), livré côté backend en parallèle de ce plan — `POST/GET /signalement-citoyen/:id/updates`.
 
 **Tech Stack:** Next.js App Router (vinext), React 19, TypeScript strict, TanStack Query, Zod, Tailwind v4.
 
@@ -17,7 +17,8 @@
 - Filtres, onglets, pagination : jamais `router.push`/`router.replace`/`router.refresh` — state local + TanStack Query + `syncUrlParams` (`lib/sync-url.ts`) + `queryClient.invalidateQueries` après mutation. Voir `docs/ARCHITECTURE.md § Filtres, onglets et pagination côté client`.
 - **[Ruling, préflight]** Le constat initial du spec ("aucun test unitaire dans ce projet") est obsolète : `features/librairie-admin/lib/*.test.ts` (fusionné dans master après l'écriture du spec) établit un vrai précédent — fonctions pures de `lib/` testées via vitest (`describe`/`it`/`expect`, fichier `*.test.ts` colocalisé). Task 1 ajoute donc un test pour ses fonctions pures (`signalementTab`, `updatesLabel`), sur ce même patron. Les autres tâches (requests server-only, route handlers, hooks TanStack Query, composants UI) restent vérifiées par `pnpm run typecheck`/`pnpm run lint` uniquement : aucun précédent de test pour ces couches-là dans le code base (ni pour `quiz-admin`/`membres-admin`), donc pas de test à inventer pour elles.
 - Ne pas toucher à `features/admin/data/signalements.ts` : ce mock reste utilisé tel quel par `components/features/admin/admin-sidebar.tsx` (badge) et `features/admin/lib/build-queue.ts` (file de travail du dashboard), deux écrans entièrement mockés sur d'autres domaines aussi (articles, ressources, push, invitations) — hors scope de cette tâche, à traiter dans un futur passage dédié au dashboard.
-- Ne pas modifier `onmec_backend` (repo séparé) — uniquement le consommer en lecture pour connaître le contrat exact. Le gap "Mises à jour" a déjà été transmis dans un prompt séparé.
+- Ne pas modifier `onmec_backend` (repo séparé) — uniquement le consommer en lecture pour connaître le contrat exact.
+- **[Ruling, mid-plan, après Task 1]** Le backend a livré le gap "Mises à jour" en parallèle (worktree séparé) : `SignalementUpdate` (`id, signalementId, texte, createdAt, auteur: {id,fullname}|null`), `POST /signalement-citoyen/:id/updates` (admin, body `{texte}`) et `GET /signalement-citoyen/:id/updates` (public, trié du plus ancien au plus récent, pas de pagination). Les Tasks 1, 2, 3, 4, 6, 7, 8, 9 sont amendées ci-dessous pour brancher le vrai journal au lieu du state local prévu initialement — voir le ledger SDD pour le détail de la bascule.
 
 ---
 
@@ -28,7 +29,7 @@
 - Create: `features/signalements-admin/types/signalement-admin.test.ts`
 
 **Interfaces:**
-- Produces: `SignalementStatutApi` (`"NOUVEAU"|"EN_COURS"|"RESOLU"|"REJETE"`), `SignalementCategorie {id, nom}`, `SignalementCitoyenAuteur {id, fullname, email}`, `SignalementAdmin`, `SignalementListMeta`, `SignalementListResponse`, `SignalementTab` (`"validation"|"encours"|"resolu"|"rejete"`), `SIGNALEMENT_TAB_META`, `signalementTab(statut): SignalementTab`, `STATUT_BY_TAB`, `SignalementUpdateEntry {date, auteur, texte}`, `updatesLabel(count): string` — utilisés par toutes les tâches suivantes.
+- Produces: `SignalementStatutApi` (`"NOUVEAU"|"EN_COURS"|"RESOLU"|"REJETE"`), `SignalementCategorie {id, nom}`, `SignalementCitoyenAuteur {id, fullname, email}`, `SignalementAdmin`, `SignalementListMeta`, `SignalementListResponse`, `SignalementTab` (`"validation"|"encours"|"resolu"|"rejete"`), `SIGNALEMENT_TAB_META`, `signalementTab(statut): SignalementTab`, `STATUT_BY_TAB`, `SignalementUpdateAuteur {id, fullname}`, `SignalementUpdate {id, signalementId, texte, createdAt, auteur}`, `updatesLabel(count): string` — utilisés par toutes les tâches suivantes.
 
 - [ ] **Step 1: Écrire le fichier de types**
 
@@ -106,16 +107,18 @@ export const STATUT_BY_TAB: Record<SignalementTab, SignalementStatutApi> = {
   rejete: "REJETE",
 };
 
-/**
- * Journal de suivi affiché dans le tiroir. Non persisté côté backend pour
- * l'instant (gap documenté dans le spec, prompt déjà transmis) : vit
- * uniquement en state local dans `SignalementsAdminClient`, perdu au
- * rechargement de page.
- */
-export interface SignalementUpdateEntry {
-  date: string;
-  auteur: string;
+export interface SignalementUpdateAuteur {
+  id: string;
+  fullname: string;
+}
+
+/** Entrée du journal de suivi d'un signalement — POST/GET /signalement-citoyen/:id/updates. */
+export interface SignalementUpdate {
+  id: string;
+  signalementId: string;
   texte: string;
+  createdAt: string;
+  auteur: SignalementUpdateAuteur | null;
 }
 
 export function updatesLabel(count: number): string {
@@ -179,11 +182,14 @@ EOF
 - Create: `features/signalements-admin/requests/list-signalements.ts`
 - Create: `features/signalements-admin/requests/update-signalement.ts`
 - Create: `features/signalements-admin/requests/list-signalement-categories.ts`
+- Create: `features/signalements-admin/requests/list-signalement-updates.ts`
+- Create: `features/signalements-admin/requests/create-signalement-update.ts`
 - Create: `features/signalements-admin/schemas/update-signalement-schema.ts`
+- Create: `features/signalements-admin/schemas/create-signalement-update-schema.ts`
 
 **Interfaces:**
-- Consumes: `SignalementListResponse`, `SignalementAdmin`, `SignalementCategorie`, `SignalementStatutApi` (Task 1), `apiFetch` (`@/lib/api-client`, server-only — dépend de `next/headers`).
-- Produces: `listSignalements(params: ListSignalementsParams): Promise<SignalementListResponse>`, `updateSignalement(id, input: UpdateSignalementInput): Promise<SignalementAdmin>`, `listSignalementCategories(): Promise<SignalementCategorie[]>`, `updateSignalementSchema` (Zod) + `type UpdateSignalementFormInput` — consommés par les route handlers de la Task 3 et le Server Component de la Task 9.
+- Consumes: `SignalementListResponse`, `SignalementAdmin`, `SignalementCategorie`, `SignalementStatutApi`, `SignalementUpdate` (Task 1), `apiFetch` (`@/lib/api-client`, server-only — dépend de `next/headers`).
+- Produces: `listSignalements(params: ListSignalementsParams): Promise<SignalementListResponse>`, `updateSignalement(id, input: UpdateSignalementInput): Promise<SignalementAdmin>`, `listSignalementCategories(): Promise<SignalementCategorie[]>`, `listSignalementUpdates(id): Promise<SignalementUpdate[]>`, `createSignalementUpdate(id, texte): Promise<SignalementUpdate>`, `updateSignalementSchema` (Zod) + `type UpdateSignalementFormInput`, `createSignalementUpdateSchema` (Zod) + `type CreateSignalementUpdateFormInput` — consommés par les route handlers de la Task 3 et le Server Component de la Task 9.
 
 Le backend (`onmec_backend/src/modules/signalement-citoyen`) renvoie déjà les objets Prisma bruts avec les mêmes noms de champs que `SignalementAdmin` (`categorie`/`citoyen` inclus en relation, `photo` déjà réécrit en URL publique) — pas de mapper de renommage nécessaire, contrairement à `quiz-admin`.
 
@@ -260,7 +266,34 @@ export async function listSignalementCategories(): Promise<SignalementCategorie[
 }
 ```
 
-- [ ] **Step 4: `update-signalement-schema.ts`**
+- [ ] **Step 4: `list-signalement-updates.ts`**
+
+```ts
+// features/signalements-admin/requests/list-signalement-updates.ts
+import { apiFetch } from "@/lib/api-client";
+import type { SignalementUpdate } from "@/features/signalements-admin/types/signalement-admin";
+
+export function listSignalementUpdates(id: string): Promise<SignalementUpdate[]> {
+  return apiFetch<SignalementUpdate[]>(`/signalement-citoyen/${id}/updates`);
+}
+```
+
+- [ ] **Step 5: `create-signalement-update.ts`**
+
+```ts
+// features/signalements-admin/requests/create-signalement-update.ts
+import { apiFetch } from "@/lib/api-client";
+import type { SignalementUpdate } from "@/features/signalements-admin/types/signalement-admin";
+
+export function createSignalementUpdate(id: string, texte: string): Promise<SignalementUpdate> {
+  return apiFetch<SignalementUpdate>(`/signalement-citoyen/${id}/updates`, {
+    method: "POST",
+    body: JSON.stringify({ texte }),
+  });
+}
+```
+
+- [ ] **Step 6: `update-signalement-schema.ts` et `create-signalement-update-schema.ts`**
 
 ```ts
 // features/signalements-admin/schemas/update-signalement-schema.ts
@@ -273,12 +306,22 @@ export const updateSignalementSchema = z.object({
 export type UpdateSignalementFormInput = z.infer<typeof updateSignalementSchema>;
 ```
 
-- [ ] **Step 5: Vérifier**
+```ts
+// features/signalements-admin/schemas/create-signalement-update-schema.ts
+import { z } from "zod";
+
+export const createSignalementUpdateSchema = z.object({
+  texte: z.string().min(1, "Le texte est obligatoire."),
+});
+export type CreateSignalementUpdateFormInput = z.infer<typeof createSignalementUpdateSchema>;
+```
+
+- [ ] **Step 7: Vérifier**
 
 Run: `pnpm run typecheck`
 Expected: aucune erreur.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add features/signalements-admin/requests features/signalements-admin/schemas
@@ -298,10 +341,11 @@ EOF
 **Files:**
 - Create: `app/api/admin/signalements/route.ts`
 - Create: `app/api/admin/signalements/[id]/route.ts`
+- Create: `app/api/admin/signalements/[id]/updates/route.ts`
 
 **Interfaces:**
-- Consumes: `listSignalements`, `updateSignalement` (Task 2), `updateSignalementSchema` (Task 2), `toErrorResponse` (`@/lib/to-error-response`), `parseJsonBody` (`@/lib/parse-json-body`).
-- Produces: `GET /api/admin/signalements?statut=&categorieId=&page=`, `PATCH /api/admin/signalements/:id` — consommés par les hooks client de la Task 4.
+- Consumes: `listSignalements`, `updateSignalement`, `listSignalementUpdates`, `createSignalementUpdate` (Task 2), `updateSignalementSchema`, `createSignalementUpdateSchema` (Task 2), `toErrorResponse` (`@/lib/to-error-response`), `parseJsonBody` (`@/lib/parse-json-body`).
+- Produces: `GET /api/admin/signalements?statut=&categorieId=&page=`, `PATCH /api/admin/signalements/:id`, `GET /api/admin/signalements/:id/updates`, `POST /api/admin/signalements/:id/updates` — consommés par les hooks client de la Task 4.
 
 - [ ] **Step 1: `app/api/admin/signalements/route.ts`**
 
@@ -356,17 +400,51 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 }
 ```
 
-- [ ] **Step 3: Vérifier**
+- [ ] **Step 3: `app/api/admin/signalements/[id]/updates/route.ts`**
+
+```ts
+import { NextResponse } from "next/server";
+import { listSignalementUpdates } from "@/features/signalements-admin/requests/list-signalement-updates";
+import { createSignalementUpdate } from "@/features/signalements-admin/requests/create-signalement-update";
+import { createSignalementUpdateSchema } from "@/features/signalements-admin/schemas/create-signalement-update-schema";
+import { toErrorResponse } from "@/lib/to-error-response";
+import { parseJsonBody } from "@/lib/parse-json-body";
+
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  try {
+    const updates = await listSignalementUpdates(id);
+    return NextResponse.json(updates);
+  } catch (error) {
+    return toErrorResponse(error);
+  }
+}
+
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const parsed = await parseJsonBody(request, createSignalementUpdateSchema);
+  if (!parsed.success) return parsed.response;
+
+  try {
+    const update = await createSignalementUpdate(id, parsed.data.texte);
+    return NextResponse.json(update, { status: 201 });
+  } catch (error) {
+    return toErrorResponse(error);
+  }
+}
+```
+
+- [ ] **Step 4: Vérifier**
 
 Run: `pnpm run typecheck`
 Expected: aucune erreur.
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 5: Commit**
 
 ```bash
 git add app/api/admin/signalements
 git commit -m "$(cat <<'EOF'
-feat(signalements-admin): route handlers BFF liste + PATCH
+feat(signalements-admin): route handlers BFF liste + PATCH + journal de suivi
 
 Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01Dsm1DM4UcgZ1gh2QDKfDPf
@@ -380,11 +458,13 @@ EOF
 
 **Files:**
 - Create: `features/signalements-admin/queries/use-signalements-list.ts`
+- Create: `features/signalements-admin/queries/use-signalement-updates.ts`
 - Create: `features/signalements-admin/mutations/use-update-signalement.ts`
+- Create: `features/signalements-admin/mutations/use-create-signalement-update.ts`
 
 **Interfaces:**
-- Consumes: `SignalementListResponse`, `SignalementAdmin`, `SignalementStatutApi` (Task 1), `getJson`/`patchJson` (`@/lib/fetch-json`), route handlers de la Task 3.
-- Produces: `useSignalementsList({statut, categorieId, page, initialData}): UseQueryResult<SignalementListResponse>` avec `queryKey: ["signalements-list", statut, categorieId, page]` ; `useUpdateSignalement(): UseMutationResult` avec `mutationFn({id, statut?, validation?})` — consommés par le composant client de la Task 8, qui invalide `["signalements-list"]` après succès.
+- Consumes: `SignalementListResponse`, `SignalementAdmin`, `SignalementStatutApi`, `SignalementUpdate` (Task 1), `getJson`/`patchJson`/`postJson` (`@/lib/fetch-json`), route handlers de la Task 3.
+- Produces: `useSignalementsList({statut, categorieId, page, initialData}): UseQueryResult<SignalementListResponse>` avec `queryKey: ["signalements-list", statut, categorieId, page]` ; `useSignalementUpdates(id: string | null): UseQueryResult<SignalementUpdate[]>` avec `queryKey: ["signalement-updates", id]`, `enabled: id !== null` ; `useUpdateSignalement(): UseMutationResult` avec `mutationFn({id, statut?, validation?})` ; `useCreateSignalementUpdate(): UseMutationResult` avec `mutationFn({id, texte})` — consommés par le composant client de la Task 8, qui invalide `["signalements-list"]` après une mutation de statut/validation et `["signalement-updates", id]` après l'ajout d'une mise à jour.
 
 - [ ] **Step 1: `use-signalements-list.ts`**
 
@@ -452,17 +532,57 @@ export function useUpdateSignalement() {
 }
 ```
 
-- [ ] **Step 3: Vérifier**
+- [ ] **Step 3: `use-signalement-updates.ts`**
+
+```ts
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
+import { getJson } from "@/lib/fetch-json";
+import type { SignalementUpdate } from "@/features/signalements-admin/types/signalement-admin";
+
+export function useSignalementUpdates(id: string | null) {
+  return useQuery({
+    queryKey: ["signalement-updates", id],
+    queryFn: () => getJson<SignalementUpdate[]>(`/api/admin/signalements/${id}/updates`),
+    enabled: id !== null,
+  });
+}
+```
+
+- [ ] **Step 4: `use-create-signalement-update.ts`**
+
+```ts
+"use client";
+
+import { useMutation } from "@tanstack/react-query";
+import { postJson } from "@/lib/fetch-json";
+import type { SignalementUpdate } from "@/features/signalements-admin/types/signalement-admin";
+
+interface CreateSignalementUpdateInput {
+  id: string;
+  texte: string;
+}
+
+export function useCreateSignalementUpdate() {
+  return useMutation({
+    mutationFn: ({ id, texte }: CreateSignalementUpdateInput) =>
+      postJson<SignalementUpdate>(`/api/admin/signalements/${id}/updates`, { texte }),
+  });
+}
+```
+
+- [ ] **Step 5: Vérifier**
 
 Run: `pnpm run typecheck`
 Expected: aucune erreur.
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
 git add features/signalements-admin/queries features/signalements-admin/mutations
 git commit -m "$(cat <<'EOF'
-feat(signalements-admin): hooks TanStack Query liste + mutation statut
+feat(signalements-admin): hooks TanStack Query liste + statut + journal de suivi
 
 Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01Dsm1DM4UcgZ1gh2QDKfDPf
@@ -577,14 +697,14 @@ EOF
 
 ---
 
-### Task 6: Composant panneau "Mises à jour" (local, non persisté)
+### Task 6: Composant panneau "Mises à jour" (branché sur le journal de suivi réel)
 
 **Files:**
 - Create: `components/features/signalements-admin/signalement-updates-panel.tsx`
 
 **Interfaces:**
-- Consumes: `SignalementUpdateEntry`, `updatesLabel` (Task 1).
-- Produces: `SignalementUpdatesPanel({updates, onAdd})` — consommé par le tiroir (Task 7). Reçoit désormais `updates`/`onAdd` en props plutôt que de lire/patcher un objet `Signalement` mocké : la liste et l'ajout sont pilotés par le state local du composant client (Task 8), pas persistés côté backend (gap documenté).
+- Consumes: `SignalementUpdate`, `updatesLabel` (Task 1).
+- Produces: `SignalementUpdatesPanel({updates, loading, pending, onAdd})` — consommé par le tiroir (Task 7). `updates` vient de `useSignalementUpdates` (Task 4, via Task 8), `onAdd` déclenche `useCreateSignalementUpdate` (Task 4, via Task 8) — plus aucun state local dans ce composant hormis le texte du formulaire en cours de saisie.
 
 - [ ] **Step 1: Écrire le composant**
 
@@ -598,15 +718,26 @@ import { Field } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import {
   updatesLabel,
-  type SignalementUpdateEntry,
+  type SignalementUpdate,
 } from "@/features/signalements-admin/types/signalement-admin";
 
 interface SignalementUpdatesPanelProps {
-  updates: SignalementUpdateEntry[];
+  updates: SignalementUpdate[];
+  loading: boolean;
+  pending: boolean;
   onAdd: (texte: string) => void;
 }
 
-export function SignalementUpdatesPanel({ updates, onAdd }: SignalementUpdatesPanelProps) {
+function formatUpdateDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("fr-FR");
+}
+
+export function SignalementUpdatesPanel({
+  updates,
+  loading,
+  pending,
+  onAdd,
+}: SignalementUpdatesPanelProps) {
   const [maj, setMaj] = useState("");
 
   const addUpdate = () => {
@@ -618,24 +749,25 @@ export function SignalementUpdatesPanel({ updates, onAdd }: SignalementUpdatesPa
   return (
     <div className="flex flex-col gap-3.5 rounded-lg border border-border-subtle bg-surface-card p-4.5">
       <span className="text-xs font-semibold tracking-[0.13em] text-muted-foreground uppercase">
-        {updatesLabel(updates.length)}
+        {loading ? "Chargement…" : updatesLabel(updates.length)}
       </span>
-      {updates.length > 0 ? (
+      {!loading && updates.length > 0 ? (
         <div className="flex flex-col gap-3.5">
-          {updates.map((u, i) => (
-            <span key={i} className="flex flex-col gap-0.5 border-l-2 border-orange-500 pl-3.5">
+          {updates.map((u) => (
+            <span key={u.id} className="flex flex-col gap-0.5 border-l-2 border-orange-500 pl-3.5">
               <span className="text-[0.6875rem] text-muted-foreground">
-                {u.date} · {u.auteur}
+                {formatUpdateDate(u.createdAt)} · {u.auteur?.fullname ?? "—"}
               </span>
               <span className="text-sm leading-relaxed text-text-body">{u.texte}</span>
             </span>
           ))}
         </div>
-      ) : (
+      ) : null}
+      {!loading && updates.length === 0 ? (
         <span className="text-[0.8125rem] text-muted-foreground">
           Aucune mise à jour. Le citoyen ne voit encore que son signalement.
         </span>
-      )}
+      ) : null}
       <Field
         label="Ajouter une mise à jour"
         hint="Visible par le citoyen dans l’app, avec la date et votre nom"
@@ -648,7 +780,13 @@ export function SignalementUpdatesPanel({ updates, onAdd }: SignalementUpdatesPa
         />
       </Field>
       <span>
-        <Button variant="deep" size="sm" icon={Send} disabled={!maj.trim()} onClick={addUpdate}>
+        <Button
+          variant="deep"
+          size="sm"
+          icon={Send}
+          disabled={!maj.trim() || pending}
+          onClick={addUpdate}
+        >
           Publier la mise à jour
         </Button>
       </span>
@@ -667,7 +805,7 @@ Expected: aucune erreur.
 ```bash
 git add components/features/signalements-admin/signalement-updates-panel.tsx
 git commit -m "$(cat <<'EOF'
-feat(signalements-admin): panneau mises à jour piloté par state local
+feat(signalements-admin): panneau mises à jour branché sur le journal de suivi réel
 
 Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01Dsm1DM4UcgZ1gh2QDKfDPf
@@ -683,8 +821,8 @@ EOF
 - Create: `components/features/signalements-admin/signalement-drawer.tsx`
 
 **Interfaces:**
-- Consumes: `SignalementAdmin`, `SignalementStatutApi`, `SignalementUpdateEntry`, `SIGNALEMENT_TAB_META`, `signalementTab` (Task 1), `SignalementModerationPanel` (Task 5), `SignalementUpdatesPanel` (Task 6), `Drawer`/`DialogTitle`/`useLastNonNull` (`@/components/ui/drawer`, `@/components/ui/dialog`), `Tag`/`Button`/`IconButton`.
-- Produces: `SignalementDrawer({signalement, onClose, onChangeStatut, onChangeValidation, pending, updates, onAddUpdate})` — consommé par le composant client (Task 8).
+- Consumes: `SignalementAdmin`, `SignalementStatutApi`, `SignalementUpdate`, `SIGNALEMENT_TAB_META`, `signalementTab` (Task 1), `SignalementModerationPanel` (Task 5), `SignalementUpdatesPanel` (Task 6), `Drawer`/`DialogTitle`/`useLastNonNull` (`@/components/ui/drawer`, `@/components/ui/dialog`), `Tag`/`Button`/`IconButton`.
+- Produces: `SignalementDrawer({signalement, onClose, onChangeStatut, onChangeValidation, pending, updates, updatesLoading, addingUpdate, onAddUpdate})` — consommé par le composant client (Task 8).
 
 - [ ] **Step 1: Écrire le composant**
 
@@ -704,7 +842,7 @@ import {
   signalementTab,
   type SignalementAdmin,
   type SignalementStatutApi,
-  type SignalementUpdateEntry,
+  type SignalementUpdate,
 } from "@/features/signalements-admin/types/signalement-admin";
 
 const ETAPES: { statut: SignalementStatutApi; label: string }[] = [
@@ -719,7 +857,9 @@ interface SignalementDrawerProps {
   onChangeStatut: (id: string, statut: SignalementStatutApi) => void;
   onChangeValidation: (id: string, validation: boolean) => void;
   pending: boolean;
-  updates: SignalementUpdateEntry[];
+  updates: SignalementUpdate[];
+  updatesLoading: boolean;
+  addingUpdate: boolean;
   onAddUpdate: (id: string, texte: string) => void;
 }
 
@@ -734,6 +874,8 @@ export function SignalementDrawer({
   onChangeValidation,
   pending,
   updates,
+  updatesLoading,
+  addingUpdate,
   onAddUpdate,
 }: SignalementDrawerProps) {
   const shown = useLastNonNull(signalement);
@@ -825,7 +967,12 @@ export function SignalementDrawer({
           onChangeValidation={(validation) => onChangeValidation(shown.id, validation)}
         />
 
-        <SignalementUpdatesPanel updates={updates} onAdd={(texte) => onAddUpdate(shown.id, texte)} />
+        <SignalementUpdatesPanel
+          updates={updates}
+          loading={updatesLoading}
+          pending={addingUpdate}
+          onAdd={(texte) => onAddUpdate(shown.id, texte)}
+        />
       </div>
 
       <div className="flex flex-none flex-wrap items-center gap-2.5 border-t border-border-subtle bg-surface-card px-5.5 py-4">
@@ -870,7 +1017,7 @@ EOF
 - Create: `components/features/signalements-admin/signalements-admin-client.tsx`
 
 **Interfaces:**
-- Consumes: `useSignalementsList`, `useUpdateSignalement` (Task 4), `SignalementDrawer` (Task 7), `SIGNALEMENT_TAB_META`, `STATUT_BY_TAB`, `signalementTab`, tous les types (Task 1), `LibrairiePagination` (`@/components/features/librairie/librairie-pagination`), `useAdminShell` (`@/components/features/admin/admin-shell-context`, expose `canSig`), `syncUrlParams` (`@/lib/sync-url`).
+- Consumes: `useSignalementsList`, `useSignalementUpdates`, `useUpdateSignalement`, `useCreateSignalementUpdate` (Task 4), `SignalementDrawer` (Task 7), `SIGNALEMENT_TAB_META`, `STATUT_BY_TAB`, `signalementTab`, tous les types (Task 1), `LibrairiePagination` (`@/components/features/librairie/librairie-pagination`), `useAdminShell` (`@/components/features/admin/admin-shell-context`, expose `canSig`), `syncUrlParams` (`@/lib/sync-url`).
 - Produces: `SignalementsAdminClient({initialTab, initialCategorieId, initialPageNum, initialData, initialCategories, initialOpenId})` — consommé par le Server Component de la Task 9. Suit exactement le patron de filtrage/pagination client de `QuizAdminClient`/`MembresAdminClient` (state local seedé par les props SSR, jamais de `router.push`).
 
 - [ ] **Step 1: Écrire le composant**
@@ -887,7 +1034,9 @@ import { Select } from "@/components/ui/select";
 import { LibrairiePagination } from "@/components/features/librairie/librairie-pagination";
 import { useAdminShell } from "@/components/features/admin/admin-shell-context";
 import { useSignalementsList } from "@/features/signalements-admin/queries/use-signalements-list";
+import { useSignalementUpdates } from "@/features/signalements-admin/queries/use-signalement-updates";
 import { useUpdateSignalement } from "@/features/signalements-admin/mutations/use-update-signalement";
+import { useCreateSignalementUpdate } from "@/features/signalements-admin/mutations/use-create-signalement-update";
 import { syncUrlParams } from "@/lib/sync-url";
 import { SignalementDrawer } from "./signalement-drawer";
 import {
@@ -898,7 +1047,6 @@ import {
   type SignalementListResponse,
   type SignalementStatutApi,
   type SignalementTab,
-  type SignalementUpdateEntry,
 } from "@/features/signalements-admin/types/signalement-admin";
 
 const TAB_ORDER: SignalementTab[] = ["validation", "encours", "resolu", "rejete"];
@@ -926,12 +1074,13 @@ export function SignalementsAdminClient({
   const [categorieId, setCategorieId] = useState(initialCategorieId);
   const [page, setPage] = useState(initialPageNum);
   const [openId, setOpenId] = useState<string | null>(initialOpenId);
-  const [localUpdates, setLocalUpdates] = useState<Record<string, SignalementUpdateEntry[]>>({});
   const updateMutation = useUpdateSignalement();
+  const createUpdateMutation = useCreateSignalementUpdate();
 
   const statut: SignalementStatutApi | "" = tab === "tous" ? "" : STATUT_BY_TAB[tab];
   const listQuery = useSignalementsList({ statut, categorieId, page, initialData });
   const data = listQuery.data ?? initialData;
+  const updatesQuery = useSignalementUpdates(openId);
 
   useEffect(() => {
     syncUrlParams({
@@ -963,13 +1112,13 @@ export function SignalementsAdminClient({
   }
 
   function handleAddUpdate(id: string, texte: string) {
-    setLocalUpdates((prev) => ({
-      ...prev,
-      [id]: [
-        ...(prev[id] ?? []),
-        { date: new Date().toLocaleDateString("fr-FR"), auteur: "Vous", texte },
-      ],
-    }));
+    createUpdateMutation.mutate(
+      { id, texte },
+      {
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["signalement-updates", id] }),
+        onError: () => toast.error("Une erreur est survenue. Réessayez."),
+      },
+    );
   }
 
   return (
@@ -1081,7 +1230,9 @@ export function SignalementsAdminClient({
         onChangeStatut={handleChangeStatut}
         onChangeValidation={handleChangeValidation}
         pending={updateMutation.isPending || !shell.canSig}
-        updates={openId ? (localUpdates[openId] ?? []) : []}
+        updates={updatesQuery.data ?? []}
+        updatesLoading={updatesQuery.isLoading}
+        addingUpdate={createUpdateMutation.isPending}
         onAddUpdate={handleAddUpdate}
       />
     </div>
@@ -1197,7 +1348,7 @@ Démarrer `pnpm run dev` si non déjà lancé, puis :
 Run: `curl -s -o /dev/null -w "%{http_code}\n" http://localhost:3000/admin/signalements --max-time 15`
 Expected: `307` (redirection d'authentification attendue pour un accès non authentifié — confirme que la page compile et répond sans erreur serveur, même pattern de vérification que pour `quiz-admin`/`membres-admin` dans ce projet).
 
-Si une session admin est disponible dans le navigateur (via Claude in Chrome ou manuellement), naviguer vers `/admin/signalements`, vérifier que la liste réelle s'affiche, que les onglets de statut et le filtre catégorie changent le contenu sans afficher le skeleton plein écran de `loading.tsx`, qu'ouvrir un signalement affiche le tiroir avec les vraies données, et que changer le statut ou le toggle "Afficher dans l'app / Masquer" persiste après réouverture (recharger la page).
+Si une session admin est disponible dans le navigateur (via Claude in Chrome ou manuellement), naviguer vers `/admin/signalements`, vérifier que la liste réelle s'affiche, que les onglets de statut et le filtre catégorie changent le contenu sans afficher le skeleton plein écran de `loading.tsx`, qu'ouvrir un signalement affiche le tiroir avec les vraies données, que changer le statut ou le toggle "Afficher dans l'app / Masquer" persiste après réouverture (recharger la page), et qu'ajouter une mise à jour dans le tiroir persiste aussi (recharger la page, rouvrir le même signalement).
 
 - [ ] **Step 6: Commit**
 
@@ -1206,9 +1357,9 @@ git add app/admin/\(shell\)/signalements/page.tsx
 git commit -m "$(cat <<'EOF'
 feat(signalements-admin): page admin branchée sur l'API réelle
 
-Remplace le mock local par le module signalement-citoyen du backend.
-Le panneau "Mises à jour" reste en state local (gap backend transmis
-séparément, cf. docs/superpowers/specs/2026-08-29-signalements-admin-design.md).
+Remplace le mock local par le module signalement-citoyen du backend,
+journal de suivi ("Mises à jour") inclus — livré côté backend en
+parallèle de ce plan.
 
 Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01Dsm1DM4UcgZ1gh2QDKfDPf
