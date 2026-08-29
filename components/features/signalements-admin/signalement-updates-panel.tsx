@@ -9,7 +9,6 @@ import {
   updatesLabel,
   type SignalementUpdate,
 } from "@/features/signalements-admin/types/signalement-admin";
-
 interface SignalementUpdatesPanelProps {
   updates: SignalementUpdate[];
   loading: boolean;
@@ -59,7 +58,7 @@ export function SignalementUpdatesPanel({
       ) : null}
       <Field
         label="Ajouter une mise à jour"
-        hint="Visible par le citoyen dans l'app, avec la date et votre nom"
+        hint="Visible par le citoyen dans l’app, avec la date et votre nom"
       >
         <Textarea
           rows={3}
