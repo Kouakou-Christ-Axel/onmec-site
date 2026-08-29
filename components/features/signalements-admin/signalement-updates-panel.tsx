@@ -9,6 +9,7 @@ import {
   updatesLabel,
   type SignalementUpdate,
 } from "@/features/signalements-admin/types/signalement-admin";
+
 interface SignalementUpdatesPanelProps {
   updates: SignalementUpdate[];
   loading: boolean;
