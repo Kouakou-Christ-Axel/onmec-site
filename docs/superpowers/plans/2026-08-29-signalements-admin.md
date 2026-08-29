@@ -15,7 +15,7 @@
 - Aucun `fetch` direct vers `api.mec-ci.org` en dehors de `apiFetch` (server-only, `lib/api-client.ts`).
 - Les fichiers `"use client"` n'appellent que les route handlers `app/api/admin/*` de onmec-site, via `lib/fetch-json.ts` (`getJson`/`patchJson`).
 - Filtres, onglets, pagination : jamais `router.push`/`router.replace`/`router.refresh` — state local + TanStack Query + `syncUrlParams` (`lib/sync-url.ts`) + `queryClient.invalidateQueries` après mutation. Voir `docs/ARCHITECTURE.md § Filtres, onglets et pagination côté client`.
-- Ce projet n'a aucun fichier de test unitaire existant (vitest configuré mais inutilisé partout, y compris pour les mappers plus complexes de `quiz-admin`) : chaque tâche se vérifie par `pnpm run typecheck` / `pnpm run lint` (déjà automatisés par le hook `PostToolUse`) plutôt que par des tests écrits — cohérent avec le reste du code base.
+- **[Ruling, préflight]** Le constat initial du spec ("aucun test unitaire dans ce projet") est obsolète : `features/librairie-admin/lib/*.test.ts` (fusionné dans master après l'écriture du spec) établit un vrai précédent — fonctions pures de `lib/` testées via vitest (`describe`/`it`/`expect`, fichier `*.test.ts` colocalisé). Task 1 ajoute donc un test pour ses fonctions pures (`signalementTab`, `updatesLabel`), sur ce même patron. Les autres tâches (requests server-only, route handlers, hooks TanStack Query, composants UI) restent vérifiées par `pnpm run typecheck`/`pnpm run lint` uniquement : aucun précédent de test pour ces couches-là dans le code base (ni pour `quiz-admin`/`membres-admin`), donc pas de test à inventer pour elles.
 - Ne pas toucher à `features/admin/data/signalements.ts` : ce mock reste utilisé tel quel par `components/features/admin/admin-sidebar.tsx` (badge) et `features/admin/lib/build-queue.ts` (file de travail du dashboard), deux écrans entièrement mockés sur d'autres domaines aussi (articles, ressources, push, invitations) — hors scope de cette tâche, à traiter dans un futur passage dédié au dashboard.
 - Ne pas modifier `onmec_backend` (repo séparé) — uniquement le consommer en lecture pour connaître le contrat exact. Le gap "Mises à jour" a déjà été transmis dans un prompt séparé.
 
@@ -25,6 +25,7 @@
 
 **Files:**
 - Create: `features/signalements-admin/types/signalement-admin.ts`
+- Create: `features/signalements-admin/types/signalement-admin.test.ts`
 
 **Interfaces:**
 - Produces: `SignalementStatutApi` (`"NOUVEAU"|"EN_COURS"|"RESOLU"|"REJETE"`), `SignalementCategorie {id, nom}`, `SignalementCitoyenAuteur {id, fullname, email}`, `SignalementAdmin`, `SignalementListMeta`, `SignalementListResponse`, `SignalementTab` (`"validation"|"encours"|"resolu"|"rejete"`), `SIGNALEMENT_TAB_META`, `signalementTab(statut): SignalementTab`, `STATUT_BY_TAB`, `SignalementUpdateEntry {date, auteur, texte}`, `updatesLabel(count): string` — utilisés par toutes les tâches suivantes.
@@ -124,15 +125,43 @@ export function updatesLabel(count: number): string {
 }
 ```
 
-- [ ] **Step 2: Vérifier**
+- [ ] **Step 2: Écrire le test des fonctions pures**
+
+```ts
+// features/signalements-admin/types/signalement-admin.test.ts
+import { describe, expect, it } from "vitest";
+import { signalementTab, updatesLabel } from "@/features/signalements-admin/types/signalement-admin";
+
+describe("signalementTab", () => {
+  it("mappe chaque statut backend vers son onglet d'affichage", () => {
+    expect(signalementTab("NOUVEAU")).toBe("validation");
+    expect(signalementTab("EN_COURS")).toBe("encours");
+    expect(signalementTab("RESOLU")).toBe("resolu");
+    expect(signalementTab("REJETE")).toBe("rejete");
+  });
+});
+
+describe("updatesLabel", () => {
+  it("accorde le libellé selon le nombre de mises à jour", () => {
+    expect(updatesLabel(0)).toBe("aucune mise à jour");
+    expect(updatesLabel(1)).toBe("1 mise à jour");
+    expect(updatesLabel(2)).toBe("2 mises à jour");
+  });
+});
+```
+
+- [ ] **Step 3: Vérifier**
 
 Run: `pnpm run typecheck`
 Expected: aucune erreur (fichier autonome, aucune dépendance externe).
 
-- [ ] **Step 3: Commit**
+Run: `pnpm run test -- signalement-admin.test.ts`
+Expected: 2 fichiers de test passent (4 assertions), 0 échec.
+
+- [ ] **Step 4: Commit**
 
 ```bash
-git add features/signalements-admin/types/signalement-admin.ts
+git add features/signalements-admin/types/signalement-admin.ts features/signalements-admin/types/signalement-admin.test.ts
 git commit -m "$(cat <<'EOF'
 feat(signalements-admin): types et mapping statut/onglet
 
