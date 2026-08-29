@@ -69,16 +69,18 @@ export const STATUT_BY_TAB: Record<SignalementTab, SignalementStatutApi> = {
   rejete: "REJETE",
 };
 
-/**
- * Journal de suivi affiché dans le tiroir. Non persisté côté backend pour
- * l'instant (gap documenté dans le spec, prompt déjà transmis) : vit
- * uniquement en state local dans `SignalementsAdminClient`, perdu au
- * rechargement de page.
- */
-export interface SignalementUpdateEntry {
-  date: string;
-  auteur: string;
+export interface SignalementUpdateAuteur {
+  id: string;
+  fullname: string;
+}
+
+/** Entrée du journal de suivi d'un signalement — POST/GET /signalement-citoyen/:id/updates. */
+export interface SignalementUpdate {
+  id: string;
+  signalementId: string;
   texte: string;
+  createdAt: string;
+  auteur: SignalementUpdateAuteur | null;
 }
 
 export function updatesLabel(count: number): string {
