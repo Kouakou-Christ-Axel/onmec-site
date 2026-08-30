@@ -5,9 +5,9 @@ export function Vision() {
   return (
     <section className="border-y border-ink/10 bg-surface-card py-16 sm:py-20 lg:py-28">
       <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-9 px-5 sm:px-8 lg:grid-cols-[180px_1fr] lg:gap-20 lg:px-16">
-        <span className="text-xs font-semibold tracking-widest text-orange-700 uppercase">
+        <h2 className="text-xs font-semibold tracking-widest text-orange-700 uppercase">
           Vision
-        </span>
+        </h2>
         <div className="flex flex-col gap-10">
           <Reveal className="max-w-[60ch] text-2xl leading-snug tracking-tight text-ink text-pretty">
             Une Côte d’Ivoire où l’éducation civique ne s’arrête pas à la salle de classe, et où

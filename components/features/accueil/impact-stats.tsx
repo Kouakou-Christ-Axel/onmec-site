@@ -28,9 +28,6 @@ export function ImpactStats() {
             </Reveal>
           ))}
         </div>
-        <Reveal className="mt-6 text-sm text-text-muted">
-          Périodes de référence à confirmer avant publication — un chiffre MEC se publie daté.
-        </Reveal>
       </div>
     </section>
   );

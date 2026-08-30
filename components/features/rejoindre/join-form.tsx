@@ -46,9 +46,9 @@ export function JoinForm() {
                 <fieldset>
                   <legend className="mb-5 flex w-full items-baseline gap-3.5 border-b-2 border-ink pb-3">
                     <span className="text-sm font-semibold tabular-nums text-orange-600">01</span>
-                    <span className="text-2xl font-semibold tracking-tight text-ink">
+                    <h2 className="text-2xl font-semibold tracking-tight text-ink">
                       Votre profil
-                    </span>
+                    </h2>
                   </legend>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     {PROFILS.map((p) => (
@@ -67,9 +67,9 @@ export function JoinForm() {
                 <fieldset>
                   <legend className="mb-5 flex w-full items-baseline gap-3.5 border-b-2 border-ink pb-3">
                     <span className="text-sm font-semibold tabular-nums text-orange-600">02</span>
-                    <span className="text-2xl font-semibold tracking-tight text-ink">
+                    <h2 className="text-2xl font-semibold tracking-tight text-ink">
                       Vos coordonnées
-                    </span>
+                    </h2>
                   </legend>
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     <FormField label="Nom et prénoms" required>
@@ -105,9 +105,9 @@ export function JoinForm() {
                 <fieldset>
                   <legend className="mb-5 flex w-full items-baseline gap-3.5 border-b-2 border-ink pb-3">
                     <span className="text-sm font-semibold tabular-nums text-orange-600">03</span>
-                    <span className="text-2xl font-semibold tracking-tight text-ink">
+                    <h2 className="text-2xl font-semibold tracking-tight text-ink">
                       Votre engagement
-                    </span>
+                    </h2>
                   </legend>
                   <div className="flex flex-col gap-6">
                     <div>
@@ -153,9 +153,9 @@ export function JoinForm() {
                 <fieldset>
                   <legend className="mb-5 flex w-full items-baseline gap-3.5 border-b-2 border-ink pb-3">
                     <span className="text-sm font-semibold tabular-nums text-orange-600">04</span>
-                    <span className="text-2xl font-semibold tracking-tight text-ink">
+                    <h2 className="text-2xl font-semibold tracking-tight text-ink">
                       Validation
-                    </span>
+                    </h2>
                   </legend>
                   <div className="flex flex-col gap-3.5">
                     <CheckboxItem

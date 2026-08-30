@@ -1,9 +1,17 @@
 import Link from "next/link";
 import { Reveal } from "@/components/features/site/reveal";
 
-const PARTNERS = [{ label: "Partenaire 1" }, { label: "Partenaire 2" }, { label: "Partenaire 3" }];
+/**
+ * Aucun partenaire réel à afficher pour le moment — voir §4.1 de l'audit SEO. Un nom ou un logo
+ * inventé serait indexé comme s'il était réel ; la liste reste vide, et toute la section se masque
+ * (cf. le rendu plus bas) tant qu'elle est vide. Elle réapparaît d'elle-même dès qu'un partenaire
+ * réel y est ajouté.
+ */
+const PARTNERS: { label: string }[] = [];
 
 export function Partners() {
+  if (!PARTNERS.length) return null;
+
   return (
     <section className="py-16 sm:py-20 lg:py-28">
       <div className="mx-auto max-w-[1280px] px-5 sm:px-8 lg:px-16">

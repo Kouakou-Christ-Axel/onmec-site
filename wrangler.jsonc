@@ -24,8 +24,18 @@
 			"remote": true
 		}
 	],
+	// SITE_URL est le domaine public de ce site, a ne pas confondre avec API_BASE_URL qui pointe
+	// vers le backend NestJS. Il doit designer le domaine ou ce site est REELLEMENT servi.
+	//
+	// A ce jour c'est workers.dev : mec-ci.org sert encore l'ancien site. Y pointer les canonicals
+	// des maintenant les ferait referencer un contenu etranger.
+	//
+	// A la bascule sur mec-ci.org : passer SITE_URL a "https://mec-ci.org", trancher www vs
+	// non-www, et poser les 301 (/about -> /apropos, /documents -> /ressources, et workers.dev ->
+	// mec-ci.org). Voir docs/seo-audit-2026-08-30.md section 5.
 	"vars": {
-		"API_BASE_URL": "https://admin.mec-ci.org/api/v1"
+		"API_BASE_URL": "https://admin.mec-ci.org/api/v1",
+		"SITE_URL": "https://onmec-site.kouakoucaxel.workers.dev"
 	},
 	"observability": {
 		"enabled": false,

@@ -8,11 +8,20 @@ type DetailRow = {
   href?: string;
 };
 
+/**
+ * Adresse exacte et numéro du siège pas encore communiqués par l'équipe MEC (voir §4.1 de l'audit
+ * SEO) — `null` plutôt qu'une valeur inventée. Chaque ligne, et le plan d'accès qui dépend de
+ * l'adresse, se masquent tant que la donnée réelle correspondante est absente, et réapparaissent
+ * d'eux-mêmes dès qu'elle est renseignée ici.
+ */
+const ADRESSE: string | null = null;
+const TELEPHONE: string | null = null;
+
 const ROWS: DetailRow[] = [
-  { icon: MapPin, label: "Adresse exacte à fournir", value: "Abidjan, Côte d’Ivoire" },
+  ...(ADRESSE ? [{ icon: MapPin, value: ADRESSE }] : []),
   { icon: Clock, label: "Du lundi au vendredi", value: "8 h 30 – 17 h 00" },
   { icon: Mail, value: "contact@mec-ci.org", href: "mailto:contact@mec-ci.org" },
-  { icon: Phone, value: "Numéro à fournir" },
+  ...(TELEPHONE ? [{ icon: Phone, value: TELEPHONE }] : []),
 ];
 
 export function ContactDetails() {
@@ -44,11 +53,9 @@ export function ContactDetails() {
         </div>
       </div>
 
-      <PhotoPlaceholder
-        ratio="4/3"
-        label="Plan d’accès à fournir"
-        hint="Capture du plan à insérer une fois l’adresse confirmée"
-      />
+      {ADRESSE ? (
+        <PhotoPlaceholder ratio="4/3" />
+      ) : null}
     </div>
   );
 }

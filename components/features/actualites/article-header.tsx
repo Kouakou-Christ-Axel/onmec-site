@@ -26,8 +26,8 @@ export function ArticleHeader({ article }: { article: Article }) {
             <div className="flex items-center gap-3">
               <CategoryTag categorie={article.categorie} />
               <span className="text-[13px] text-text-muted">
-                {formatArticleDate(article.date)} · {estimateReadingTime(article.content)} de
-                lecture
+                <time dateTime={article.date}>{formatArticleDate(article.date)}</time> ·{" "}
+                {estimateReadingTime(article.content)} de lecture
               </span>
             </div>
             <h1 className="text-5xl leading-[0.96] font-semibold tracking-tight text-ink text-pretty sm:text-6xl lg:text-7xl">
@@ -55,13 +55,11 @@ export function ArticleHeader({ article }: { article: Article }) {
       <div className="mx-auto mb-9 max-w-[1280px] px-5 sm:px-8 lg:mb-16 lg:px-16">
         <ArticleCover
           src={article.imageUrl}
-          alt=""
+          alt={article.title}
           ratio="21/9"
           duotone
           sizes="(min-width: 1280px) 1216px, 100vw"
-          priority
-          placeholderLabel="Photo d’en-tête à fournir"
-        />
+          priority        />
       </div>
     </>
   );
