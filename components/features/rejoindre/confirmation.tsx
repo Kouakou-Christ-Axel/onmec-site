@@ -13,8 +13,8 @@ export function Confirmation() {
           Votre demande est enregistrée
         </h2>
         <p className="mx-auto mb-7 max-w-[46ch] text-lg leading-relaxed text-text-muted">
-          Nous vous rappelons sous 72 heures pour la formation d’accueil. Aucune cotisation ne
-          vous sera demandée.
+          Nous vous rappelons sous 72 heures pour la formation d’accueil. Aucune cotisation ne vous
+          sera demandée.
         </p>
       </Reveal>
       <Reveal delay={160} className="flex flex-wrap justify-center gap-3">

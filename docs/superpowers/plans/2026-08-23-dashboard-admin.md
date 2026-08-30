@@ -30,8 +30,8 @@ statiques dans `features/admin/data/`.
   vérification visuelle manuelle dans le navigateur.
 - **Kebab-case partout**, fichiers ≤ 200 lignes (voir `docs/ARCHITECTURE.md`).
 - **Rôles de démo** : `role` (`Administrateur national` par défaut) pilote `canSig` (`role !==
-  'Chargée de communication'`), `canEdito` (`role !== 'Modérateur'`), `canUsers` (`role ===
-  'Administrateur national'`) — logique identique au prototype.
+'Chargée de communication'`), `canEdito` (`role !== 'Modérateur'`), `canUsers` (`role ===
+'Administrateur national'`) — logique identique au prototype.
 - Une fois toutes les tâches terminées, lancer une revue `convention-drift-check` sur le diff complet
   avant de proposer le commit final (règle CLAUDE.md), en plus des commits par tâche.
 
@@ -40,9 +40,11 @@ statiques dans `features/admin/data/`.
 ### Task 1: Tokens design system + animation
 
 **Files:**
+
 - Modify: `app/globals.css`
 
 **Interfaces:**
+
 - Produces (utilitaires Tailwind consommés par toutes les tâches suivantes) : `bg-surface-page`,
   `bg-surface-card`, `bg-surface-sunken`, `bg-surface-deep`, `bg-surface-deep-soft`,
   `border-border-subtle`, `border-border-strong`, `text-muted-foreground`, `bg-verdict-true-bg`,
@@ -56,22 +58,22 @@ Dans `app/globals.css`, à l'intérieur du bloc `@theme` existant (après `--col
 ajouter :
 
 ```css
-  --color-surface-page: var(--color-n-50);
-  --color-surface-card: var(--color-n-0);
-  --color-surface-sunken: var(--color-n-100);
-  --color-surface-deep: var(--color-blue-800);
-  --color-surface-deep-soft: var(--color-blue-50);
-  --color-border-subtle: rgb(14 27 46 / 0.1);
-  --color-border-strong: rgb(14 27 46 / 0.24);
-  --color-muted-foreground: #5e6878;
-  --color-verdict-true: #157f52;
-  --color-verdict-true-bg: #e7f5ee;
-  --color-verdict-false: #c42b1c;
-  --color-verdict-false-bg: #fcebe9;
-  --color-verdict-misleading: #8a4100;
-  --color-verdict-misleading-bg: #fff0de;
-  --shadow-overlay: 0 24px 60px rgb(7 28 57 / 0.22);
-  --radius-control: 6px;
+--color-surface-page: var(--color-n-50);
+--color-surface-card: var(--color-n-0);
+--color-surface-sunken: var(--color-n-100);
+--color-surface-deep: var(--color-blue-800);
+--color-surface-deep-soft: var(--color-blue-50);
+--color-border-subtle: rgb(14 27 46 / 0.1);
+--color-border-strong: rgb(14 27 46 / 0.24);
+--color-muted-foreground: #5e6878;
+--color-verdict-true: #157f52;
+--color-verdict-true-bg: #e7f5ee;
+--color-verdict-false: #c42b1c;
+--color-verdict-false-bg: #fcebe9;
+--color-verdict-misleading: #8a4100;
+--color-verdict-misleading-bg: #fff0de;
+--shadow-overlay: 0 24px 60px rgb(7 28 57 / 0.22);
+--radius-control: 6px;
 ```
 
 - [ ] **Step 2: Ajouter l'animation d'entrée des overlays (tiroir/modale/éditeur)**
@@ -120,10 +122,12 @@ git commit -m "feat(admin): tokens et animations du design system dashboard"
 ### Task 2: Primitives boutons (`button.tsx`, `icon-button.tsx`)
 
 **Files:**
+
 - Create: `components/ui/button.tsx`
 - Create: `components/ui/icon-button.tsx`
 
 **Interfaces:**
+
 - Produces: `Button({ variant?, size?, icon?, full?, ...buttonProps })`,
   `IconButton({ icon, label, variant?, size?, ...buttonProps })`.
 
@@ -142,7 +146,8 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   ghost: "bg-transparent text-ink hover:bg-n-100",
   deep: "bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700",
   invert: "bg-white text-ink hover:bg-n-100",
-  "outline-invert": "bg-transparent text-white border border-white/24 hover:bg-white/12 hover:border-white",
+  "outline-invert":
+    "bg-transparent text-white border border-white/24 hover:bg-white/12 hover:border-white",
 };
 
 const SIZE_CLASSES: Record<ButtonSize, string> = {
@@ -250,11 +255,13 @@ git commit -m "feat(admin): primitives Button et IconButton"
 ### Task 3: Primitive `tag.tsx`
 
 **Files:**
+
 - Create: `components/ui/tag.tsx`
 
 **Interfaces:**
+
 - Produces: `Tag({ tone?, size?, active?, icon?, onClick?, children })`. `tone` ∈ `"neutral" |
-  "orange" | "blue" | "solid" | "outline" | "invert"`.
+"orange" | "blue" | "solid" | "outline" | "invert"`.
 
 - [ ] **Step 1: Créer `components/ui/tag.tsx`**
 
@@ -328,12 +335,14 @@ git commit -m "feat(admin): primitive Tag"
 ### Task 4: Primitives formulaire (`field.tsx`, `input.tsx`, `textarea.tsx`, `select.tsx`)
 
 **Files:**
+
 - Create: `components/ui/field.tsx`
 - Create: `components/ui/input.tsx`
 - Create: `components/ui/textarea.tsx`
 - Create: `components/ui/select.tsx`
 
 **Interfaces:**
+
 - Produces: `Field({ label, htmlFor?, hint?, error?, children })`, `Input(props)`,
   `Textarea(props)`, `Select(props)` — `Input`/`Textarea`/`Select` étendent les attributs HTML natifs
   respectifs.
@@ -393,7 +402,11 @@ export function Input({ size = "default", className = "", ...props }: InputProps
 ```tsx
 import type { TextareaHTMLAttributes } from "react";
 
-export function Textarea({ className = "", rows = 3, ...props }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
+export function Textarea({
+  className = "",
+  rows = 3,
+  ...props
+}: TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return (
     <textarea
       rows={rows}
@@ -410,7 +423,11 @@ export function Textarea({ className = "", rows = 3, ...props }: TextareaHTMLAtt
 import type { SelectHTMLAttributes } from "react";
 import { ChevronDown } from "lucide-react";
 
-export function Select({ className = "", children, ...props }: SelectHTMLAttributes<HTMLSelectElement>) {
+export function Select({
+  className = "",
+  children,
+  ...props
+}: SelectHTMLAttributes<HTMLSelectElement>) {
   return (
     <div className="relative block">
       <select
@@ -419,7 +436,10 @@ export function Select({ className = "", children, ...props }: SelectHTMLAttribu
       >
         {children}
       </select>
-      <ChevronDown size={16} className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 text-n-400" />
+      <ChevronDown
+        size={16}
+        className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 text-n-400"
+      />
     </div>
   );
 }
@@ -442,17 +462,19 @@ git commit -m "feat(admin): primitives de formulaire (Field, Input, Textarea, Se
 ### Task 5: Primitives `alert.tsx`, `stat.tsx`, `drawer.tsx`, `dialog.tsx`
 
 **Files:**
+
 - Create: `components/ui/alert.tsx`
 - Create: `components/ui/stat.tsx`
 - Create: `components/ui/drawer.tsx`
 - Create: `components/ui/dialog.tsx`
 
 **Interfaces:**
+
 - Consumes: `IconButton` (Task 2, utilisé nulle part ici en réalité — le bouton de fermeture est
   laissé au composant appelant, `Drawer`/`Dialog` ne rendent que le châssis).
 - Produces: `Alert({ tone?, title?, children })`, `Stat({ value, label, meta?, rule? })`,
   `Drawer({ open, onClose, children, widthClassName? })`, `Dialog({ open, onClose, children,
-  wide? })`.
+wide? })`.
 
 - [ ] **Step 1: Créer `components/ui/alert.tsx`**
 
@@ -474,7 +496,9 @@ interface AlertProps {
 
 export function Alert({ tone = "info", title, children }: AlertProps) {
   return (
-    <div className={`flex gap-4 rounded-md border p-5 text-sm leading-relaxed ${TONE_CLASSES[tone]}`}>
+    <div
+      className={`flex gap-4 rounded-md border p-5 text-sm leading-relaxed ${TONE_CLASSES[tone]}`}
+    >
       <div className="flex flex-col gap-1">
         {title ? <p className="text-base font-semibold">{title}</p> : null}
         <p>{children}</p>
@@ -521,11 +545,21 @@ interface DrawerProps {
   widthClassName?: string;
 }
 
-export function Drawer({ open, onClose, children, widthClassName = "w-[min(560px,94vw)]" }: DrawerProps) {
+export function Drawer({
+  open,
+  onClose,
+  children,
+  widthClassName = "w-[min(560px,94vw)]",
+}: DrawerProps) {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-80 flex justify-end bg-blue-900/62">
-      <button type="button" aria-label="Fermer" onClick={onClose} className="absolute inset-0 cursor-default" />
+      <button
+        type="button"
+        aria-label="Fermer"
+        onClick={onClose}
+        className="absolute inset-0 cursor-default"
+      />
       <aside
         className={`relative flex h-full flex-col border-l border-border-strong bg-surface-page ${widthClassName}`}
         style={{ animation: "mecDrawer 260ms cubic-bezier(.22,1,.36,1) both" }}
@@ -553,7 +587,12 @@ export function Dialog({ open, onClose, children, wide = false }: DialogProps) {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-90 flex items-center justify-center bg-blue-900/62 p-6">
-      <button type="button" aria-label="Fermer" onClick={onClose} className="absolute inset-0 cursor-default" />
+      <button
+        type="button"
+        aria-label="Fermer"
+        onClick={onClose}
+        className="absolute inset-0 cursor-default"
+      />
       <div
         className={`relative flex w-full flex-col rounded-lg border border-border-strong bg-surface-page shadow-overlay ${wide ? "max-w-[min(760px,94vw)]" : "max-w-[min(520px,94vw)]"}`}
         style={{ animation: "mecRise 220ms cubic-bezier(.22,1,.36,1) both" }}
@@ -584,6 +623,7 @@ git commit -m "feat(admin): primitives Alert, Stat, Drawer, Dialog"
 ### Task 6: Données mockées (`features/admin/data/*.ts`)
 
 **Files:**
+
 - Create: `features/admin/data/signalements.ts`
 - Create: `features/admin/data/droits.ts`
 - Create: `features/admin/data/utilisateurs.ts`
@@ -593,6 +633,7 @@ git commit -m "feat(admin): primitives Alert, Stat, Drawer, Dialog"
 - Create: `features/admin/data/notifications-envoyees.ts`
 
 **Interfaces:**
+
 - Produces : `Signalement`, `SignalementStatut`, `SignalementUpdate`, `SIGNALEMENTS`,
   `CATEGORIES_SIGNALEMENT`, `RESPONSABLES` ; `DroitModule`, `DROITS` ; `Utilisateur`,
   `UTILISATEURS` ; `Article`, `ARTICLES` ; `Ressource`, `RESSOURCES` ; `Campagne`, `CAMPAGNES` ;
@@ -666,7 +707,8 @@ export const SIGNALEMENTS: Signalement[] = [
     statut: "validation",
     publie: false,
     responsable: "",
-    contenu: "Dépôt sauvage installé sur le trottoir de l’entrée des élèves. Odeurs signalées par les parents.",
+    contenu:
+      "Dépôt sauvage installé sur le trottoir de l’entrée des élèves. Odeurs signalées par les parents.",
     updates: [],
   },
   {
@@ -695,12 +737,14 @@ export const SIGNALEMENTS: Signalement[] = [
     statut: "encours",
     publie: true,
     responsable: "Konan Yao",
-    contenu: "Marquage au sol totalement effacé à la sortie des classes, sur une voie à double sens.",
+    contenu:
+      "Marquage au sol totalement effacé à la sortie des classes, sur une voie à double sens.",
     updates: [
       {
         date: "20/08/2026",
         auteur: "Konan Yao",
-        texte: "Signalement transmis à la mairie de Marcory. Dossier enregistré sous la référence M-2026-311.",
+        texte:
+          "Signalement transmis à la mairie de Marcory. Dossier enregistré sous la référence M-2026-311.",
       },
     ],
   },
@@ -715,12 +759,14 @@ export const SIGNALEMENTS: Signalement[] = [
     statut: "encours",
     publie: true,
     responsable: "Aminata Traoré",
-    contenu: "Deux tôles arrachées au-dessus de la classe de 4e. La salle est inutilisable les jours de pluie.",
+    contenu:
+      "Deux tôles arrachées au-dessus de la classe de 4e. La salle est inutilisable les jours de pluie.",
     updates: [
       {
         date: "20/08/2026",
         auteur: "Aminata Traoré",
-        texte: "Visite effectuée avec le proviseur. Devis de réparation demandé à la direction régionale.",
+        texte:
+          "Visite effectuée avec le proviseur. Devis de réparation demandé à la direction régionale.",
       },
     ],
   },
@@ -737,8 +783,16 @@ export const SIGNALEMENTS: Signalement[] = [
     responsable: "Salif Ouattara",
     contenu: "Plaque manquante sur un trottoir très fréquenté, à côté d’un arrêt de gbaka.",
     updates: [
-      { date: "18/08/2026", auteur: "Salif Ouattara", texte: "Zone balisée par les riverains, photo transmise au district d’Abidjan." },
-      { date: "20/08/2026", auteur: "Salif Ouattara", texte: "Intervention annoncée pour la semaine du 25/08." },
+      {
+        date: "18/08/2026",
+        auteur: "Salif Ouattara",
+        texte: "Zone balisée par les riverains, photo transmise au district d’Abidjan.",
+      },
+      {
+        date: "20/08/2026",
+        auteur: "Salif Ouattara",
+        texte: "Intervention annoncée pour la semaine du 25/08.",
+      },
     ],
   },
   {
@@ -754,8 +808,16 @@ export const SIGNALEMENTS: Signalement[] = [
     responsable: "Aminata Traoré",
     contenu: "Fuite continue depuis trois jours à l’angle de la rue du marché, chaussée inondée.",
     updates: [
-      { date: "16/08/2026", auteur: "Aminata Traoré", texte: "Signalement transmis au service des eaux, référence SODECI 8842." },
-      { date: "19/08/2026", auteur: "Aminata Traoré", texte: "Réparation effectuée le 19/08. Signalement clôturé après vérification sur place." },
+      {
+        date: "16/08/2026",
+        auteur: "Aminata Traoré",
+        texte: "Signalement transmis au service des eaux, référence SODECI 8842.",
+      },
+      {
+        date: "19/08/2026",
+        auteur: "Aminata Traoré",
+        texte: "Réparation effectuée le 19/08. Signalement clôturé après vérification sur place.",
+      },
     ],
   },
   {
@@ -771,8 +833,16 @@ export const SIGNALEMENTS: Signalement[] = [
     responsable: "Konan Yao",
     contenu: "Affaissement de la chaussée gênant les livraisons du matin.",
     updates: [
-      { date: "13/08/2026", auteur: "Konan Yao", texte: "Transmis à la mairie de Cocody avec les photos du signalant." },
-      { date: "18/08/2026", auteur: "Konan Yao", texte: "Rebouchage réalisé le 17/08. Le citoyen a confirmé la réparation." },
+      {
+        date: "13/08/2026",
+        auteur: "Konan Yao",
+        texte: "Transmis à la mairie de Cocody avec les photos du signalant.",
+      },
+      {
+        date: "18/08/2026",
+        auteur: "Konan Yao",
+        texte: "Rebouchage réalisé le 17/08. Le citoyen a confirmé la réparation.",
+      },
     ],
   },
   {
@@ -791,7 +861,8 @@ export const SIGNALEMENTS: Signalement[] = [
       {
         date: "11/08/2026",
         auteur: "Salif Ouattara",
-        texte: "Hors périmètre du dispositif : signalement redirigé vers la commission électorale locale.",
+        texte:
+          "Hors périmètre du dispositif : signalement redirigé vers la commission électorale locale.",
       },
     ],
   },
@@ -807,7 +878,12 @@ export const CATEGORIES_SIGNALEMENT = [
   "Autre",
 ] as const;
 
-export const RESPONSABLES = ["Aminata Traoré", "Konan Yao", "Salif Ouattara", "Mariam Bakayoko"] as const;
+export const RESPONSABLES = [
+  "Aminata Traoré",
+  "Konan Yao",
+  "Salif Ouattara",
+  "Mariam Bakayoko",
+] as const;
 ```
 
 - [ ] **Step 2: Créer `features/admin/data/droits.ts`**
@@ -821,14 +897,54 @@ export interface DroitModule {
 }
 
 export const DROITS: DroitModule[] = [
-  { module: "Actualités et blog", administrateur: "Plein accès", communication: "Plein accès", moderation: "Lecture seule" },
-  { module: "Ressources pédagogiques", administrateur: "Plein accès", communication: "Plein accès", moderation: "Lecture seule" },
-  { module: "Signalements de l’app", administrateur: "Plein accès", communication: "Aucun accès", moderation: "Plein accès" },
-  { module: "Modération et suivi", administrateur: "Plein accès", communication: "Lecture seule", moderation: "Plein accès" },
-  { module: "Campagnes et événements", administrateur: "Plein accès", communication: "Plein accès", moderation: "Lecture seule" },
-  { module: "Notifications de l’app", administrateur: "Plein accès", communication: "Plein accès", moderation: "Aucun accès" },
-  { module: "Statistiques et rapports", administrateur: "Plein accès", communication: "Lecture seule", moderation: "Lecture seule" },
-  { module: "Utilisateurs et droits", administrateur: "Plein accès", communication: "Aucun accès", moderation: "Aucun accès" },
+  {
+    module: "Actualités et blog",
+    administrateur: "Plein accès",
+    communication: "Plein accès",
+    moderation: "Lecture seule",
+  },
+  {
+    module: "Ressources pédagogiques",
+    administrateur: "Plein accès",
+    communication: "Plein accès",
+    moderation: "Lecture seule",
+  },
+  {
+    module: "Signalements de l’app",
+    administrateur: "Plein accès",
+    communication: "Aucun accès",
+    moderation: "Plein accès",
+  },
+  {
+    module: "Modération et suivi",
+    administrateur: "Plein accès",
+    communication: "Lecture seule",
+    moderation: "Plein accès",
+  },
+  {
+    module: "Campagnes et événements",
+    administrateur: "Plein accès",
+    communication: "Plein accès",
+    moderation: "Lecture seule",
+  },
+  {
+    module: "Notifications de l’app",
+    administrateur: "Plein accès",
+    communication: "Plein accès",
+    moderation: "Aucun accès",
+  },
+  {
+    module: "Statistiques et rapports",
+    administrateur: "Plein accès",
+    communication: "Lecture seule",
+    moderation: "Lecture seule",
+  },
+  {
+    module: "Utilisateurs et droits",
+    administrateur: "Plein accès",
+    communication: "Aucun accès",
+    moderation: "Aucun accès",
+  },
 ];
 ```
 
@@ -844,12 +960,48 @@ export interface Utilisateur {
 }
 
 export const UTILISATEURS: Utilisateur[] = [
-  { nom: "Aminata Traoré", email: "a.traore@mec-ci.org", role: "Administratrice nationale", derniereConnexion: "Aujourd’hui, 07 h 40", etat: "Actif" },
-  { nom: "Nadia Koffi", email: "n.koffi@mec-ci.org", role: "Chargée de communication", derniereConnexion: "Hier, 18 h 05", etat: "Actif" },
-  { nom: "Konan Yao", email: "k.yao@mec-ci.org", role: "Modérateur — vérification", derniereConnexion: "Aujourd’hui, 08 h 12", etat: "Actif" },
-  { nom: "Salif Ouattara", email: "s.ouattara@mec-ci.org", role: "Modérateur — vérification", derniereConnexion: "19/08, 09 h 05", etat: "Actif" },
-  { nom: "Mariam Bakayoko", email: "m.bakayoko@mec-ci.org", role: "Coordination campus — lecture", derniereConnexion: "12/08, 16 h 22", etat: "Invitation" },
-  { nom: "Yves N’Guessan", email: "y.nguessan@mec-ci.org", role: "Rédacteur", derniereConnexion: "—", etat: "Invitation" },
+  {
+    nom: "Aminata Traoré",
+    email: "a.traore@mec-ci.org",
+    role: "Administratrice nationale",
+    derniereConnexion: "Aujourd’hui, 07 h 40",
+    etat: "Actif",
+  },
+  {
+    nom: "Nadia Koffi",
+    email: "n.koffi@mec-ci.org",
+    role: "Chargée de communication",
+    derniereConnexion: "Hier, 18 h 05",
+    etat: "Actif",
+  },
+  {
+    nom: "Konan Yao",
+    email: "k.yao@mec-ci.org",
+    role: "Modérateur — vérification",
+    derniereConnexion: "Aujourd’hui, 08 h 12",
+    etat: "Actif",
+  },
+  {
+    nom: "Salif Ouattara",
+    email: "s.ouattara@mec-ci.org",
+    role: "Modérateur — vérification",
+    derniereConnexion: "19/08, 09 h 05",
+    etat: "Actif",
+  },
+  {
+    nom: "Mariam Bakayoko",
+    email: "m.bakayoko@mec-ci.org",
+    role: "Coordination campus — lecture",
+    derniereConnexion: "12/08, 16 h 22",
+    etat: "Invitation",
+  },
+  {
+    nom: "Yves N’Guessan",
+    email: "y.nguessan@mec-ci.org",
+    role: "Rédacteur",
+    derniereConnexion: "—",
+    etat: "Invitation",
+  },
 ];
 ```
 
@@ -866,11 +1018,46 @@ export interface Article {
 }
 
 export const ARTICLES: Article[] = [
-  { titre: "Trois idées fausses sur le vote des étudiants", statut: "Publié", tone: "blue", auteur: "Aminata Traoré", date: "18/08/2026", vues: "1 240" },
-  { titre: "Retour sur la caravane citoyenne de Bouaké", statut: "Brouillon", tone: "orange", auteur: "Nadia Koffi", date: "—", vues: "—" },
-  { titre: "Ce que dit vraiment la loi sur l’état civil", statut: "En relecture", tone: "orange", auteur: "Yves N’Guessan", date: "—", vues: "—" },
-  { titre: "Ouverture des candidatures ambassadeurs campus", statut: "Programmé", tone: "neutral", auteur: "Nadia Koffi", date: "25/08/2026", vues: "—" },
-  { titre: "Bilan des clubs scolaires 2025-2026", statut: "Publié", tone: "blue", auteur: "Aminata Traoré", date: "02/08/2026", vues: "860" },
+  {
+    titre: "Trois idées fausses sur le vote des étudiants",
+    statut: "Publié",
+    tone: "blue",
+    auteur: "Aminata Traoré",
+    date: "18/08/2026",
+    vues: "1 240",
+  },
+  {
+    titre: "Retour sur la caravane citoyenne de Bouaké",
+    statut: "Brouillon",
+    tone: "orange",
+    auteur: "Nadia Koffi",
+    date: "—",
+    vues: "—",
+  },
+  {
+    titre: "Ce que dit vraiment la loi sur l’état civil",
+    statut: "En relecture",
+    tone: "orange",
+    auteur: "Yves N’Guessan",
+    date: "—",
+    vues: "—",
+  },
+  {
+    titre: "Ouverture des candidatures ambassadeurs campus",
+    statut: "Programmé",
+    tone: "neutral",
+    auteur: "Nadia Koffi",
+    date: "25/08/2026",
+    vues: "—",
+  },
+  {
+    titre: "Bilan des clubs scolaires 2025-2026",
+    statut: "Publié",
+    tone: "blue",
+    auteur: "Aminata Traoré",
+    date: "02/08/2026",
+    vues: "860",
+  },
 ];
 ```
 
@@ -885,11 +1072,36 @@ export interface Ressource {
 }
 
 export const RESSOURCES: Ressource[] = [
-  { titre: "Guide du jeune citoyen", meta: "PDF · 34 pages · mis en ligne le 12/06/2026", telechargements: 412, statut: "en-ligne" },
-  { titre: "Fiche : reconnaître une fake news", meta: "PDF · 2 pages · mis en ligne le 03/07/2026", telechargements: 690, statut: "en-ligne" },
-  { titre: "Kit d’animation club scolaire", meta: "ZIP · 6 fichiers · mis en ligne le 21/07/2026", telechargements: 118, statut: "en-ligne" },
-  { titre: "Affiche — Signaler une information", meta: "PNG · A3 · mis en ligne le 30/07/2026", telechargements: 74, statut: "en-ligne" },
-  { titre: "Module de formation — droits et devoirs", meta: "PDF · 18 pages · soumis par Konan Yao", telechargements: null, statut: "en-validation" },
+  {
+    titre: "Guide du jeune citoyen",
+    meta: "PDF · 34 pages · mis en ligne le 12/06/2026",
+    telechargements: 412,
+    statut: "en-ligne",
+  },
+  {
+    titre: "Fiche : reconnaître une fake news",
+    meta: "PDF · 2 pages · mis en ligne le 03/07/2026",
+    telechargements: 690,
+    statut: "en-ligne",
+  },
+  {
+    titre: "Kit d’animation club scolaire",
+    meta: "ZIP · 6 fichiers · mis en ligne le 21/07/2026",
+    telechargements: 118,
+    statut: "en-ligne",
+  },
+  {
+    titre: "Affiche — Signaler une information",
+    meta: "PNG · A3 · mis en ligne le 30/07/2026",
+    telechargements: 74,
+    statut: "en-ligne",
+  },
+  {
+    titre: "Module de formation — droits et devoirs",
+    meta: "PDF · 18 pages · soumis par Konan Yao",
+    telechargements: null,
+    statut: "en-validation",
+  },
 ];
 
 export const TYPES_RESSOURCE = ["Fiche PDF", "Guide", "Affiche", "Kit d’animation"] as const;
@@ -966,9 +1178,30 @@ export interface NotificationEnvoyee {
 }
 
 export const NOTIFICATIONS_ENVOYEES: NotificationEnvoyee[] = [
-  { titre: "Passage piéton de Marcory : dossier transmis à la mairie", destinataires: "Tous les utilisateurs", date: "20/08/2026", recuePar: "2 140", ouverture: "38 %", ouvertureForte: true },
-  { titre: "Caravane à Bouaké : rendez-vous samedi", destinataires: "Bénévoles vérifiés", date: "15/08/2026", recuePar: "2 090", ouverture: "44 %", ouvertureForte: true },
-  { titre: "Guide du jeune citoyen disponible", destinataires: "Tous les utilisateurs", date: "06/08/2026", recuePar: "1 980", ouverture: "31 %", ouvertureForte: false },
+  {
+    titre: "Passage piéton de Marcory : dossier transmis à la mairie",
+    destinataires: "Tous les utilisateurs",
+    date: "20/08/2026",
+    recuePar: "2 140",
+    ouverture: "38 %",
+    ouvertureForte: true,
+  },
+  {
+    titre: "Caravane à Bouaké : rendez-vous samedi",
+    destinataires: "Bénévoles vérifiés",
+    date: "15/08/2026",
+    recuePar: "2 090",
+    ouverture: "44 %",
+    ouvertureForte: true,
+  },
+  {
+    titre: "Guide du jeune citoyen disponible",
+    destinataires: "Tous les utilisateurs",
+    date: "06/08/2026",
+    recuePar: "1 980",
+    ouverture: "31 %",
+    ouvertureForte: false,
+  },
 ];
 
 export const CIBLES_NOTIFICATION = [
@@ -998,10 +1231,12 @@ git commit -m "feat(admin): donnees mockees du dashboard"
 ### Task 7: `buildQueue()` — fonction pure + test vitest
 
 **Files:**
+
 - Create: `features/admin/lib/build-queue.ts`
 - Test: `features/admin/lib/build-queue.test.ts`
 
 **Interfaces:**
+
 - Consumes: `SIGNALEMENTS` (Task 6, `features/admin/data/signalements.ts`).
 - Produces: `QueueItem` (type), `buildQueue({ canSig, canEdito, canUsers }): QueueItem[]` — consommé
   par Task 11 (File de travail) et Task 12 (`AdminSidebar`, pour le badge de compteur).
@@ -1164,11 +1399,13 @@ git commit -m "feat(admin): buildQueue avec couverture de test"
 ### Task 8: Contexte de rôle (`admin-shell-context.tsx`)
 
 **Files:**
+
 - Create: `components/features/admin/admin-shell-context.tsx`
 
 **Interfaces:**
+
 - Produces: `AdminRole` (type), `AdminShellProvider({ children })`, `useAdminShell(): { role,
-  setRole, canSig, canEdito, canUsers }` — consommé par Task 9 (sidebar/header) et Task 10 (layout).
+setRole, canSig, canEdito, canUsers }` — consommé par Task 9 (sidebar/header) et Task 10 (layout).
 
 - [ ] **Step 1: Créer `components/features/admin/admin-shell-context.tsx`**
 
@@ -1179,7 +1416,11 @@ import { createContext, useContext, useMemo, useState, type ReactNode } from "re
 
 export type AdminRole = "Administrateur national" | "Chargée de communication" | "Modérateur";
 
-export const ADMIN_ROLES: AdminRole[] = ["Administrateur national", "Chargée de communication", "Modérateur"];
+export const ADMIN_ROLES: AdminRole[] = [
+  "Administrateur national",
+  "Chargée de communication",
+  "Modérateur",
+];
 
 interface AdminShellState {
   role: AdminRole;
@@ -1232,10 +1473,12 @@ git commit -m "feat(admin): contexte de role du shell admin"
 ### Task 9: `AdminSidebar` et `AdminHeader`
 
 **Files:**
+
 - Create: `components/features/admin/admin-sidebar.tsx`
 - Create: `components/features/admin/admin-header.tsx`
 
 **Interfaces:**
+
 - Consumes: `useAdminShell` (Task 8), `buildQueue` (Task 7), `SIGNALEMENTS` (Task 6), `Select`
   (Task 4), `IconButton` (Task 2).
 - Produces: `AdminSidebar()`, `AdminHeader()` — consommés par Task 10 (`app/admin/layout.tsx`).
@@ -1247,7 +1490,19 @@ git commit -m "feat(admin): contexte de role du shell admin"
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Inbox, Flag, Newspaper, BookOpen, Megaphone, Smartphone, Landmark, Users, ExternalLink, LogOut, type LucideIcon } from "lucide-react";
+import {
+  Inbox,
+  Flag,
+  Newspaper,
+  BookOpen,
+  Megaphone,
+  Smartphone,
+  Landmark,
+  Users,
+  ExternalLink,
+  LogOut,
+  type LucideIcon,
+} from "lucide-react";
 import { useAdminShell } from "@/components/features/admin/admin-shell-context";
 import { buildQueue } from "@/features/admin/lib/build-queue";
 import { SIGNALEMENTS } from "@/features/admin/data/signalements";
@@ -1274,7 +1529,9 @@ export function AdminSidebar() {
   const pathname = usePathname();
   const shell = useAdminShell();
   const queue = buildQueue(shell);
-  const cntOuverts = SIGNALEMENTS.filter((s) => s.statut === "validation" || s.statut === "encours").length;
+  const cntOuverts = SIGNALEMENTS.filter(
+    (s) => s.statut === "validation" || s.statut === "encours",
+  ).length;
 
   const visibleItems = NAV_ITEMS.filter((item) => item.requires === null || shell[item.requires]);
 
@@ -1290,7 +1547,12 @@ export function AdminSidebar() {
       <nav className="flex flex-col gap-0.5">
         {visibleItems.map((item) => {
           const active = pathname === item.href;
-          const badge = item.href === "/admin" ? queue.length : item.href === "/admin/signalements" ? cntOuverts : null;
+          const badge =
+            item.href === "/admin"
+              ? queue.length
+              : item.href === "/admin/signalements"
+                ? cntOuverts
+                : null;
           return (
             <Link
               key={item.href}
@@ -1318,7 +1580,10 @@ export function AdminSidebar() {
       </nav>
 
       <div className="mt-auto flex flex-col gap-3">
-        <Link href="/" className="flex h-10 items-center gap-2.5 rounded-md px-2.5 text-sm font-medium text-white/60 hover:bg-white/7 hover:text-white">
+        <Link
+          href="/"
+          className="flex h-10 items-center gap-2.5 rounded-md px-2.5 text-sm font-medium text-white/60 hover:bg-white/7 hover:text-white"
+        >
           <ExternalLink size={18} />
           <span>Voir le site public</span>
         </Link>
@@ -1328,7 +1593,9 @@ export function AdminSidebar() {
           </span>
           <span className="flex min-w-0 flex-col leading-tight">
             <span className="text-[0.8125rem] font-semibold text-white">Aminata Traoré</span>
-            <span className="overflow-hidden text-[0.6875rem] text-ellipsis whitespace-nowrap text-white/55">{shell.role}</span>
+            <span className="overflow-hidden text-[0.6875rem] text-ellipsis whitespace-nowrap text-white/55">
+              {shell.role}
+            </span>
           </span>
           <Link
             href="/admin/connexion"
@@ -1362,13 +1629,24 @@ export function AdminHeader() {
     <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b border-border-subtle bg-[#faf8f5]/90 px-5 backdrop-blur-md md:px-8">
       <div className="w-[min(320px,34vw)]">
         <div className="relative">
-          <Search size={16} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-n-400" />
-          <Input type="search" placeholder="Rechercher un signalement, un article…" className="pl-9" />
+          <Search
+            size={16}
+            className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-n-400"
+          />
+          <Input
+            type="search"
+            placeholder="Rechercher un signalement, un article…"
+            className="pl-9"
+          />
         </div>
       </div>
       <div className="ml-auto flex items-center gap-3">
         <div className="w-[210px]">
-          <Select aria-label="Rôle de démonstration" value={role} onChange={(e) => setRole(e.target.value as typeof role)}>
+          <Select
+            aria-label="Rôle de démonstration"
+            value={role}
+            onChange={(e) => setRole(e.target.value as typeof role)}
+          >
             {ADMIN_ROLES.map((r) => (
               <option key={r} value={r}>
                 {r}
@@ -1400,9 +1678,11 @@ git commit -m "feat(admin): sidebar et header du shell admin"
 ### Task 10: `app/admin/layout.tsx`
 
 **Files:**
+
 - Create: `app/admin/layout.tsx`
 
 **Interfaces:**
+
 - Consumes: `AdminShellProvider` (Task 8), `AdminSidebar`, `AdminHeader` (Task 9).
 
 - [ ] **Step 1: Créer `app/admin/layout.tsx`**
@@ -1451,9 +1731,11 @@ git commit -m "feat(admin): layout partage sidebar + header"
 ### Task 11: Écran File de travail (`app/admin/page.tsx`)
 
 **Files:**
+
 - Create: `app/admin/page.tsx`
 
 **Interfaces:**
+
 - Consumes: `useAdminShell` (Task 8), `buildQueue` (Task 7), `Button` (Task 2), `Tag` (Task 3).
 
 - [ ] **Step 1: Créer `app/admin/page.tsx`**
@@ -1469,9 +1751,21 @@ import { Button } from "@/components/ui/button";
 import { Tag } from "@/components/ui/tag";
 
 const ACTIVITE = [
-  { texte: "a marqué résolu le nid de poule d’Angré (SIG-2026-0140)", auteur: "Konan Yao", quand: "Hier, 17 h 12" },
-  { texte: "a programmé « Ouverture des candidatures ambassadeurs »", auteur: "Nadia Koffi", quand: "Hier, 14 h 40" },
-  { texte: "a ajouté 3 étapes à la caravane de Bouaké", auteur: "Salif Ouattara", quand: "19/08, 09 h 05" },
+  {
+    texte: "a marqué résolu le nid de poule d’Angré (SIG-2026-0140)",
+    auteur: "Konan Yao",
+    quand: "Hier, 17 h 12",
+  },
+  {
+    texte: "a programmé « Ouverture des candidatures ambassadeurs »",
+    auteur: "Nadia Koffi",
+    quand: "Hier, 14 h 40",
+  },
+  {
+    texte: "a ajouté 3 étapes à la caravane de Bouaké",
+    auteur: "Salif Ouattara",
+    quand: "19/08, 09 h 05",
+  },
   { texte: "a invité 2 coordinateurs campus", auteur: "Aminata Traoré", quand: "14/08, 11 h 30" },
 ];
 
@@ -1483,7 +1777,9 @@ export default function FileDeTravailPage() {
     <div className="flex max-w-[1320px] flex-col gap-6.5">
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">Tableau de bord</span>
+          <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">
+            Tableau de bord
+          </span>
           <h1 className="text-[1.75rem] leading-[1.12] font-semibold tracking-[-0.028em] text-ink">
             Ce qui attend une action
           </h1>
@@ -1528,7 +1824,9 @@ export default function FileDeTravailPage() {
               href="/admin/actualites"
               className="flex flex-col gap-1.5 rounded-lg border border-border-subtle bg-surface-card p-4.5 pb-4 text-[#2b3646] transition-all hover:-translate-y-0.5 hover:border-orange-500"
             >
-              <span className="text-[2rem] leading-none font-semibold tracking-[-0.03em] text-ink tabular-nums">2</span>
+              <span className="text-[2rem] leading-none font-semibold tracking-[-0.03em] text-ink tabular-nums">
+                2
+              </span>
               <span className="text-sm font-semibold text-ink">brouillons à relire</span>
               <span className="text-xs text-muted-foreground">Actualités et blog</span>
             </Link>
@@ -1536,7 +1834,9 @@ export default function FileDeTravailPage() {
               href="/admin/ressources"
               className="flex flex-col gap-1.5 rounded-lg border border-border-subtle bg-surface-card p-4.5 pb-4 text-[#2b3646] transition-all hover:-translate-y-0.5 hover:border-orange-500"
             >
-              <span className="text-[2rem] leading-none font-semibold tracking-[-0.03em] text-ink tabular-nums">1</span>
+              <span className="text-[2rem] leading-none font-semibold tracking-[-0.03em] text-ink tabular-nums">
+                1
+              </span>
               <span className="text-sm font-semibold text-ink">ressource à valider</span>
               <span className="text-xs text-muted-foreground">Soumise par un encadreur</span>
             </Link>
@@ -1547,7 +1847,9 @@ export default function FileDeTravailPage() {
             href="/admin/utilisateurs"
             className="flex flex-col gap-1.5 rounded-lg border border-border-subtle bg-surface-card p-4.5 pb-4 text-[#2b3646] transition-all hover:-translate-y-0.5 hover:border-orange-500"
           >
-            <span className="text-[2rem] leading-none font-semibold tracking-[-0.03em] text-ink tabular-nums">2</span>
+            <span className="text-[2rem] leading-none font-semibold tracking-[-0.03em] text-ink tabular-nums">
+              2
+            </span>
             <span className="text-sm font-semibold text-ink">invitations en attente</span>
             <span className="text-xs text-muted-foreground">Coordination campus</span>
           </Link>
@@ -1557,19 +1859,28 @@ export default function FileDeTravailPage() {
       <div className="grid items-start gap-5.5 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="overflow-hidden rounded-lg border border-border-subtle bg-surface-card">
           <div className="flex items-center justify-between gap-3.5 border-b border-border-subtle px-4.5 py-3.5">
-            <span className="text-xs font-semibold tracking-[0.13em] text-muted-foreground uppercase">À traiter</span>
+            <span className="text-xs font-semibold tracking-[0.13em] text-muted-foreground uppercase">
+              À traiter
+            </span>
             <span className="text-xs text-muted-foreground">Trié par ancienneté</span>
           </div>
           {queue.length === 0 ? (
-            <p className="px-4.5 py-6 text-sm text-muted-foreground">Rien en attente pour ce rôle.</p>
+            <p className="px-4.5 py-6 text-sm text-muted-foreground">
+              Rien en attente pour ce rôle.
+            </p>
           ) : (
             queue.map((item) => (
-              <div key={item.id} className="flex items-center gap-4 border-b border-border-subtle px-4.5 py-3.5 last:border-b-0">
+              <div
+                key={item.id}
+                className="flex items-center gap-4 border-b border-border-subtle px-4.5 py-3.5 last:border-b-0"
+              >
                 <span className="w-26 flex-none">
                   <Tag tone={item.tone}>{item.kind}</Tag>
                 </span>
                 <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                  <span className="text-[0.9375rem] leading-tight font-semibold text-ink">{item.titre}</span>
+                  <span className="text-[0.9375rem] leading-tight font-semibold text-ink">
+                    {item.titre}
+                  </span>
                   <span className="text-xs text-muted-foreground">{item.meta}</span>
                 </span>
                 <Link
@@ -1652,10 +1963,12 @@ git commit -m "feat(admin): ecran File de travail"
 ### Task 12: Écran Signalements + tiroir de détail
 
 **Files:**
+
 - Create: `app/admin/signalements/page.tsx`
 - Create: `components/features/admin/signalement-drawer.tsx`
 
 **Interfaces:**
+
 - Consumes: `SIGNALEMENTS`, `CATEGORIES_SIGNALEMENT`, `RESPONSABLES`, `Signalement`,
   `SignalementStatut` (Task 6), `Tag`, `Select`, `Button`, `Field`, `Textarea`, `Drawer`,
   `IconButton` (Tasks 2-5).
@@ -1674,9 +1987,16 @@ import { IconButton } from "@/components/ui/icon-button";
 import { Field } from "@/components/ui/field";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { RESPONSABLES, type Signalement, type SignalementStatut } from "@/features/admin/data/signalements";
+import {
+  RESPONSABLES,
+  type Signalement,
+  type SignalementStatut,
+} from "@/features/admin/data/signalements";
 
-const STATUT_META: Record<SignalementStatut, { label: string; tone: "orange" | "blue" | "neutral" | "outline" }> = {
+const STATUT_META: Record<
+  SignalementStatut,
+  { label: string; tone: "orange" | "blue" | "neutral" | "outline" }
+> = {
   validation: { label: "En validation", tone: "orange" },
   encours: { label: "En cours", tone: "blue" },
   resolu: { label: "Résolu", tone: "neutral" },
@@ -1729,7 +2049,9 @@ export function SignalementDrawer({ signalement, onClose, onChange }: Signalemen
           </span>
           <span className="flex items-center gap-2.5">
             <span className="text-base font-semibold text-ink tabular-nums">{signalement.id}</span>
-            <Tag tone={STATUT_META[signalement.statut].tone}>{STATUT_META[signalement.statut].label}</Tag>
+            <Tag tone={STATUT_META[signalement.statut].tone}>
+              {STATUT_META[signalement.statut].label}
+            </Tag>
           </span>
         </span>
         <IconButton icon={X} label="Fermer" onClick={onClose} />
@@ -1741,10 +2063,16 @@ export function SignalementDrawer({ signalement, onClose, onChange }: Signalemen
             <span key={etape.statut} className="flex flex-col gap-2">
               <span
                 className={`h-2.5 w-2.5 rounded-full border-2 ${
-                  i < currentIndex ? "border-verdict-true bg-verdict-true" : i === currentIndex ? "border-orange-500 bg-orange-500" : "border-n-300 bg-transparent"
+                  i < currentIndex
+                    ? "border-verdict-true bg-verdict-true"
+                    : i === currentIndex
+                      ? "border-orange-500 bg-orange-500"
+                      : "border-n-300 bg-transparent"
                 }`}
               />
-              <span className={`text-xs ${i === currentIndex ? "font-semibold text-ink" : "text-muted-foreground"}`}>
+              <span
+                className={`text-xs ${i === currentIndex ? "font-semibold text-ink" : "text-muted-foreground"}`}
+              >
                 {etape.label}
               </span>
             </span>
@@ -1774,7 +2102,9 @@ export function SignalementDrawer({ signalement, onClose, onChange }: Signalemen
           </span>
           <span className="flex flex-col gap-0.5">
             <span className="text-muted-foreground">Visible dans l’app</span>
-            <span className="font-semibold text-ink">{signalement.publie ? "Publié" : "Masqué"}</span>
+            <span className="font-semibold text-ink">
+              {signalement.publie ? "Publié" : "Masqué"}
+            </span>
           </span>
           <span className="flex flex-col gap-0.5">
             <span className="text-muted-foreground">Responsable</span>
@@ -1790,7 +2120,9 @@ export function SignalementDrawer({ signalement, onClose, onChange }: Signalemen
         </div>
 
         <div className="flex flex-col gap-3.5 rounded-lg border border-border-subtle bg-surface-card p-4.5">
-          <span className="text-xs font-semibold tracking-[0.13em] text-muted-foreground uppercase">Modération</span>
+          <span className="text-xs font-semibold tracking-[0.13em] text-muted-foreground uppercase">
+            Modération
+          </span>
           <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
@@ -1808,7 +2140,8 @@ export function SignalementDrawer({ signalement, onClose, onChange }: Signalemen
             </button>
           </div>
           <span className="text-xs leading-relaxed text-muted-foreground">
-            Un signalement masqué reste traité en interne, mais n’apparaît pas dans la carte publique de l’app.
+            Un signalement masqué reste traité en interne, mais n’apparaît pas dans la carte
+            publique de l’app.
           </span>
           <span className="h-px bg-border-subtle" />
           <span className="text-xs font-semibold tracking-[0.13em] text-muted-foreground uppercase">
@@ -1861,7 +2194,10 @@ export function SignalementDrawer({ signalement, onClose, onChange }: Signalemen
               Aucune mise à jour. Le citoyen ne voit encore que son signalement.
             </span>
           )}
-          <Field label="Ajouter une mise à jour" hint="Visible par le citoyen dans l’app, avec la date et votre nom">
+          <Field
+            label="Ajouter une mise à jour"
+            hint="Visible par le citoyen dans l’app, avec la date et votre nom"
+          >
             <Textarea
               rows={3}
               value={maj}
@@ -1905,9 +2241,17 @@ import { Button } from "@/components/ui/button";
 import { Tag } from "@/components/ui/tag";
 import { Select } from "@/components/ui/select";
 import { SignalementDrawer } from "@/components/features/admin/signalement-drawer";
-import { SIGNALEMENTS, CATEGORIES_SIGNALEMENT, type Signalement, type SignalementStatut } from "@/features/admin/data/signalements";
+import {
+  SIGNALEMENTS,
+  CATEGORIES_SIGNALEMENT,
+  type Signalement,
+  type SignalementStatut,
+} from "@/features/admin/data/signalements";
 
-const STATUT_META: Record<SignalementStatut, { label: string; tone: "orange" | "blue" | "neutral" | "outline" }> = {
+const STATUT_META: Record<
+  SignalementStatut,
+  { label: string; tone: "orange" | "blue" | "neutral" | "outline" }
+> = {
   validation: { label: "En validation", tone: "orange" },
   encours: { label: "En cours", tone: "blue" },
   resolu: { label: "Résolu", tone: "neutral" },
@@ -1925,12 +2269,15 @@ export default function SignalementsPage() {
 
   const openSignalement = signalements.find((s) => s.id === openId) ?? null;
 
-  const count = (statut: SignalementStatut) => signalements.filter((s) => s.statut === statut).length;
+  const count = (statut: SignalementStatut) =>
+    signalements.filter((s) => s.statut === statut).length;
 
   const rows = useMemo(
     () =>
       signalements.filter(
-        (s) => (filtre === "tous" || s.statut === filtre) && (categorie === "Toutes les catégories" || s.categorie === categorie),
+        (s) =>
+          (filtre === "tous" || s.statut === filtre) &&
+          (categorie === "Toutes les catégories" || s.categorie === categorie),
       ),
     [signalements, filtre, categorie],
   );
@@ -1943,11 +2290,15 @@ export default function SignalementsPage() {
     <div className="flex max-w-[1320px] flex-col gap-5.5">
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">Application mobile</span>
-          <h1 className="text-[1.75rem] leading-[1.12] font-semibold tracking-[-0.028em] text-ink">Signalements</h1>
+          <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">
+            Application mobile
+          </span>
+          <h1 className="text-[1.75rem] leading-[1.12] font-semibold tracking-[-0.028em] text-ink">
+            Signalements
+          </h1>
           <p className="text-[0.9375rem] text-muted-foreground">
-            En validation → En cours → Résolu · vous décidez de ce qui est visible dans l’app · 34 signalements
-            clôturés les mois précédents
+            En validation → En cours → Résolu · vous décidez de ce qui est visible dans l’app · 34
+            signalements clôturés les mois précédents
           </p>
         </div>
         <Button variant="secondary" icon={Download}>
@@ -1959,16 +2310,36 @@ export default function SignalementsPage() {
         <Tag tone="outline" size="md" active={filtre === "tous"} onClick={() => setFiltre("tous")}>
           Tous
         </Tag>
-        <Tag tone="outline" size="md" active={filtre === "validation"} onClick={() => setFiltre("validation")}>
+        <Tag
+          tone="outline"
+          size="md"
+          active={filtre === "validation"}
+          onClick={() => setFiltre("validation")}
+        >
           En validation · {count("validation")}
         </Tag>
-        <Tag tone="outline" size="md" active={filtre === "encours"} onClick={() => setFiltre("encours")}>
+        <Tag
+          tone="outline"
+          size="md"
+          active={filtre === "encours"}
+          onClick={() => setFiltre("encours")}
+        >
           En cours · {count("encours")}
         </Tag>
-        <Tag tone="outline" size="md" active={filtre === "resolu"} onClick={() => setFiltre("resolu")}>
+        <Tag
+          tone="outline"
+          size="md"
+          active={filtre === "resolu"}
+          onClick={() => setFiltre("resolu")}
+        >
           Résolu · {count("resolu")}
         </Tag>
-        <Tag tone="outline" size="md" active={filtre === "rejete"} onClick={() => setFiltre("rejete")}>
+        <Tag
+          tone="outline"
+          size="md"
+          active={filtre === "rejete"}
+          onClick={() => setFiltre("rejete")}
+        >
           Rejeté · {count("rejete")}
         </Tag>
         <span className="ml-auto w-57.5">
@@ -1999,15 +2370,24 @@ export default function SignalementsPage() {
               onClick={() => setOpenId(r.id)}
               className="grid w-full grid-cols-[116px_minmax(200px,1fr)_158px_84px_124px_112px_96px] items-center gap-3.5 border-b border-border-subtle px-4 py-3 text-left text-sm last:border-b-0 hover:bg-n-50"
             >
-              <span className="text-[0.8125rem] font-semibold text-muted-foreground tabular-nums">{r.id}</span>
+              <span className="text-[0.8125rem] font-semibold text-muted-foreground tabular-nums">
+                {r.id}
+              </span>
               <span className="flex min-w-0 flex-col gap-0.5">
                 <span className="truncate font-medium text-ink">{r.sujet}</span>
                 <span className="truncate text-xs text-muted-foreground">
-                  {r.lieu} · {r.updates.length === 0 ? "aucune mise à jour" : r.updates.length === 1 ? "1 mise à jour" : `${r.updates.length} mises à jour`}
+                  {r.lieu} ·{" "}
+                  {r.updates.length === 0
+                    ? "aucune mise à jour"
+                    : r.updates.length === 1
+                      ? "1 mise à jour"
+                      : `${r.updates.length} mises à jour`}
                 </span>
               </span>
               <span className="truncate text-[0.8125rem] text-muted-foreground">{r.categorie}</span>
-              <span className="text-[0.8125rem] text-muted-foreground tabular-nums">{r.recu.slice(0, 5)}</span>
+              <span className="text-[0.8125rem] text-muted-foreground tabular-nums">
+                {r.recu.slice(0, 5)}
+              </span>
               <span className="text-[0.8125rem] text-[#2b3646]">{r.responsable || "—"}</span>
               <span>
                 <Tag tone={STATUT_META[r.statut].tone}>{STATUT_META[r.statut].label}</Tag>
@@ -2022,7 +2402,11 @@ export default function SignalementsPage() {
         </div>
       </div>
 
-      <SignalementDrawer signalement={openSignalement} onClose={() => setOpenId(null)} onChange={patch} />
+      <SignalementDrawer
+        signalement={openSignalement}
+        onClose={() => setOpenId(null)}
+        onChange={patch}
+      />
     </div>
   );
 }
@@ -2052,11 +2436,13 @@ git commit -m "feat(admin): ecran Signalements avec tiroir de detail"
 ### Task 13: Écran Actualités et blog + éditeur plein écran
 
 **Files:**
+
 - Create: `app/admin/actualites/page.tsx`
 - Create: `components/features/admin/article-editor.tsx`
 - Create: `components/features/admin/publish-popover.tsx`
 
 **Interfaces:**
+
 - Consumes: `ARTICLES` (Task 6), `Button`, `Tag`, `IconButton`, `Field`, `Select` (Tasks 2-5).
 - Produces: `ArticleEditor({ onClose })`, `PublishPopover({ onClose, onPublish, disabled })`.
 
@@ -2082,7 +2468,12 @@ interface PublishPopoverProps {
 export function PublishPopover({ onClose, onPublish, disabled }: PublishPopoverProps) {
   return (
     <div className="absolute inset-0 z-10">
-      <button type="button" aria-label="Fermer" onClick={onClose} className="absolute inset-0 bg-blue-900/28" />
+      <button
+        type="button"
+        aria-label="Fermer"
+        onClick={onClose}
+        className="absolute inset-0 bg-blue-900/28"
+      />
       <div className="absolute top-18.5 right-4 flex w-[min(360px,92vw)] flex-col gap-4 rounded-[10px] border border-border-strong bg-surface-card p-5 shadow-overlay md:right-8">
         <span className="text-[0.6875rem] font-semibold tracking-[0.13em] text-muted-foreground uppercase">
           Publication
@@ -2149,15 +2540,26 @@ export function ArticleEditor({ onClose, onPublished }: ArticleEditorProps) {
       <div className="flex h-16 flex-none items-center gap-3.5 border-b border-border-subtle bg-[#faf8f5]/94 px-4 backdrop-blur-md md:px-8">
         <IconButton icon={ArrowLeft} label="Retour aux actualités" onClick={onClose} />
         <span className="flex min-w-0 items-center gap-2.5">
-          <span className="text-[0.8125rem] font-semibold whitespace-nowrap text-ink">Rédaction</span>
-          <span className="text-xs whitespace-nowrap text-muted-foreground">· Brouillon enregistré automatiquement</span>
+          <span className="text-[0.8125rem] font-semibold whitespace-nowrap text-ink">
+            Rédaction
+          </span>
+          <span className="text-xs whitespace-nowrap text-muted-foreground">
+            · Brouillon enregistré automatiquement
+          </span>
         </span>
         <span className="ml-auto flex items-center gap-3">
-          <span className="text-xs whitespace-nowrap text-muted-foreground tabular-nums">{motCount} mots</span>
+          <span className="text-xs whitespace-nowrap text-muted-foreground tabular-nums">
+            {motCount} mots
+          </span>
           <Button variant="ghost" size="sm">
             Aperçu
           </Button>
-          <Button variant="primary" size="sm" disabled={!titre.trim()} onClick={() => setShowPublish(true)}>
+          <Button
+            variant="primary"
+            size="sm"
+            disabled={!titre.trim()}
+            onClick={() => setShowPublish(true)}
+          >
             Publier
           </Button>
         </span>
@@ -2165,7 +2567,9 @@ export function ArticleEditor({ onClose, onPublished }: ArticleEditorProps) {
 
       <div className="relative flex-1 overflow-auto px-6 py-14 pb-30">
         <div className="mx-auto flex max-w-180 flex-col gap-3.5">
-          <span className="text-[0.6875rem] font-semibold tracking-[0.13em] text-orange-700 uppercase">Terrain</span>
+          <span className="text-[0.6875rem] font-semibold tracking-[0.13em] text-orange-700 uppercase">
+            Terrain
+          </span>
           <input
             value={titre}
             onChange={(e) => setTitre(e.target.value)}
@@ -2225,7 +2629,9 @@ export default function ActualitesPage() {
     <div className="flex max-w-[1320px] flex-col gap-5.5">
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">Site public</span>
+          <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">
+            Site public
+          </span>
           <h1 className="text-[1.75rem] leading-[1.12] font-semibold tracking-[-0.028em] text-ink">
             Actualités et blog
           </h1>
@@ -2306,10 +2712,12 @@ git commit -m "feat(admin): ecran Actualites et blog avec editeur plein ecran"
 ### Task 14: Écran Ressources + modale nouvelle ressource
 
 **Files:**
+
 - Create: `app/admin/ressources/page.tsx`
 - Create: `components/features/admin/new-ressource-dialog.tsx`
 
 **Interfaces:**
+
 - Consumes: `RESSOURCES`, `TYPES_RESSOURCE` (Task 6), `Alert`, `Button`, `Tag`, `Dialog`, `Field`,
   `Input`, `Select`, `IconButton` (Tasks 2-5).
 
@@ -2351,7 +2759,9 @@ export function NewRessourceDialog({ open, onClose, onCreate }: NewRessourceDial
           <span className="text-[0.6875rem] font-semibold tracking-[0.13em] text-muted-foreground uppercase">
             Site public
           </span>
-          <span className="text-xl font-semibold tracking-[-0.026em] text-ink">Nouvelle ressource</span>
+          <span className="text-xl font-semibold tracking-[-0.026em] text-ink">
+            Nouvelle ressource
+          </span>
         </span>
         <IconButton icon={X} label="Fermer" onClick={onClose} />
       </div>
@@ -2363,8 +2773,15 @@ export function NewRessourceDialog({ open, onClose, onCreate }: NewRessourceDial
             ))}
           </Select>
         </Field>
-        <Field label="Titre de la ressource" hint="Phrase capitalisée, 2 à 10 mots. Le fichier se téléverse à l’étape suivante.">
-          <Input value={titre} onChange={(e) => setTitre(e.target.value)} placeholder="Ex. Ce que dit la loi sur le vote des étudiants" />
+        <Field
+          label="Titre de la ressource"
+          hint="Phrase capitalisée, 2 à 10 mots. Le fichier se téléverse à l’étape suivante."
+        >
+          <Input
+            value={titre}
+            onChange={(e) => setTitre(e.target.value)}
+            placeholder="Ex. Ce que dit la loi sur le vote des étudiants"
+          />
         </Field>
       </div>
       <div className="flex items-center gap-2.5 rounded-b-[10px] border-t border-border-subtle bg-surface-card px-5.5 py-4">
@@ -2374,7 +2791,9 @@ export function NewRessourceDialog({ open, onClose, onCreate }: NewRessourceDial
         <Button variant="ghost" onClick={onClose}>
           Annuler
         </Button>
-        <span className="ml-auto text-xs text-muted-foreground">Rien n’est publié à cette étape</span>
+        <span className="ml-auto text-xs text-muted-foreground">
+          Rien n’est publié à cette étape
+        </span>
       </div>
     </Dialog>
   );
@@ -2406,7 +2825,9 @@ export default function RessourcesPage() {
     <div className="flex max-w-[1320px] flex-col gap-5.5">
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">Site public</span>
+          <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">
+            Site public
+          </span>
           <h1 className="text-[1.75rem] leading-[1.12] font-semibold tracking-[-0.028em] text-ink">
             Ressources pédagogiques
           </h1>
@@ -2427,10 +2848,15 @@ export default function RessourcesPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {brouillons.map((titre) => (
-          <div key={titre} className="flex flex-col gap-3 rounded-lg border border-dashed border-ink/24 bg-orange-50 p-4.5">
+          <div
+            key={titre}
+            className="flex flex-col gap-3 rounded-lg border border-dashed border-ink/24 bg-orange-50 p-4.5"
+          >
             <FilePlus size={32} />
             <span className="text-base leading-tight font-semibold text-ink">{titre}</span>
-            <span className="text-xs text-muted-foreground">Brouillon créé à l’instant · fichier à téléverser</span>
+            <span className="text-xs text-muted-foreground">
+              Brouillon créé à l’instant · fichier à téléverser
+            </span>
             <span className="mt-auto">
               <Button variant="secondary" size="sm">
                 Compléter la fiche
@@ -2451,7 +2877,9 @@ export default function RessourcesPage() {
               <span className="text-xs text-muted-foreground">{r.meta}</span>
               <span className="mt-auto flex items-center justify-between gap-2.5">
                 <Tag tone="blue">En ligne</Tag>
-                <span className="text-[0.8125rem] text-[#2b3646] tabular-nums">{r.telechargements} téléchargements</span>
+                <span className="text-[0.8125rem] text-[#2b3646] tabular-nums">
+                  {r.telechargements} téléchargements
+                </span>
               </span>
             </div>
           );
@@ -2460,7 +2888,9 @@ export default function RessourcesPage() {
         {enValidation ? (
           <div className="flex flex-col gap-3 rounded-lg border border-ink bg-surface-card p-4.5 shadow-[5px_5px_0_var(--color-blue-500)]">
             <GraduationCap size={32} />
-            <span className="text-base leading-tight font-semibold text-ink">{enValidation.titre}</span>
+            <span className="text-base leading-tight font-semibold text-ink">
+              {enValidation.titre}
+            </span>
             <span className="text-xs text-muted-foreground">{enValidation.meta}</span>
             <span className="mt-auto flex gap-2">
               <Button variant="primary" size="sm">
@@ -2508,9 +2938,11 @@ git commit -m "feat(admin): ecran Ressources avec modale nouvelle ressource"
 ### Task 15: Écran Campagnes
 
 **Files:**
+
 - Create: `app/admin/campagnes/page.tsx`
 
 **Interfaces:**
+
 - Consumes: `CAMPAGNES` (Task 6), `Button`, `Tag` (Task 2-3).
 
 - [ ] **Step 1: Créer `app/admin/campagnes/page.tsx`**
@@ -2532,7 +2964,9 @@ export default function CampagnesPage() {
     <div className="flex max-w-[1320px] flex-col gap-5.5">
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">Terrain</span>
+          <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">
+            Terrain
+          </span>
           <h1 className="text-[1.75rem] leading-[1.12] font-semibold tracking-[-0.028em] text-ink">
             Campagnes et événements
           </h1>
@@ -2544,7 +2978,10 @@ export default function CampagnesPage() {
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {CAMPAGNES.map((c) => (
-          <div key={c.titre} className="flex flex-col gap-3.5 rounded-lg border border-border-subtle bg-surface-card p-5.5">
+          <div
+            key={c.titre}
+            className="flex flex-col gap-3.5 rounded-lg border border-border-subtle bg-surface-card p-5.5"
+          >
             <span className="flex items-center justify-between gap-3">
               <Tag tone={c.tone}>{c.statut}</Tag>
               <span className="text-xs text-muted-foreground">{c.periode}</span>
@@ -2557,7 +2994,9 @@ export default function CampagnesPage() {
                 style={{ width: `${c.progression}%` }}
               />
             </span>
-            <span className="flex items-center gap-3.5 text-xs text-muted-foreground">{c.note}</span>
+            <span className="flex items-center gap-3.5 text-xs text-muted-foreground">
+              {c.note}
+            </span>
           </div>
         ))}
       </div>
@@ -2587,9 +3026,11 @@ git commit -m "feat(admin): ecran Campagnes"
 ### Task 16: Écran Notifications app
 
 **Files:**
+
 - Create: `app/admin/push/page.tsx`
 
 **Interfaces:**
+
 - Consumes: `NOTIFICATIONS_ENVOYEES`, `CIBLES_NOTIFICATION`, `MOMENTS_ENVOI` (Task 6), `Field`,
   `Input`, `Textarea`, `Select`, `Button` (Tasks 2-4).
 
@@ -2605,21 +3046,31 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { NOTIFICATIONS_ENVOYEES, CIBLES_NOTIFICATION, MOMENTS_ENVOI } from "@/features/admin/data/notifications-envoyees";
+import {
+  NOTIFICATIONS_ENVOYEES,
+  CIBLES_NOTIFICATION,
+  MOMENTS_ENVOI,
+} from "@/features/admin/data/notifications-envoyees";
 
 export default function PushPage() {
   const [titre, setTitre] = useState("Nid de poule d’Angré : la chaussée est réparée");
-  const [texte, setTexte] = useState("Signalé le 12/08 par un citoyen, rebouché le 17/08. Merci d’avoir signalé.");
+  const [texte, setTexte] = useState(
+    "Signalé le 12/08 par un citoyen, rebouché le 17/08. Merci d’avoir signalé.",
+  );
   const [cible, setCible] = useState<string>(CIBLES_NOTIFICATION[0]);
 
   return (
     <div className="flex max-w-[1320px] flex-col gap-5.5">
       <div className="flex flex-col gap-2">
-        <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">Application mobile</span>
-        <h1 className="text-[1.75rem] leading-[1.12] font-semibold tracking-[-0.028em] text-ink">Notifications</h1>
+        <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">
+          Application mobile
+        </span>
+        <h1 className="text-[1.75rem] leading-[1.12] font-semibold tracking-[-0.028em] text-ink">
+          Notifications
+        </h1>
         <p className="max-w-[62ch] text-[0.9375rem] text-muted-foreground">
-          Un envoi par semaine au maximum. Chaque notification renvoie vers un signalement suivi ou une action
-          datée.
+          Un envoi par semaine au maximum. Chaque notification renvoie vers un signalement suivi ou
+          une action datée.
         </p>
       </div>
 
@@ -2664,7 +3115,11 @@ export default function PushPage() {
               Vendredi 21 août · 08 h 30
             </span>
             <div className="flex gap-2.5 rounded-[10px] bg-white/94 p-3">
-              <img src="/assets/logo/mec-mark.png" alt="" className="h-7.5 w-7.5 flex-none object-contain" />
+              <img
+                src="/assets/logo/mec-mark.png"
+                alt=""
+                className="h-7.5 w-7.5 flex-none object-contain"
+              />
               <span className="flex min-w-0 flex-col gap-0.5">
                 <span className="text-[0.8125rem] leading-tight font-bold text-ink">{titre}</span>
                 <span className="text-xs leading-snug text-[#2b3646]">{texte}</span>
@@ -2695,7 +3150,9 @@ export default function PushPage() {
               <span className="text-[0.8125rem] text-muted-foreground">{n.destinataires}</span>
               <span className="text-[0.8125rem] text-muted-foreground tabular-nums">{n.date}</span>
               <span className="tabular-nums">{n.recuePar}</span>
-              <span className={`text-right font-semibold tabular-nums ${n.ouvertureForte ? "text-verdict-true" : "text-[#2b3646]"}`}>
+              <span
+                className={`text-right font-semibold tabular-nums ${n.ouvertureForte ? "text-verdict-true" : "text-[#2b3646]"}`}
+              >
                 {n.ouverture}
               </span>
             </div>
@@ -2728,9 +3185,11 @@ git commit -m "feat(admin): ecran Notifications app"
 ### Task 17: Écran Statistiques
 
 **Files:**
+
 - Create: `app/admin/statistiques/page.tsx`
 
 **Interfaces:**
+
 - Consumes: `Stat`, `Select`, `Button` (Tasks 2, 4, 5).
 
 - [ ] **Step 1: Créer `app/admin/statistiques/page.tsx`**
@@ -2767,7 +3226,9 @@ export default function StatistiquesPage() {
     <div className="flex max-w-[1320px] flex-col gap-6.5">
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">Redevabilité</span>
+          <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">
+            Redevabilité
+          </span>
           <h1 className="text-[1.75rem] leading-[1.12] font-semibold tracking-[-0.028em] text-ink">
             Statistiques et rapports
           </h1>
@@ -2788,7 +3249,12 @@ export default function StatistiquesPage() {
 
       <div className="grid grid-cols-2 gap-4 rounded-lg border border-border-subtle bg-surface-card p-6.5 lg:grid-cols-4">
         <Stat value="3 180" label="personnes sensibilisées" meta="Janvier → août 2026" />
-        <Stat value="44" label="signalements reçus" meta="Depuis le lancement de l’app, mars 2026" rule />
+        <Stat
+          value="44"
+          label="signalements reçus"
+          meta="Depuis le lancement de l’app, mars 2026"
+          rule
+        />
         <Stat value="26" label="signalements résolus" meta="Janvier → août 2026" rule />
         <Stat value="12" label="campus et lycées couverts" meta="Année scolaire 2025-2026" rule />
       </div>
@@ -2860,9 +3326,11 @@ git commit -m "feat(admin): ecran Statistiques"
 ### Task 18: Écran Utilisateurs et droits
 
 **Files:**
+
 - Create: `app/admin/utilisateurs/page.tsx`
 
 **Interfaces:**
+
 - Consumes: `UTILISATEURS`, `DROITS` (Task 6), `Tag`, `Button` (Tasks 2-3).
 
 - [ ] **Step 1: Créer `app/admin/utilisateurs/page.tsx`**
@@ -2879,7 +3347,9 @@ export default function UtilisateursPage() {
     <div className="flex max-w-[1320px] flex-col gap-5.5">
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">Accès</span>
+          <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">
+            Accès
+          </span>
           <h1 className="text-[1.75rem] leading-[1.12] font-semibold tracking-[-0.028em] text-ink">
             Utilisateurs et droits
           </h1>
@@ -2921,7 +3391,9 @@ export default function UtilisateursPage() {
           <span className="text-xs font-semibold tracking-[0.13em] text-muted-foreground uppercase">
             Droits par rôle
           </span>
-          <p className="mt-2 text-[0.8125rem] text-muted-foreground">Plein accès · Lecture seule · Aucun accès</p>
+          <p className="mt-2 text-[0.8125rem] text-muted-foreground">
+            Plein accès · Lecture seule · Aucun accès
+          </p>
         </div>
         <div className="overflow-x-auto">
           <div className="min-w-[600px]">
@@ -2971,6 +3443,7 @@ git commit -m "feat(admin): ecran Utilisateurs et droits"
 ### Task 19: Écran de connexion (4 états)
 
 **Files:**
+
 - Create: `components/features/admin-auth/auth-screen.tsx`
 - Create: `components/features/admin-auth/connexion-view.tsx`
 - Create: `components/features/admin-auth/inscription-view.tsx`
@@ -2979,6 +3452,7 @@ git commit -m "feat(admin): ecran Utilisateurs et droits"
 - Create: `app/admin/connexion/page.tsx`
 
 **Interfaces:**
+
 - Consumes: `Field`, `Input`, `Select`, `Button`, `Alert` (Tasks 2-5).
 - Produces: `AuthScreen()`, `AuthStep = "connexion" | "inscription" | "attente" | "expire"`.
 
@@ -3015,7 +3489,10 @@ export function ConnexionView({ onGoInscription }: ConnexionViewProps) {
           <Field label="Mot de passe" htmlFor="auth-pass">
             <Input id="auth-pass" type="password" placeholder="Votre mot de passe" />
           </Field>
-          <a href="#oubli" className="self-start text-[0.8125rem] font-semibold text-blue-600 hover:text-orange-700">
+          <a
+            href="#oubli"
+            className="self-start text-[0.8125rem] font-semibold text-blue-600 hover:text-orange-700"
+          >
             Mot de passe oublié ?
           </a>
         </div>
@@ -3027,7 +3504,11 @@ export function ConnexionView({ onGoInscription }: ConnexionViewProps) {
       </div>
       <p className="border-t border-border-subtle pt-5 text-[0.8125rem] leading-relaxed text-muted-foreground">
         Vous travaillez avec le MEC et n’avez pas de compte ?{" "}
-        <button type="button" onClick={onGoInscription} className="font-semibold text-blue-600 hover:text-orange-700">
+        <button
+          type="button"
+          onClick={onGoInscription}
+          className="font-semibold text-blue-600 hover:text-orange-700"
+        >
           Créer un compte
         </button>{" "}
         — il sera actif après validation d’un administrateur.
@@ -3073,7 +3554,11 @@ export function InscriptionView({ onGoConnexion, onSubmit }: InscriptionViewProp
         <Field label="Adresse e-mail professionnelle" htmlFor="ins-mail">
           <Input id="ins-mail" type="email" placeholder="prenom.nom@mec-ci.org" />
         </Field>
-        <Field label="Rôle demandé" htmlFor="ins-role" hint="Le rôle définit les modules auxquels vous accédez.">
+        <Field
+          label="Rôle demandé"
+          htmlFor="ins-role"
+          hint="Le rôle définit les modules auxquels vous accédez."
+        >
           <Select id="ins-role" defaultValue={ROLES_DEMANDE[0]}>
             {ROLES_DEMANDE.map((r) => (
               <option key={r}>{r}</option>
@@ -3091,7 +3576,11 @@ export function InscriptionView({ onGoConnexion, onSubmit }: InscriptionViewProp
       </div>
       <p className="border-t border-border-subtle pt-5 text-[0.8125rem] text-muted-foreground">
         Vous avez déjà un compte ?{" "}
-        <button type="button" onClick={onGoConnexion} className="font-semibold text-blue-600 hover:text-orange-700">
+        <button
+          type="button"
+          onClick={onGoConnexion}
+          className="font-semibold text-blue-600 hover:text-orange-700"
+        >
           Se connecter
         </button>
       </p>
@@ -3122,8 +3611,9 @@ export function AttenteView({ email, onGoConnexion }: AttenteViewProps) {
           Compte en attente de validation
         </h1>
         <p className="text-[0.9375rem] leading-relaxed text-muted-foreground">
-          Votre demande pour <strong className="font-semibold text-ink">{email}</strong> est enregistrée. Un
-          administrateur national l’active depuis la page Utilisateurs, en général sous 48 heures ouvrées.
+          Votre demande pour <strong className="font-semibold text-ink">{email}</strong> est
+          enregistrée. Un administrateur national l’active depuis la page Utilisateurs, en général
+          sous 48 heures ouvrées.
         </p>
       </div>
       <div className="flex flex-col gap-2.5 rounded-lg border border-border-subtle bg-n-50 p-4">
@@ -3168,8 +3658,8 @@ export function ExpireView({ email, onGoConnexion }: ExpireViewProps) {
           Session expirée
         </h1>
         <p className="text-[0.9375rem] leading-relaxed text-muted-foreground">
-          Vous avez été déconnecté après 30 minutes sans activité. Vos brouillons et vos signalements en cours ont
-          été conservés.
+          Vous avez été déconnecté après 30 minutes sans activité. Vos brouillons et vos
+          signalements en cours ont été conservés.
         </p>
       </div>
       <div className="flex flex-col gap-4">
@@ -3182,7 +3672,11 @@ export function ExpireView({ email, onGoConnexion }: ExpireViewProps) {
           </Button>
         </div>
       </div>
-      <button type="button" onClick={onGoConnexion} className="self-start text-[0.8125rem] font-semibold text-blue-600 hover:text-orange-700">
+      <button
+        type="button"
+        onClick={onGoConnexion}
+        className="self-start text-[0.8125rem] font-semibold text-blue-600 hover:text-orange-700"
+      >
         Se connecter avec un autre compte
       </button>
     </div>
@@ -3213,12 +3707,21 @@ export function AuthScreen() {
       <div className="relative m-auto flex w-full max-w-103 flex-col items-center gap-5.5">
         <div className="w-full rounded-lg bg-white p-9 shadow-overlay">
           <img src="/assets/logo/mec-lockup.png" alt="MEC" className="mb-6.5 h-8 w-auto" />
-          {step === "connexion" ? <ConnexionView onGoInscription={() => setStep("inscription")} /> : null}
-          {step === "inscription" ? (
-            <InscriptionView onGoConnexion={() => setStep("connexion")} onSubmit={() => setStep("attente")} />
+          {step === "connexion" ? (
+            <ConnexionView onGoInscription={() => setStep("inscription")} />
           ) : null}
-          {step === "attente" ? <AttenteView email={DEMO_EMAIL} onGoConnexion={() => setStep("connexion")} /> : null}
-          {step === "expire" ? <ExpireView email={DEMO_EMAIL} onGoConnexion={() => setStep("connexion")} /> : null}
+          {step === "inscription" ? (
+            <InscriptionView
+              onGoConnexion={() => setStep("connexion")}
+              onSubmit={() => setStep("attente")}
+            />
+          ) : null}
+          {step === "attente" ? (
+            <AttenteView email={DEMO_EMAIL} onGoConnexion={() => setStep("connexion")} />
+          ) : null}
+          {step === "expire" ? (
+            <ExpireView email={DEMO_EMAIL} onGoConnexion={() => setStep("connexion")} />
+          ) : null}
         </div>
 
         <div className="flex flex-col items-center gap-3.5 text-center">
@@ -3226,16 +3729,32 @@ export function AuthScreen() {
             mec-ci.org/admin · accès réservé à l’équipe du MEC, non référencé depuis le site public
           </span>
           <span className="flex flex-wrap items-center justify-center gap-4">
-            <button type="button" onClick={() => setStep("connexion")} className={`text-xs ${step === "connexion" ? "text-white" : "text-white/42"} hover:text-orange-400`}>
+            <button
+              type="button"
+              onClick={() => setStep("connexion")}
+              className={`text-xs ${step === "connexion" ? "text-white" : "text-white/42"} hover:text-orange-400`}
+            >
               Connexion
             </button>
-            <button type="button" onClick={() => setStep("inscription")} className={`text-xs ${step === "inscription" ? "text-white" : "text-white/42"} hover:text-orange-400`}>
+            <button
+              type="button"
+              onClick={() => setStep("inscription")}
+              className={`text-xs ${step === "inscription" ? "text-white" : "text-white/42"} hover:text-orange-400`}
+            >
               Inscription
             </button>
-            <button type="button" onClick={() => setStep("attente")} className={`text-xs ${step === "attente" ? "text-white" : "text-white/42"} hover:text-orange-400`}>
+            <button
+              type="button"
+              onClick={() => setStep("attente")}
+              className={`text-xs ${step === "attente" ? "text-white" : "text-white/42"} hover:text-orange-400`}
+            >
               En attente
             </button>
-            <button type="button" onClick={() => setStep("expire")} className={`text-xs ${step === "expire" ? "text-white" : "text-white/42"} hover:text-orange-400`}>
+            <button
+              type="button"
+              onClick={() => setStep("expire")}
+              className={`text-xs ${step === "expire" ? "text-white" : "text-white/42"} hover:text-orange-400`}
+            >
               Session expirée
             </button>
           </span>
@@ -3277,6 +3796,7 @@ git commit -m "feat(admin): ecran de connexion (4 etats)"
 ### Task 20: Revue de convention et vérification finale
 
 **Files:**
+
 - Aucun fichier nouveau — revue transversale du diff complet de ce chantier.
 
 - [ ] **Step 1: Lancer la suite complète**

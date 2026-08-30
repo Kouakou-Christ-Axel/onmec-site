@@ -17,13 +17,13 @@ Vérifié dans `node_modules/vinext` (`dist/routing/app-route-graph.js`,
 `unauthorized()` depuis `next/navigation` (déjà utilisé pour `notFound()` dans les pages `[slug]`).
 Correspondance retenue avec les écrans de la maquette :
 
-| Écran maquette | Mécanisme | Fichier |
-| --- | --- | --- |
-| `is404` | `notFound()` / route inconnue (auto) | `app/(public)/not-found.tsx` (existe, à réécrire) |
-| `is500` | Erreur runtime dans un segment | `app/(public)/error.tsx` (nouveau, Client Component `{error, reset}`) |
-| `is403` | Appel explicite à `forbidden()` | `app/(public)/forbidden.tsx` (nouveau) |
-| `isMaintenance` | Aucune convention Next.js — pas d'infra de bascule (middleware) demandée | `app/(public)/maintenance/page.tsx` (nouveau, route réelle) |
-| `isErreur` | Bloc de secours réutilisable | `components/features/site/error-explore-links.tsx`, monté en pied de 404/500/403 |
+| Écran maquette  | Mécanisme                                                                | Fichier                                                                          |
+| --------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| `is404`         | `notFound()` / route inconnue (auto)                                     | `app/(public)/not-found.tsx` (existe, à réécrire)                                |
+| `is500`         | Erreur runtime dans un segment                                           | `app/(public)/error.tsx` (nouveau, Client Component `{error, reset}`)            |
+| `is403`         | Appel explicite à `forbidden()`                                          | `app/(public)/forbidden.tsx` (nouveau)                                           |
+| `isMaintenance` | Aucune convention Next.js — pas d'infra de bascule (middleware) demandée | `app/(public)/maintenance/page.tsx` (nouveau, route réelle)                      |
+| `isErreur`      | Bloc de secours réutilisable                                             | `components/features/site/error-explore-links.tsx`, monté en pied de 404/500/403 |
 
 `forbidden.tsx` n'est déclenché par aucune logique d'accès réelle aujourd'hui (le site public n'a
 pas d'auth) — c'est de l'infrastructure prête pour le jour où un espace membre existera. Vérification
@@ -46,7 +46,7 @@ faite en appelant `forbidden()` depuis une page de test temporaire, retirée apr
   réassurance ("Pendant la maintenance") et n'a pas besoin d'un second bloc de navigation générique.
 - **Boutons "invert"/"outline-invert" du design system** : traduits avec le patron déjà établi dans
   `action-cta.tsx`/`contact-cta.tsx` (`bg-white text-fill-ink` / `border-white/35 text-white
-  hover:bg-white/10`), pas de nouveau composant `Button` générique créé.
+hover:bg-white/10`), pas de nouveau composant `Button` générique créé.
 - **Icônes** (`smartphone`, `book-open`, `mail`, `flag`, `users`, `calendar-days`, `megaphone`,
   `newspaper`) : `lucide-react`, déjà la convention du projet.
 - **Recherche 404** : champ + bouton "Chercher dans les ressources" — pas de vraie recherche

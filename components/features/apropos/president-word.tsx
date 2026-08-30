@@ -22,14 +22,14 @@ export function PresidentWord() {
             Le mot du Président
           </span>
           <p className="text-quote max-w-[34ch] font-serif text-ink italic text-pretty">
-            Une démocratie forte se construit par des citoyens éclairés, conscients de leurs
-            droits et de leurs devoirs.
+            Une démocratie forte se construit par des citoyens éclairés, conscients de leurs droits
+            et de leurs devoirs.
           </p>
           <div className="flex max-w-[60ch] flex-col gap-5 border-l-2 border-orange-500 pl-6 text-[1.0625rem] leading-relaxed text-text-body lg:pl-7">
             <p>Chers concitoyens, chers amis de la Côte d’Ivoire,</p>
             <p>
-              C’est avec une immense fierté que je vous présente le Mouvement pour l’Éducation à
-              la Citoyenneté. Notre nation est à un carrefour de son histoire, et plus que jamais,
+              C’est avec une immense fierté que je vous présente le Mouvement pour l’Éducation à la
+              Citoyenneté. Notre nation est à un carrefour de son histoire, et plus que jamais,
               l’engagement de chaque citoyen est crucial. Le MEC est né d’une conviction profonde.
             </p>
             <p>

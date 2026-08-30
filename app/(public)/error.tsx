@@ -6,12 +6,21 @@ import { ErrorPageBanner } from "@/components/features/site/error-page-banner";
 import { ErrorExploreLinks } from "@/components/features/site/error-explore-links";
 
 const REASSURANCES = [
-  { icon: Smartphone, text: "L’application de signalement reste ouverte : vos signalements arrivent normalement." },
+  {
+    icon: Smartphone,
+    text: "L’application de signalement reste ouverte : vos signalements arrivent normalement.",
+  },
   { icon: BookOpen, text: "Les guides déjà téléchargés restent lisibles hors connexion." },
   { icon: Mail, text: "Si l’erreur revient, écrivez à contact@mec-ci.org en indiquant l’heure." },
 ];
 
-export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
   useEffect(() => {
     console.error(error);
   }, [error]);

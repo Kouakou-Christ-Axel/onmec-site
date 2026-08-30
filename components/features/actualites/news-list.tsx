@@ -47,7 +47,11 @@ export function NewsList({ articles, categories, meta, categorieActive }: NewsLi
   return (
     <>
       <div className="mt-9 flex flex-wrap items-center gap-2.5 border-b border-ink/10 pb-5">
-        <Link href={href()} aria-current={!categorieActive ? "page" : undefined} className={pillClass(!categorieActive)}>
+        <Link
+          href={href()}
+          aria-current={!categorieActive ? "page" : undefined}
+          className={pillClass(!categorieActive)}
+        >
           Toutes
         </Link>
         {categories.map((categorie) => (

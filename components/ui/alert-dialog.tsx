@@ -67,7 +67,11 @@ export function ConfirmDialog({
               <RadixAlertDialog.Action asChild>
                 <Button
                   variant="primary"
-                  className={destructive ? "bg-verdict-false hover:bg-verdict-false/90 active:bg-verdict-false/80" : undefined}
+                  className={
+                    destructive
+                      ? "bg-verdict-false hover:bg-verdict-false/90 active:bg-verdict-false/80"
+                      : undefined
+                  }
                   disabled={confirmPending}
                   onClick={(event) => {
                     // L'Action de Radix ferme la modale immédiatement ; on empêche ça pour laisser

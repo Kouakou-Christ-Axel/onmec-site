@@ -11,7 +11,8 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   ghost: "bg-transparent text-ink hover:bg-n-100",
   deep: "bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700",
   invert: "bg-white text-ink hover:bg-n-100",
-  "outline-invert": "bg-transparent text-white border border-white/24 hover:bg-white/12 hover:border-white",
+  "outline-invert":
+    "bg-transparent text-white border border-white/24 hover:bg-white/12 hover:border-white",
 };
 
 const SIZE_CLASSES: Record<ButtonSize, string> = {

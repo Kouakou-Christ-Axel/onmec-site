@@ -23,10 +23,10 @@ export function AttenteView({ email, onGoConnexion }: AttenteViewProps) {
         </p>
       </div>
       <div className="flex flex-col gap-2.5 rounded-lg border border-border-subtle bg-n-50 p-4">
-        <span className="flex items-center gap-2.5 text-[0.8125rem] text-[#2b3646]">
+        <span className="flex items-center gap-2.5 text-[0.8125rem] text-text-body">
           <Mail size={16} /> Vous recevrez un e-mail dès l’activation
         </span>
-        <span className="flex items-center gap-2.5 text-[0.8125rem] text-[#2b3646]">
+        <span className="flex items-center gap-2.5 text-[0.8125rem] text-text-body">
           <LifeBuoy size={16} /> Demande urgente · informatique@mec-ci.org
         </span>
       </div>

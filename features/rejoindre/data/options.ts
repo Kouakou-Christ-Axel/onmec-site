@@ -1,5 +1,9 @@
 export const PROFILS = [
-  { value: "benevole", label: "Bénévole", desc: "Animer les actions de terrain et les séances en classe" },
+  {
+    value: "benevole",
+    label: "Bénévole",
+    desc: "Animer les actions de terrain et les séances en classe",
+  },
   {
     value: "membre",
     label: "Membre adhérent",
@@ -10,10 +14,20 @@ export const PROFILS = [
     label: "Partenaire ou organisation",
     desc: "Établissement, association, institution",
   },
-  { value: "donateur", label: "Donateur", desc: "Soutenir une action précise ou le fonctionnement" },
+  {
+    value: "donateur",
+    label: "Donateur",
+    desc: "Soutenir une action précise ou le fonctionnement",
+  },
 ] as const;
 
-export const STATUTS = ["Élève", "Étudiant", "Enseignant ou encadreur", "Jeune professionnel", "Autre"];
+export const STATUTS = [
+  "Élève",
+  "Étudiant",
+  "Enseignant ou encadreur",
+  "Jeune professionnel",
+  "Autre",
+];
 
 export const DISPOS = [
   "Quelques heures par mois",

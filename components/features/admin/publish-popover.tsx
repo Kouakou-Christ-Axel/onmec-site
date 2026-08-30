@@ -14,7 +14,7 @@ import { useUpdateActualite } from "@/features/actualites-admin/mutations/use-up
 import { usePublierActualite } from "@/features/actualites-admin/mutations/use-publier-actualite";
 import { buildActualiteFormData } from "@/features/actualites-admin/lib/build-actualite-form-data";
 import { actualiteFormSchema } from "@/features/actualites-admin/schemas/actualite-form-schema";
-import { MAX_IMAGE_LABEL } from "@/features/actualites-admin/lib/image-limits";
+import { MAX_IMAGE_LABEL } from "@/lib/image-limits";
 import { ApiError } from "@/lib/api-error";
 import type { ActualiteAdmin } from "@/features/actualites-admin/types/actualite-admin";
 
@@ -83,61 +83,54 @@ export function PublishPopover({
   }
 
   return (
-    <Popover.Portal>
-      {/* z-100 : Radix recopie le z-index calculé du Content sur son wrapper positionné
-          (react-popper). L'éditeur parent est en z-95 — en dessous, le popover passerait derrière. */}
-      <Popover.Content
-        side="bottom"
-        align="end"
-        sideOffset={8}
-        collisionPadding={16}
-        onEscapeKeyDown={onClose}
-        onPointerDownOutside={onClose}
-        style={{ transformOrigin: "var(--radix-popover-content-transform-origin)" }}
-        className={cn(
-          "z-100 flex w-[min(360px,92vw)] flex-col gap-4 rounded-[10px] border border-border-strong bg-surface-card p-5 shadow-overlay",
-          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
-          "data-[state=open]:animate-mec-pop data-[state=closed]:animate-mec-pop-out",
-        )}
-      >
-        <span className="text-[0.6875rem] font-semibold tracking-[0.13em] text-muted-foreground uppercase">
-          Publication
-        </span>
-        {error || categoriesQuery.isError ? (
-          <Alert tone="danger">{error ?? "Impossible de charger les catégories. Réessayez."}</Alert>
-        ) : null}
-        <Field label="Rubrique">
-          <Select
-            value={categorieId}
-            onChange={(event) => setCategorieId(event.target.value)}
-            disabled={categoriesQuery.isLoading}
-          >
-            <option value="">Sélectionner...</option>
-            {categories.map((categorie) => (
-              <option key={categorie.id} value={categorie.id}>
-                {categorie.nom}
-              </option>
-            ))}
-          </Select>
-        </Field>
-        <Field label="Date de publication">
-          <Input type="date" value={date} onChange={(event) => setDate(event.target.value)} />
-        </Field>
-        <p className="text-xs leading-relaxed text-muted-foreground">
-          Les membres de l’app seront notifiés automatiquement à la publication.
-        </p>
-        <Button
-          variant="primary"
-          full
-          disabled={submitting || !categorieId}
-          onClick={handlePublish}
+    // z-100 : Radix recopie le z-index calculé du Content sur son wrapper positionné
+    // (react-popper). L'éditeur parent est en z-95 — en dessous, le popover passerait derrière.
+    <Popover.Content
+      side="bottom"
+      align="end"
+      sideOffset={8}
+      collisionPadding={16}
+      onEscapeKeyDown={onClose}
+      onPointerDownOutside={onClose}
+      style={{ transformOrigin: "var(--radix-popover-content-transform-origin)" }}
+      className={cn(
+        "z-100 flex w-[min(360px,92vw)] flex-col gap-4 rounded-[10px] border border-border-strong bg-surface-card p-5 shadow-overlay",
+        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
+        "data-[state=open]:animate-mec-pop data-[state=closed]:animate-mec-pop-out",
+      )}
+    >
+      <span className="text-[0.6875rem] font-semibold tracking-[0.13em] text-muted-foreground uppercase">
+        Publication
+      </span>
+      {error || categoriesQuery.isError ? (
+        <Alert tone="danger">{error ?? "Impossible de charger les catégories. Réessayez."}</Alert>
+      ) : null}
+      <Field label="Rubrique">
+        <Select
+          value={categorieId}
+          onChange={(event) => setCategorieId(event.target.value)}
+          disabled={categoriesQuery.isLoading}
         >
-          {submitting ? "Publication..." : "Publier l’article"}
-        </Button>
-        <span className="text-xs leading-relaxed text-muted-foreground">
-          L’article part sur la page Actualités du site. Vous pourrez le dépublier à tout moment.
-        </span>
-      </Popover.Content>
-    </Popover.Portal>
+          <option value="">Sélectionner...</option>
+          {categories.map((categorie) => (
+            <option key={categorie.id} value={categorie.id}>
+              {categorie.nom}
+            </option>
+          ))}
+        </Select>
+      </Field>
+      <Field label="Date de publication">
+        <Input type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+      </Field>
+      <p className="text-xs leading-relaxed text-muted-foreground">
+        Les membres de l’app seront notifiés automatiquement à la publication.
+      </p>
+      <Button variant="primary" full disabled={submitting || !categorieId} onClick={handlePublish}>
+        {submitting ? "Publication..." : "Publier l’article"}
+      </Button>
+      <span className="text-xs leading-relaxed text-muted-foreground">
+        L’article part sur la page Actualités du site. Vous pourrez le dépublier à tout moment.
+      </span>
+    </Popover.Content>
   );
 }

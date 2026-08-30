@@ -135,7 +135,7 @@ Suit la spec `docs/superpowers/specs/2026-08-23-site-vitrine-mec-design.md`.
   `resource-filter.tsx`/`ResourceFilter` renommés en `ressource-card.tsx`/`RessourceCard` et
   `ressource-filter.tsx`/`RessourceFilter` pour rester cohérents avec le vocabulaire français du
   reste de la feature (`Ressource`, `RESSOURCES`, `getRessourceBySlug`, etc.). `components/features/
-  rejoindre/form-controls.tsx` déplacé vers `components/features/site/form-controls.tsx` (devenu
+rejoindre/form-controls.tsx` déplacé vers `components/features/site/form-controls.tsx` (devenu
   partagé entre `rejoindre` et `ressources` — le dialogue de téléchargement réutilise `FormField`/
   `TextInput`/`CheckboxItem`) ; `TextInput` rendu `forwardRef` pour permettre l'autofocus du champ
   email du dialogue.

@@ -25,6 +25,7 @@
 ## Task 1: Relocate shared auth utilities out of the member domain into `lib/`
 
 **Files:**
+
 - Create: `lib/auth-cookies.ts`
 - Create: `lib/to-error-response.ts`
 - Delete: `features/auth/lib/auth-cookies.ts`
@@ -35,6 +36,7 @@
 - Modify: `app/api/auth/refresh-token/route.ts`
 
 **Interfaces:**
+
 - Produces: `setAuthCookies(tokens: { token: string; refreshToken: string }): Promise<void>`, `clearAuthCookies(): Promise<void>`, `getRefreshToken(): Promise<string | undefined>` from `@/lib/auth-cookies`. `toErrorResponse(error: unknown): NextResponse` from `@/lib/to-error-response`.
 
 This is a pure relocation — behavior must not change. `lib/` may only import from `config/` (never `features/`), which is why the token parameter is a locally-defined structural type instead of importing `AuthTokens` from `features/auth/types/auth.ts`.
@@ -237,6 +239,7 @@ move to lib/ where the layering rule already expects them."
 ## Task 2: `features/admin-auth` — types and schemas
 
 **Files:**
+
 - Create: `features/admin-auth/types/admin-auth.ts`
 - Create: `features/admin-auth/schemas/admin-login-schema.ts`
 - Create: `features/admin-auth/schemas/admin-change-password-schema.ts`
@@ -244,6 +247,7 @@ move to lib/ where the layering rule already expects them."
 - Test: `features/admin-auth/schemas/admin-change-password-schema.test.ts`
 
 **Interfaces:**
+
 - Produces: types `AdminRole`, `AdminLoginResponse`, `AdminUser`, `AdminSession` from `@/features/admin-auth/types/admin-auth`. Schemas `adminLoginSchema`/`AdminLoginInput` from `@/features/admin-auth/schemas/admin-login-schema`, `adminChangePasswordSchema`/`AdminChangePasswordInput` from `@/features/admin-auth/schemas/admin-change-password-schema`.
 
 - [ ] **Step 1: Create `features/admin-auth/types/admin-auth.ts`**
@@ -407,6 +411,7 @@ git commit -m "feat(admin-auth): types and zod schemas for back-office auth"
 ## Task 3: `features/admin-auth` — requests and role mapping
 
 **Files:**
+
 - Create: `features/admin-auth/requests/admin-login.ts`
 - Create: `features/admin-auth/requests/admin-me.ts`
 - Create: `features/admin-auth/requests/admin-change-password.ts`
@@ -414,6 +419,7 @@ git commit -m "feat(admin-auth): types and zod schemas for back-office auth"
 - Test: `features/admin-auth/lib/map-admin-role.test.ts`
 
 **Interfaces:**
+
 - Consumes: `apiFetch<T>(path, options)` from `@/lib/api-client` (existing). `AdminLoginResponse`, `AdminSession`, `AdminRole` from `@/features/admin-auth/types/admin-auth` (Task 2). `AdminLoginInput` from `@/features/admin-auth/schemas/admin-login-schema` (Task 2). `AdminChangePasswordInput` from `@/features/admin-auth/schemas/admin-change-password-schema` (Task 2).
 - Produces: `adminLoginRequest(payload: AdminLoginInput): Promise<AdminLoginResponse>`, `adminMeRequest(): Promise<AdminSession>`, `adminChangePasswordRequest(payload: AdminChangePasswordInput): Promise<{message: string}>` — all server-only (depend transitively on `next/headers` via `apiFetch`). `mapAdminRole(role: AdminRole): "Administrateur national" | "Chargée de communication" | "Modérateur"` from `@/features/admin-auth/lib/map-admin-role` — pure, no server dependency.
 
@@ -532,11 +538,13 @@ git commit -m "feat(admin-auth): server requests and role label mapping"
 ## Task 4: `features/admin-auth` — client mutations
 
 **Files:**
+
 - Create: `features/admin-auth/mutations/use-admin-login.ts`
 - Create: `features/admin-auth/mutations/use-admin-change-password.ts`
 - Create: `features/admin-auth/mutations/use-admin-logout.ts`
 
 **Interfaces:**
+
 - Consumes: `postJson<T>(path, body)` from `@/lib/fetch-json` (existing, browser-safe). `AdminLoginInput` (Task 2), `AdminUser` (Task 2), `AdminChangePasswordInput` (Task 2).
 - Produces: `useAdminLogin()` → `useMutation` whose `mutate({email, password})` resolves to `AdminUser` (includes `mustChangePassword`, `role`, etc., no tokens). `useAdminChangePassword()` → `mutate({oldPassword, password})` resolves to `{message: string}`. `useAdminLogout()` → `mutate()` (no variables) resolves to `{ok: true}`.
 
@@ -602,11 +610,13 @@ git commit -m "feat(admin-auth): TanStack Query mutations for login/change-passw
 ## Task 5: BFF routes `app/api/auth/admin/*`
 
 **Files:**
+
 - Create: `app/api/auth/admin/login/route.ts`
 - Create: `app/api/auth/admin/change-password/route.ts`
 - Create: `app/api/auth/admin/logout/route.ts`
 
 **Interfaces:**
+
 - Consumes: `parseJsonBody<T>(request, schema)` from `@/lib/parse-json-body` (existing). `adminLoginSchema`, `adminChangePasswordSchema` (Task 2). `adminLoginRequest`, `adminChangePasswordRequest` (Task 3). `setAuthCookies`, `clearAuthCookies` from `@/lib/auth-cookies` (Task 1). `toErrorResponse` from `@/lib/to-error-response` (Task 1).
 - Produces: `POST /api/auth/admin/login` (body `{email,password}` → 200 `AdminUser` JSON, sets cookies), `POST /api/auth/admin/change-password` (body `{oldPassword,password}` → 200 `{message}`), `POST /api/auth/admin/logout` (no body → 200 `{ok:true}`, clears cookies, no backend call).
 
@@ -700,9 +710,11 @@ git commit -m "feat(admin-auth): BFF routes for admin login/change-password/logo
 ## Task 6: Edge session guard — `proxy.ts`
 
 **Files:**
+
 - Create: `proxy.ts` (project root, next to `next.config.ts`)
 
 **Interfaces:**
+
 - Consumes: `AUTH_TOKEN_COOKIE`, `AUTH_REFRESH_COOKIE`, `AUTH_COOKIE_OPTIONS` from `@/config/auth` (existing). `getApiBaseUrl` from `@/config/env` (existing).
 - Produces: for any request under `/admin` or `/admin/:path*` except `/admin/connexion`: passes through if a valid session exists (refreshing transparently when only the refresh token remains), otherwise redirects to `/admin/connexion`.
 
@@ -807,10 +819,12 @@ git commit -m "feat(admin-auth): edge session guard with transparent token refre
 ## Task 7: Session-aware admin shell — layout guard + `AdminShellContext`
 
 **Files:**
+
 - Modify: `components/features/admin/admin-shell-context.tsx`
 - Modify: `app/admin/(shell)/layout.tsx`
 
 **Interfaces:**
+
 - Consumes: `adminMeRequest(): Promise<AdminSession>` (Task 3). `mapAdminRole(role): AdminRoleLabel` (Task 3). `ApiError` from `@/lib/api-error` (existing).
 - Produces: `AdminShellProvider` now accepts optional `initialRole`, `fullname`, `email` props; `useAdminShell()` return value gains `fullname: string` and `email: string` alongside the existing `role`/`setRole`/`canSig`/`canEdito`/`canUsers`.
 
@@ -823,7 +837,11 @@ import { createContext, useContext, useMemo, useState, type ReactNode } from "re
 
 export type AdminRole = "Administrateur national" | "Chargée de communication" | "Modérateur";
 
-export const ADMIN_ROLES: AdminRole[] = ["Administrateur national", "Chargée de communication", "Modérateur"];
+export const ADMIN_ROLES: AdminRole[] = [
+  "Administrateur national",
+  "Chargée de communication",
+  "Modérateur",
+];
 
 interface AdminShellState {
   role: AdminRole;
@@ -945,9 +963,11 @@ git commit -m "feat(admin-auth): guard the admin shell and seed it with the real
 ## Task 8: Wire `ConnexionView` to real login
 
 **Files:**
+
 - Modify: `components/features/admin-auth/connexion-view.tsx`
 
 **Interfaces:**
+
 - Consumes: `useAdminLogin()` (Task 4), returning a mutation whose `mutate({email, password}, {onSuccess: (user: AdminUser) => void})` follows TanStack Query's `UseMutationResult` shape. `ApiError` from `@/lib/api-error`.
 - Produces: no change to `ConnexionViewProps` (`{ onGoInscription: () => void }` unchanged) — `AuthScreen` needs no changes.
 
@@ -1084,10 +1104,12 @@ git commit -m "feat(admin-auth): wire the connexion form to POST /api/auth/admin
 ## Task 9: Mandatory password change screen
 
 **Files:**
+
 - Create: `components/features/admin-auth/changer-mot-de-passe-view.tsx`
 - Create: `app/admin/changer-mot-de-passe/page.tsx`
 
 **Interfaces:**
+
 - Consumes: `useAdminChangePassword()` (Task 4). `ApiError` from `@/lib/api-error`.
 - Produces: a page at `/admin/changer-mot-de-passe`, outside the `(shell)` route group (so it is not itself subject to the `mustChangePassword` redirect in Task 7's layout), but still covered by `proxy.ts`'s "a valid session must exist" check from Task 6.
 
@@ -1114,10 +1136,7 @@ export function ChangerMotDePasseView() {
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    changePassword.mutate(
-      { oldPassword, password },
-      { onSuccess: () => router.push("/admin") },
-    );
+    changePassword.mutate({ oldPassword, password }, { onSuccess: () => router.push("/admin") });
   }
 
   const errorMessage = errorMessageFor(changePassword.error);
@@ -1159,7 +1178,13 @@ export function ChangerMotDePasseView() {
           />
         </Field>
         <div className="mt-0.5 grid">
-          <Button type="submit" variant="primary" size="lg" full disabled={changePassword.isPending}>
+          <Button
+            type="submit"
+            variant="primary"
+            size="lg"
+            full
+            disabled={changePassword.isPending}
+          >
             {changePassword.isPending ? "Enregistrement..." : "Valider"}
           </Button>
         </div>
@@ -1217,9 +1242,11 @@ git commit -m "feat(admin-auth): mandatory first-login password change screen"
 ## Task 10: Wire sidebar logout and real identity display
 
 **Files:**
+
 - Modify: `components/features/admin/admin-sidebar.tsx`
 
 **Interfaces:**
+
 - Consumes: `useAdminLogout()` (Task 4). `useAdminShell()` (Task 7, now exposing `fullname`/`email`). `useRouter` from `next/navigation`.
 
 - [ ] **Step 1: Rewrite `components/features/admin/admin-sidebar.tsx`**
@@ -1229,7 +1256,19 @@ git commit -m "feat(admin-auth): mandatory first-login password change screen"
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Inbox, Flag, Newspaper, BookOpen, Megaphone, Smartphone, Landmark, Users, ExternalLink, LogOut, type LucideIcon } from "lucide-react";
+import {
+  Inbox,
+  Flag,
+  Newspaper,
+  BookOpen,
+  Megaphone,
+  Smartphone,
+  Landmark,
+  Users,
+  ExternalLink,
+  LogOut,
+  type LucideIcon,
+} from "lucide-react";
 import { useAdminShell } from "@/components/features/admin/admin-shell-context";
 import { useAdminLogout } from "@/features/admin-auth/mutations/use-admin-logout";
 import { buildQueue } from "@/features/admin/lib/build-queue";
@@ -1265,7 +1304,9 @@ export function AdminSidebar() {
   const shell = useAdminShell();
   const logout = useAdminLogout();
   const queue = buildQueue(shell);
-  const cntOuverts = SIGNALEMENTS.filter((s) => s.statut === "validation" || s.statut === "encours").length;
+  const cntOuverts = SIGNALEMENTS.filter(
+    (s) => s.statut === "validation" || s.statut === "encours",
+  ).length;
 
   const visibleItems = NAV_ITEMS.filter((item) => item.requires === null || shell[item.requires]);
 
@@ -1287,7 +1328,12 @@ export function AdminSidebar() {
       <nav className="flex flex-col gap-0.5">
         {visibleItems.map((item) => {
           const active = pathname === item.href;
-          const badge = item.href === "/admin" ? queue.length : item.href === "/admin/signalements" ? cntOuverts : null;
+          const badge =
+            item.href === "/admin"
+              ? queue.length
+              : item.href === "/admin/signalements"
+                ? cntOuverts
+                : null;
           return (
             <Link
               key={item.href}
@@ -1315,7 +1361,10 @@ export function AdminSidebar() {
       </nav>
 
       <div className="mt-auto flex flex-col gap-3">
-        <Link href="/" className="flex h-10 items-center gap-2.5 rounded-md px-2.5 text-sm font-medium text-white/60 hover:bg-white/7 hover:text-white">
+        <Link
+          href="/"
+          className="flex h-10 items-center gap-2.5 rounded-md px-2.5 text-sm font-medium text-white/60 hover:bg-white/7 hover:text-white"
+        >
           <ExternalLink size={18} />
           <span>Voir le site public</span>
         </Link>
@@ -1325,7 +1374,9 @@ export function AdminSidebar() {
           </span>
           <span className="flex min-w-0 flex-col leading-tight">
             <span className="text-[0.8125rem] font-semibold text-white">{shell.fullname}</span>
-            <span className="overflow-hidden text-[0.6875rem] text-ellipsis whitespace-nowrap text-white/55">{shell.role}</span>
+            <span className="overflow-hidden text-[0.6875rem] text-ellipsis whitespace-nowrap text-white/55">
+              {shell.role}
+            </span>
           </span>
           <button
             type="button"
@@ -1370,6 +1421,7 @@ git commit -m "feat(admin-auth): wire sidebar logout and show the real logged-in
 ## Task 11: Update `docs/ARCHITECTURE.md`
 
 **Files:**
+
 - Modify: `docs/ARCHITECTURE.md`
 
 - [ ] **Step 1: Replace the stale "no edge guard" bullet**

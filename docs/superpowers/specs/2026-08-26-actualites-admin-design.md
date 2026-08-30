@@ -29,7 +29,7 @@ Suite du travail d'authentification admin déjà livré (`docs/superpowers/specs
 - **Site public actualités** : reste sur données statiques pour l'instant, round séparé.
 - **Tags** : le champ existe côté backend (`tags?: string[]` sur create/update) mais n'apparaît dans
   aucune maquette actuelle. On ne l'expose pas dans l'éditeur ce round.
-- **Création de catégorie depuis l'éditeur** : l'éditeur *liste* les catégories existantes
+- **Création de catégorie depuis l'éditeur** : l'éditeur _liste_ les catégories existantes
   (`GET /categorie-actualite`, accès public) mais ne permet pas d'en créer une nouvelle inline. Une
   catégorie doit déjà exister en base pour être sélectionnable. Pas de round dédié à un écran de
   gestion des catégories pour l'instant.
@@ -50,15 +50,15 @@ Suite du travail d'authentification admin déjà livré (`docs/superpowers/specs
 
 ### Endpoints utilisés
 
-| Méthode | Route | Rôle requis | Usage |
-|---|---|---|---|
-| `GET` | `/actualites/admin?page&limit&search&statut` | Éditorial (`ADMIN_NATIONAL`, `CHARGE_COMMUNICATION`) | Liste back-office, tous statuts |
-| `POST` | `/actualites` (multipart) | Éditorial | Création — statut initial toujours BROUILLON |
-| `PATCH` | `/actualites/:id` (multipart) | Éditorial | Édition (tous champs optionnels) |
-| `PATCH` | `/actualites/:id/publier` | Éditorial | Publication |
-| `PATCH` | `/actualites/:id/depublier` | Éditorial | Dépublication (repasse en BROUILLON) |
-| `DELETE` | `/actualites/:id` | Éditorial | Suppression réversible (passe en ARCHIVEE) |
-| `GET` | `/categorie-actualite` | Public | Liste des catégories, pour le `<Select>` de l'éditeur |
+| Méthode  | Route                                        | Rôle requis                                          | Usage                                                 |
+| -------- | -------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------- |
+| `GET`    | `/actualites/admin?page&limit&search&statut` | Éditorial (`ADMIN_NATIONAL`, `CHARGE_COMMUNICATION`) | Liste back-office, tous statuts                       |
+| `POST`   | `/actualites` (multipart)                    | Éditorial                                            | Création — statut initial toujours BROUILLON          |
+| `PATCH`  | `/actualites/:id` (multipart)                | Éditorial                                            | Édition (tous champs optionnels)                      |
+| `PATCH`  | `/actualites/:id/publier`                    | Éditorial                                            | Publication                                           |
+| `PATCH`  | `/actualites/:id/depublier`                  | Éditorial                                            | Dépublication (repasse en BROUILLON)                  |
+| `DELETE` | `/actualites/:id`                            | Éditorial                                            | Suppression réversible (passe en ARCHIVEE)            |
+| `GET`    | `/categorie-actualite`                       | Public                                               | Liste des catégories, pour le `<Select>` de l'éditeur |
 
 Le rôle éditorial (`ADMIN_NATIONAL`, `CHARGE_COMMUNICATION` — tout sauf `MODERATEUR`) correspond
 exactement à `canEdito` déjà calculé dans `admin-shell-context.tsx`. Le guard backend

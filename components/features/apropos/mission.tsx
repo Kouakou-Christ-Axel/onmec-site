@@ -9,9 +9,9 @@ export function Mission() {
         </span>
         <Reveal className="flex max-w-[66ch] flex-col gap-5">
           <p className="text-2xl leading-snug tracking-tight text-ink text-pretty">
-            Instruire pour impacter : donner à chaque jeune Ivoirien les connaissances civiques
-            qui lui permettent de comprendre ses droits, d’assumer ses devoirs et de participer à
-            la vie publique.
+            Instruire pour impacter : donner à chaque jeune Ivoirien les connaissances civiques qui
+            lui permettent de comprendre ses droits, d’assumer ses devoirs et de participer à la vie
+            publique.
           </p>
           <p className="text-[1.0625rem] leading-relaxed text-text-muted">
             Nous travaillons avec les établissements, les autorités éducatives et les associations

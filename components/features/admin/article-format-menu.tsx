@@ -36,10 +36,7 @@ export function ArticleFormatMenu({ editor }: ArticleFormatMenuProps) {
   }
 
   return (
-    <BubbleMenu
-      editor={editor}
-      shouldShow={({ state }) => linkOpen || !state.selection.empty}
-    >
+    <BubbleMenu editor={editor} shouldShow={({ state }) => linkOpen || !state.selection.empty}>
       <div className="flex items-center gap-1 rounded-md border border-border-strong bg-surface-card p-1 shadow-overlay">
         <IconButton
           icon={Bold}
@@ -86,42 +83,40 @@ export function ArticleFormatMenu({ editor }: ArticleFormatMenuProps) {
               onClick={openLinkPopover}
             />
           </Popover.Trigger>
-          <Popover.Portal>
-            <Popover.Content
-              side="bottom"
-              align="start"
-              sideOffset={8}
-              onEscapeKeyDown={() => setLinkOpen(false)}
-              style={{ transformOrigin: "var(--radix-popover-content-transform-origin)" }}
-              className={cn(
-                "z-100 flex w-64 flex-col gap-2 rounded-[10px] border border-border-strong bg-surface-card p-3 shadow-overlay",
-                "data-[state=open]:animate-mec-pop data-[state=closed]:animate-mec-pop-out",
-              )}
-            >
-              <Input
-                autoFocus
-                value={url}
-                onChange={(event) => setUrl(event.target.value)}
-                placeholder="https://…"
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault();
-                    applyLink();
-                  }
-                }}
-              />
-              <div className="flex gap-2">
-                <Button variant="primary" size="sm" onClick={applyLink}>
-                  Appliquer
+          <Popover.Content
+            side="bottom"
+            align="start"
+            sideOffset={8}
+            onEscapeKeyDown={() => setLinkOpen(false)}
+            style={{ transformOrigin: "var(--radix-popover-content-transform-origin)" }}
+            className={cn(
+              "z-100 flex w-64 flex-col gap-2 rounded-[10px] border border-border-strong bg-surface-card p-3 shadow-overlay",
+              "data-[state=open]:animate-mec-pop data-[state=closed]:animate-mec-pop-out",
+            )}
+          >
+            <Input
+              autoFocus
+              value={url}
+              onChange={(event) => setUrl(event.target.value)}
+              placeholder="https://…"
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  applyLink();
+                }
+              }}
+            />
+            <div className="flex gap-2">
+              <Button variant="primary" size="sm" onClick={applyLink}>
+                Appliquer
+              </Button>
+              {editor.isActive("link") ? (
+                <Button variant="ghost" size="sm" onClick={removeLink}>
+                  Retirer le lien
                 </Button>
-                {editor.isActive("link") ? (
-                  <Button variant="ghost" size="sm" onClick={removeLink}>
-                    Retirer le lien
-                  </Button>
-                ) : null}
-              </div>
-            </Popover.Content>
-          </Popover.Portal>
+              ) : null}
+            </div>
+          </Popover.Content>
         </Popover.Root>
       </div>
     </BubbleMenu>

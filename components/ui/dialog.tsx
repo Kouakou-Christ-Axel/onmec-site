@@ -6,11 +6,12 @@ import { cn } from "@/components/ui/cn";
 
 /**
  * Radix portalise vers `document.body` par défaut. Or le thème sombre est scopé à
- * `html[data-mec-theme="dark"] [data-mec-public]` (app/globals.css) et redéfinit les tokens sur cet
- * ancêtre : un overlay portalisé sur `body` en sortirait et résoudrait les valeurs claires.
- * Le site public rend donc un `#mec-overlay-root` à l'intérieur du marqueur — voir
- * app/(public)/layout.tsx. Côté /admin le conteneur est absent, on retombe sur `body`, ce qui est
- * correct : `dark:` y est inerte par construction.
+ * `html[data-mec-theme="dark"] [data-mec-public]` / `[data-mec-admin]` (app/globals.css) et
+ * redéfinit les tokens sur ces ancêtres : un overlay portalisé sur `body` en sortirait et
+ * résoudrait les valeurs claires. Le site public et le dashboard admin rendent donc chacun un
+ * `#mec-overlay-root` à l'intérieur de leur marqueur respectif — voir app/(public)/layout.tsx et
+ * app/admin/layout.tsx. Les deux zones ne sont jamais montées simultanément, donc réutiliser le
+ * même id pour les deux est sans risque.
  */
 export function useOverlayContainer(): HTMLElement | undefined {
   // Initialiseur paresseux : la lecture ne se fait qu'au premier rendu client, où le conteneur est

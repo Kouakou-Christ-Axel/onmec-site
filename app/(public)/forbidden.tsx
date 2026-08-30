@@ -37,7 +37,9 @@ export default function Forbidden() {
               </Link>
             </div>
             <div className="flex flex-col gap-3 rounded-md border border-border-subtle bg-surface-card p-6">
-              <span className="text-[1.0625rem] font-semibold text-ink">Vous ne l’êtes pas encore</span>
+              <span className="text-[1.0625rem] font-semibold text-ink">
+                Vous ne l’êtes pas encore
+              </span>
               <p className="text-[0.9375rem] leading-relaxed text-text-muted">
                 Le formulaire d’adhésion prend deux minutes. Votre accès est ouvert après validation
                 par votre section.

@@ -11,12 +11,7 @@ export function ArticleCard({ article }: { article: Article }) {
       href={`/actualites/${article.slug}`}
       className="group flex flex-col gap-4 rounded-sm transition-transform duration-150 ease-out hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
     >
-      <ArticleCover
-        src={article.imageUrl}
-        alt=""
-        ratio="3/2"
-        placeholderLabel="Photo à fournir"
-      />
+      <ArticleCover src={article.imageUrl} alt="" ratio="3/2" placeholderLabel="Photo à fournir" />
       <div className="flex flex-wrap items-center gap-3 text-xs text-text-muted">
         <CategoryTag categorie={article.categorie} />
         <span>{formatArticleDate(article.date)}</span>

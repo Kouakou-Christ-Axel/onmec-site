@@ -82,18 +82,18 @@ arbitraires Tailwind (`bg-[image:var(--pattern-stripes)]`) ou en CSS minimal dan
 
 ## Découpage des routes
 
-| Route | Contenu | Statut maquette |
-| --- | --- | --- |
-| `app/page.tsx` | Accueil | designé |
-| `app/apropos/page.tsx` | À propos | designé |
-| `app/actualites/page.tsx` | Liste actualités (variant "une") | designé |
-| `app/actualites/[slug]/page.tsx` | Détail article | designé (un seul article de contenu réel : "Bilan du premier semestre 2026" ; les autres articles de la liste pointent vers le même gabarit avec leurs propres champs) |
-| `app/rejoindre/page.tsx` | Formulaire adhésion (variant "long") | designé |
-| `app/actions/page.tsx` | Nos actions (variant "compact") | designé (addendum) |
-| `app/ressources/page.tsx` | Catalogue ressources (variant "grille") | designé (addendum) |
-| `app/ressources/[slug]/page.tsx` | Détail ressource | designé (addendum) |
-| `app/contact/page.tsx` | Formulaire de contact + contacts par sujet | designé (addendum bis) |
-| `app/galerie/page.tsx`, `app/rapports/page.tsx` | Placeholder `isTodo` | non designé (assumé, hors scope — pas de route de nav dédiée actuellement) |
+| Route                                           | Contenu                                    | Statut maquette                                                                                                                                                        |
+| ----------------------------------------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `app/page.tsx`                                  | Accueil                                    | designé                                                                                                                                                                |
+| `app/apropos/page.tsx`                          | À propos                                   | designé                                                                                                                                                                |
+| `app/actualites/page.tsx`                       | Liste actualités (variant "une")           | designé                                                                                                                                                                |
+| `app/actualites/[slug]/page.tsx`                | Détail article                             | designé (un seul article de contenu réel : "Bilan du premier semestre 2026" ; les autres articles de la liste pointent vers le même gabarit avec leurs propres champs) |
+| `app/rejoindre/page.tsx`                        | Formulaire adhésion (variant "long")       | designé                                                                                                                                                                |
+| `app/actions/page.tsx`                          | Nos actions (variant "compact")            | designé (addendum)                                                                                                                                                     |
+| `app/ressources/page.tsx`                       | Catalogue ressources (variant "grille")    | designé (addendum)                                                                                                                                                     |
+| `app/ressources/[slug]/page.tsx`                | Détail ressource                           | designé (addendum)                                                                                                                                                     |
+| `app/contact/page.tsx`                          | Formulaire de contact + contacts par sujet | designé (addendum bis)                                                                                                                                                 |
+| `app/galerie/page.tsx`, `app/rapports/page.tsx` | Placeholder `isTodo`                       | non designé (assumé, hors scope — pas de route de nav dédiée actuellement)                                                                                             |
 
 Header/footer partagés via `app/layout.tsx` (pas de route group `(site)` : il n'existe pas encore
 d'autre section type app authentifiée qui nécessiterait de les exclure).

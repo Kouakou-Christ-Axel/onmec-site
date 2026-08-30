@@ -34,9 +34,11 @@ Vitest.
 ## Task 1: Modèle de données `LibrairieDocument`
 
 **Files:**
+
 - Create: `features/librairie/types/document.ts`
 
 **Interfaces:**
+
 - Produces: `LibrairieDocument`, `PublicLibrairieDocument`, `AdminLibrairieDocument` — types
   consommés par toutes les tâches suivantes (ce plan et le plan admin séparé).
 
@@ -97,10 +99,12 @@ git commit -m "feat(librairie): types partages du document Librairie"
 ## Task 2: Tri des documents (`sort-documents`)
 
 **Files:**
+
 - Create: `features/librairie/lib/sort-documents.ts`
 - Test: `features/librairie/lib/sort-documents.test.ts`
 
 **Interfaces:**
+
 - Consumes: `PublicLibrairieDocument` (Task 1).
 - Produces: `sortDocuments(list, sort): PublicLibrairieDocument[]`, `SortKey`, `SORT_OPTIONS` —
   consommes par `LibrairieToolbar` et `LibrairieCatalog` (Task 5, Task 9).
@@ -216,11 +220,13 @@ git commit -m "feat(librairie): tri des documents (recent/az/pages)"
 ## Task 3: Requêtes publiques (server-only)
 
 **Files:**
+
 - Create: `features/librairie/requests/list-librairie-public.ts`
 - Create: `features/librairie/requests/get-librairie-public.ts`
 - Create: `features/librairie/requests/list-librairie-categories.ts`
 
 **Interfaces:**
+
 - Consumes: `apiFetch` (`lib/api-client.ts`), `PublicLibrairieDocument`,
   `PublicLibrairieListResponse` (Task 1).
 - Produces: `listLibrairiePublic({ categorie?, limit? })`, `getLibrairiePublic(id): Promise<PublicLibrairieDocument | null>`,
@@ -325,10 +331,12 @@ git commit -m "feat(librairie): requetes publiques (liste, detail, categories)"
 ## Task 4: `DocumentCover` et `DocumentDownloadLink`
 
 **Files:**
+
 - Create: `components/features/librairie/document-cover.tsx`
 - Create: `components/features/librairie/document-download-link.tsx`
 
 **Interfaces:**
+
 - Consumes: `PhotoPlaceholder` (`components/features/site/photo-placeholder.tsx`), patron
   `ArticleCover` (`components/features/site/article-cover.tsx`).
 - Produces: `<DocumentCover src ratio? className? label? />`, `<DocumentDownloadLink href children? />`
@@ -425,13 +433,15 @@ git commit -m "feat(librairie): couverture reelle et lien de telechargement dire
 ## Task 5: `LibrairieToolbar`
 
 **Files:**
+
 - Create: `components/features/librairie/librairie-toolbar.tsx`
 
 **Interfaces:**
+
 - Consumes: `SelectInput` (`components/features/site/form-controls.tsx`), `SortKey`,
   `SORT_OPTIONS` (Task 2).
 - Produces: `<LibrairieToolbar query onQueryChange categorie onCategorieChange categories sort
-  onSortChange resultCount />` — consommé par `LibrairieCatalog` (Task 9).
+onSortChange resultCount />` — consommé par `LibrairieCatalog` (Task 9).
 
 Pas de test : composant de présentation avec état contrôlé par le parent, même convention que
 `ressource-toolbar.tsx` (non testé).
@@ -550,10 +560,12 @@ git commit -m "feat(librairie): barre de recherche/filtre/tri du catalogue"
 ## Task 6: `LibrairieCard` et `LibrairieTable`
 
 **Files:**
+
 - Create: `components/features/librairie/librairie-card.tsx`
 - Create: `components/features/librairie/librairie-table.tsx`
 
 **Interfaces:**
+
 - Consumes: `PublicLibrairieDocument` (Task 1), `DocumentCover` (Task 4).
 - Produces: `<LibrairieCard document />`, `<LibrairieTable documents onPreview />` — consommés par
   `LibrairieCatalog` (Task 9) et `RelatedDocuments` (Task 10).
@@ -692,19 +704,21 @@ git commit -m "feat(librairie): carte et tableau du catalogue"
 ## Task 7: `LibrairiePagination` et `LibrairiePreviewOverlay`
 
 **Files:**
+
 - Create: `components/features/librairie/librairie-pagination.tsx`
 - Create: `components/features/librairie/librairie-preview-overlay.tsx`
 
 **Interfaces:**
+
 - Consumes: `PublicLibrairieDocument` (Task 1), `Dialog`, `DialogTitle`, `useLastNonNull`
   (`components/ui/dialog.tsx`), `DocumentCover` (Task 4).
 - Produces: `<LibrairiePagination page totalPages onChange />`, `<LibrairiePreviewOverlay document
-  onClose />` — consommés par `LibrairieCatalog` (Task 9).
+onClose />` — consommés par `LibrairieCatalog` (Task 9).
 
 Pas de test : composants de présentation / overlay Radix, non testés ailleurs dans le projet.
 
 - [ ] **Step 1: `librairie-pagination.tsx`** (copie de `ressource-pagination.tsx`, aucune logique
-  ne change)
+      ne change)
 
 ```tsx
 // components/features/librairie/librairie-pagination.tsx
@@ -839,10 +853,12 @@ git commit -m "feat(librairie): pagination et apercu plein ecran du catalogue"
 ## Task 8: `LibrairieHero` et `LibrairieCta`
 
 **Files:**
+
 - Create: `components/features/librairie/librairie-hero.tsx`
 - Create: `components/features/librairie/librairie-cta.tsx`
 
 **Interfaces:**
+
 - Consumes: `Reveal`, `Stat` (`components/features/site/`).
 - Produces: `<LibrairieHero total categoriesCount />`, `<LibrairieCta />` — consommés par
   `app/(public)/ressources/page.tsx` (Task 9).
@@ -850,8 +866,8 @@ git commit -m "feat(librairie): pagination et apercu plein ecran du catalogue"
 Pas de test : composants de présentation, contenu marketing statique + deux chiffres reçus en props.
 
 - [ ] **Step 1: `librairie-hero.tsx`** (remplace `hero.tsx` — reçoit les totaux en props au lieu de
-  les calculer depuis les données statiques ; plus de stat "téléchargements", abandonnée avec le
-  champ)
+      les calculer depuis les données statiques ; plus de stat "téléchargements", abandonnée avec le
+      champ)
 
 ```tsx
 // components/features/librairie/librairie-hero.tsx
@@ -954,9 +970,11 @@ git commit -m "feat(librairie): hero et CTA du catalogue, alimentes par les vrai
 ## Task 9: `LibrairieCatalog` (orchestrateur)
 
 **Files:**
+
 - Create: `components/features/librairie/librairie-catalog.tsx`
 
 **Interfaces:**
+
 - Consumes: `PublicLibrairieDocument` (Task 1), `sortDocuments`/`SortKey` (Task 2),
   `LibrairieToolbar`/`ALL_CATEGORIES`/`CategorieFilter` (Task 5), `LibrairieTable` (Task 6),
   `LibrairieCard` (Task 6), `LibrairiePagination` (Task 7), `LibrairiePreviewOverlay` (Task 7).
@@ -1100,15 +1118,17 @@ git commit -m "feat(librairie): orchestrateur du catalogue (filtre/tri/paginatio
 ## Task 10: `DocumentHeader`, `DocumentBody`, `RelatedDocuments`
 
 **Files:**
+
 - Create: `components/features/librairie/document-header.tsx`
 - Create: `components/features/librairie/document-body.tsx`
 - Create: `components/features/librairie/related-documents.tsx`
 
 **Interfaces:**
+
 - Consumes: `PublicLibrairieDocument` (Task 1), `DocumentCover`/`DocumentDownloadLink` (Task 4),
   `LibrairieCard` (Task 6).
 - Produces: `<DocumentHeader document />`, `<DocumentBody document />`, `<RelatedDocuments
-  documents />` — consommés par `app/(public)/ressources/[id]/page.tsx` (Task 11).
+documents />` — consommés par `app/(public)/ressources/[id]/page.tsx` (Task 11).
 
 Pas de test : composants de présentation purs.
 
@@ -1296,6 +1316,7 @@ git commit -m "feat(librairie): en-tete, corps et ressources liees de la fiche d
 ## Task 11: Routes publiques (rename `[slug]` → `[id]`, wiring API)
 
 **Files:**
+
 - Create: `app/(public)/ressources/[id]/page.tsx`
 - Create: `app/(public)/ressources/[id]/loading.tsx`
 - Modify: `app/(public)/ressources/page.tsx`
@@ -1305,6 +1326,7 @@ git commit -m "feat(librairie): en-tete, corps et ressources liees de la fiche d
 - Delete: `app/(public)/ressources/[slug]/loading.tsx`
 
 **Interfaces:**
+
 - Consumes: `listLibrairiePublic`, `getLibrairiePublic`, `listLibrairieCategories` (Task 3),
   `LibrairieHero`/`LibrairieCta` (Task 8), `LibrairieCatalog` (Task 9),
   `DocumentHeader`/`DocumentBody`/`RelatedDocuments` (Task 10).
@@ -1374,7 +1396,7 @@ export default async function RessourcePage({ params }: { params: Promise<{ id: 
 ```
 
 - [ ] **Step 3: `app/(public)/ressources/[id]/loading.tsx`** (copie de `[slug]/loading.tsx`, aucun
-  changement de contenu)
+      changement de contenu)
 
 ```tsx
 // app/(public)/ressources/[id]/loading.tsx
@@ -1409,9 +1431,9 @@ export default function Loading() {
 ```
 
 - [ ] **Step 4: Ajuster `app/(public)/ressources/loading.tsx`** — dans le bloc tableau, remplacer
-  `Array.from({ length: 6 })` (en-tête) par `Array.from({ length: 5 })`, et dans chaque ligne
-  simulée, retirer un des deux `<Skeleton className="h-4 flex-1" />` (il n'y a plus que
-  Couverture/Titre/Catégorie/Pages/Action, 5 colonnes au lieu de 6).
+      `Array.from({ length: 6 })` (en-tête) par `Array.from({ length: 5 })`, et dans chaque ligne
+      simulée, retirer un des deux `<Skeleton className="h-4 flex-1" />` (il n'y a plus que
+      Couverture/Titre/Catégorie/Pages/Action, 5 colonnes au lieu de 6).
 
 - [ ] **Step 5: Supprimer les anciennes routes**
 
@@ -1440,6 +1462,7 @@ git commit -m "feat(librairie): brancher les pages publiques sur l'API, renommer
 ## Task 12: Nettoyage de l'ancien feature statique
 
 **Files:**
+
 - Delete: `features/ressources/` (types, data, lib)
 - Delete: `components/features/ressources/` (tous les fichiers)
 

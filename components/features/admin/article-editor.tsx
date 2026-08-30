@@ -38,7 +38,7 @@ export function ArticleEditor({ existing }: ArticleEditorProps) {
 
   return (
     <div className="fixed inset-0 z-95 flex flex-col bg-surface-page">
-      <div className="flex h-16 flex-none items-center gap-3.5 border-b border-border-subtle bg-[#faf8f5]/94 px-4 backdrop-blur-md md:px-8">
+      <div className="flex h-16 flex-none items-center gap-3.5 border-b border-border-subtle bg-surface-blur px-4 backdrop-blur-md md:px-8">
         <IconButton icon={ArrowLeft} label="Retour aux actualités" onClick={handleClose} />
         <span className="text-[0.8125rem] font-semibold whitespace-nowrap text-ink">Rédaction</span>
         <span className="ml-auto flex items-center gap-3">

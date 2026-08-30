@@ -5,7 +5,10 @@ import { MaintenanceRetryButton } from "@/components/features/site/maintenance-r
 const REASSURANCES = [
   { icon: Flag, text: "L’application de signalement fonctionne normalement." },
   { icon: Users, text: "Nos pages sur les réseaux sociaux restent actives." },
-  { icon: CalendarDays, text: "Les inscriptions aux formations reprennent dès la fin de l’intervention." },
+  {
+    icon: CalendarDays,
+    text: "Les inscriptions aux formations reprennent dès la fin de l’intervention.",
+  },
 ];
 
 export default function MaintenancePage() {

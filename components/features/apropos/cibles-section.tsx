@@ -19,9 +19,7 @@ export function CiblesSection() {
                 <div className="flex h-full flex-col gap-4 rounded-md border border-ink/10 bg-surface-card p-7 transition duration-150 ease-out hover:-translate-y-1 hover:border-orange-500">
                   <cible.icon className={`h-8 w-8 ${cible.colorClass}`} aria-hidden />
                   <div>
-                    <h3 className="text-lg font-semibold tracking-tight text-ink">
-                      {cible.title}
-                    </h3>
+                    <h3 className="text-lg font-semibold tracking-tight text-ink">{cible.title}</h3>
                     <p className="mt-2 text-sm leading-relaxed text-text-muted">{cible.desc}</p>
                   </div>
                   <div className="mt-auto flex flex-col gap-2.5 border-t border-ink/10 pt-4">

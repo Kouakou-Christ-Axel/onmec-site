@@ -16,7 +16,8 @@ export function ChangerMotDePasseView() {
   const [oldPassword, setOldPassword] = useState("");
   const [password, setPassword] = useState("");
 
-  const sessionExpired = changePassword.error instanceof ApiError && changePassword.error.status === 401;
+  const sessionExpired =
+    changePassword.error instanceof ApiError && changePassword.error.status === 401;
 
   // Si la session meurt en cours de route (401 du backend), l'utilisateur ne doit pas rester
   // bloqué sur cet écran (c'est le seul qu'un admin avec mustChangePassword:true peut atteindre) :

@@ -63,10 +63,10 @@ alias sémantiques).
 
 ### Neutres — surfaces inversées, `n-0` fixe (sert de texte sur aplat de marque dans les 2 thèmes)
 
-| Token | Clair | Sombre |
-| --- | --- | --- |
-| `--color-n-0` | `#FFFFFF` | inchangé |
-| `--color-n-50` | `#FAF8F5` | `#0D1622` |
+| Token           | Clair     | Sombre    |
+| --------------- | --------- | --------- |
+| `--color-n-0`   | `#FFFFFF` | inchangé  |
+| `--color-n-50`  | `#FAF8F5` | `#0D1622` |
 | `--color-n-100` | `#F1EEE9` | `#1A2637` |
 | `--color-n-200` | `#E1DDD6` | `#26344A` |
 | `--color-n-300` | `#C7C2B9` | `#3A4A64` |
@@ -75,100 +75,100 @@ alias sémantiques).
 | `--color-n-600` | `#544E47` | `#AEB9C9` |
 | `--color-n-700` | `#3A352F` | `#CBD4E0` |
 | `--color-n-800` | `#221E1A` | `#E4EAF2` |
-| `--color-ink` | `#0E1B2E` | `#E9EFF7` |
+| `--color-ink`   | `#0E1B2E` | `#E9EFF7` |
 
 ### Orange — 500 fixe (couleur bouton, ne se négocie pas)
 
-| Token | Clair | Sombre |
-| --- | --- | --- |
-| `--color-orange-50` | `#FFF4E8` | `#2B1D0B` |
-| `--color-orange-100` | `#FFE7CC` | `#3A2810` |
-| `--color-orange-200` | `#FFD199` | `#5C3F14` |
+| Token                        | Clair     | Sombre    |
+| ---------------------------- | --------- | --------- |
+| `--color-orange-50`          | `#FFF4E8` | `#2B1D0B` |
+| `--color-orange-100`         | `#FFE7CC` | `#3A2810` |
+| `--color-orange-200`         | `#FFD199` | `#5C3F14` |
 | `--color-orange-300/400/500` | inchangés | inchangés |
-| `--color-orange-600` | `#E06D00` | `#FF9126` |
-| `--color-orange-700` | `#B85700` | `#FFA94D` |
-| `--color-orange-800` | `#8A4100` | `#FFC286` |
-| `--color-orange-900` | `#5C2B00` | `#FFD9B0` |
+| `--color-orange-600`         | `#E06D00` | `#FF9126` |
+| `--color-orange-700`         | `#B85700` | `#FFA94D` |
+| `--color-orange-800`         | `#8A4100` | `#FFC286` |
+| `--color-orange-900`         | `#5C2B00` | `#FFD9B0` |
 
 ### Bleu — 300/400 fixes
 
-| Token | Clair | Sombre |
-| --- | --- | --- |
-| `--color-blue-50` | `#EEF3FC` | `#152238` |
-| `--color-blue-100` | `#D8E4F8` | `#1B2B45` |
-| `--color-blue-200` | `#AFC6EF` | `#243652` |
+| Token                  | Clair     | Sombre    |
+| ---------------------- | --------- | --------- |
+| `--color-blue-50`      | `#EEF3FC` | `#152238` |
+| `--color-blue-100`     | `#D8E4F8` | `#1B2B45` |
+| `--color-blue-200`     | `#AFC6EF` | `#243652` |
 | `--color-blue-300/400` | inchangés | inchangés |
-| `--color-blue-500` | `#1556B5` | `#6D9AE0` |
-| `--color-blue-600` | `#114796` | `#8FB3EC` |
-| `--color-blue-700` | `#0D3872` | `#A8C4F0` |
-| `--color-blue-800` | `#0A2B58` | `#16243A` |
-| `--color-blue-900` | `#071C39` | `#101B2C` |
+| `--color-blue-500`     | `#1556B5` | `#6D9AE0` |
+| `--color-blue-600`     | `#114796` | `#8FB3EC` |
+| `--color-blue-700`     | `#0D3872` | `#A8C4F0` |
+| `--color-blue-800`     | `#0A2B58` | `#16243A` |
+| `--color-blue-900`     | `#071C39` | `#101B2C` |
 
 ### Sémantique texte (nouveau — absent de `globals.css`, à ajouter)
 
-| Token | Clair | Sombre |
-| --- | --- | --- |
-| `--color-text-strong` | `var(--color-ink)` | `#F2F6FB` |
-| `--color-text-body` | `#2B3646` (= couleur actuelle de `body`) | `#C3CDDB` |
-| `--color-text-muted` | `#5E6878` (= `--color-muted-foreground` actuel, à fusionner) | `#8E9BAE` |
-| `--color-text-invert` | `#FFFFFF` | inchangé |
-| `--color-text-on-brand` | `#FFFFFF` | inchangé |
-| `--color-text-accent` | `var(--color-blue-500)` | `#7FA3E3` |
-| `--color-text-link` | `var(--color-blue-600)` | `#8FB3EC` |
-| `--color-text-link-hover` | `var(--color-orange-700)` | `var(--color-orange-400)` |
+| Token                     | Clair                                                        | Sombre                    |
+| ------------------------- | ------------------------------------------------------------ | ------------------------- |
+| `--color-text-strong`     | `var(--color-ink)`                                           | `#F2F6FB`                 |
+| `--color-text-body`       | `#2B3646` (= couleur actuelle de `body`)                     | `#C3CDDB`                 |
+| `--color-text-muted`      | `#5E6878` (= `--color-muted-foreground` actuel, à fusionner) | `#8E9BAE`                 |
+| `--color-text-invert`     | `#FFFFFF`                                                    | inchangé                  |
+| `--color-text-on-brand`   | `#FFFFFF`                                                    | inchangé                  |
+| `--color-text-accent`     | `var(--color-blue-500)`                                      | `#7FA3E3`                 |
+| `--color-text-link`       | `var(--color-blue-600)`                                      | `#8FB3EC`                 |
+| `--color-text-link-hover` | `var(--color-orange-700)`                                    | `var(--color-orange-400)` |
 
 ### Sémantique surfaces (nouveau, sauf les 5 déjà présentes)
 
-| Token | Clair | Sombre |
-| --- | --- | --- |
-| `--color-surface-page` | `var(--color-n-50)` (existant) | `#0D1622` |
-| `--color-surface-card` | `var(--color-n-0)` (existant) | `#141F2E` (littéral — ne peut plus dériver de `n-0`) |
-| `--color-surface-sunken` | `var(--color-n-100)` (existant) | `#1A2637` |
-| `--color-surface-brand` | `var(--color-orange-500)` | inchangé |
-| `--color-surface-brand-soft` | `var(--color-orange-50)` | `#2A1D0C` |
-| `--color-surface-deep` | `var(--color-blue-800)` (existant) | `#16243A` |
-| `--color-surface-deep-soft` | `var(--color-blue-50)` (existant) | `#152238` |
-| `--color-surface-invert` | `var(--color-ink)` | `#E9EFF7` |
-| `--color-fill-ink` (nouveau) | `var(--color-ink)` | `#2A3A52` |
-| `--color-surface-blur` (nouveau, header sticky) | `rgba(250,248,245,.92)` | `rgba(13,22,34,.88)` |
-| `--color-brand-flat` (nouveau, aplats hero/CTA pleine largeur) | `var(--color-orange-500)` | `#B85700` |
+| Token                                                          | Clair                              | Sombre                                               |
+| -------------------------------------------------------------- | ---------------------------------- | ---------------------------------------------------- |
+| `--color-surface-page`                                         | `var(--color-n-50)` (existant)     | `#0D1622`                                            |
+| `--color-surface-card`                                         | `var(--color-n-0)` (existant)      | `#141F2E` (littéral — ne peut plus dériver de `n-0`) |
+| `--color-surface-sunken`                                       | `var(--color-n-100)` (existant)    | `#1A2637`                                            |
+| `--color-surface-brand`                                        | `var(--color-orange-500)`          | inchangé                                             |
+| `--color-surface-brand-soft`                                   | `var(--color-orange-50)`           | `#2A1D0C`                                            |
+| `--color-surface-deep`                                         | `var(--color-blue-800)` (existant) | `#16243A`                                            |
+| `--color-surface-deep-soft`                                    | `var(--color-blue-50)` (existant)  | `#152238`                                            |
+| `--color-surface-invert`                                       | `var(--color-ink)`                 | `#E9EFF7`                                            |
+| `--color-fill-ink` (nouveau)                                   | `var(--color-ink)`                 | `#2A3A52`                                            |
+| `--color-surface-blur` (nouveau, header sticky)                | `rgba(250,248,245,.92)`            | `rgba(13,22,34,.88)`                                 |
+| `--color-brand-flat` (nouveau, aplats hero/CTA pleine largeur) | `var(--color-orange-500)`          | `#B85700`                                            |
 
 ### Bordures
 
-| Token | Clair | Sombre |
-| --- | --- | --- |
-| `--color-border-subtle` | `rgba(14,27,46,.10)` (existant) | `rgba(233,239,247,.13)` |
-| `--color-border-strong` | `rgba(14,27,46,.24)` (existant) | `rgba(233,239,247,.27)` |
-| `--color-border-brand` (nouveau) | `var(--color-orange-500)` | inchangé |
-| `--color-border-deep` (nouveau) | `var(--color-blue-500)` | dérive automatiquement (pas d'override) |
-| `--color-border-invert` (nouveau) | `rgba(255,255,255,.24)` | `rgba(233,239,247,.24)` |
+| Token                             | Clair                           | Sombre                                  |
+| --------------------------------- | ------------------------------- | --------------------------------------- |
+| `--color-border-subtle`           | `rgba(14,27,46,.10)` (existant) | `rgba(233,239,247,.13)`                 |
+| `--color-border-strong`           | `rgba(14,27,46,.24)` (existant) | `rgba(233,239,247,.27)`                 |
+| `--color-border-brand` (nouveau)  | `var(--color-orange-500)`       | inchangé                                |
+| `--color-border-deep` (nouveau)   | `var(--color-blue-500)`         | dérive automatiquement (pas d'override) |
+| `--color-border-invert` (nouveau) | `rgba(255,255,255,.24)`         | `rgba(233,239,247,.24)`                 |
 
 ### Actions
 
-| Token | Clair | Sombre |
-| --- | --- | --- |
-| `--color-action-primary-bg/-hover/-active/-fg` (nouveau) | orange-500/600/700/blanc | dérivent automatiquement |
-| `--color-action-deep-bg` (nouveau) | `var(--color-blue-500)` | `#2C63C4` (littéral — le bleu 500 éclairci ne passe plus AA sur texte blanc) |
-| `--color-action-deep-bg-hover` | `var(--color-blue-600)` | `#3B74D8` |
-| `--color-action-deep-bg-active` | `var(--color-blue-700)` | `#5088E0` |
-| `--color-action-deep-fg` | `#FFFFFF` | inchangé |
-| `--color-action-ghost-fg` (nouveau) | `var(--color-ink)` | `#E9EFF7` |
-| `--color-action-ghost-bg-hover` (nouveau) | `var(--color-n-100)` | `#1A2637` |
+| Token                                                    | Clair                    | Sombre                                                                       |
+| -------------------------------------------------------- | ------------------------ | ---------------------------------------------------------------------------- |
+| `--color-action-primary-bg/-hover/-active/-fg` (nouveau) | orange-500/600/700/blanc | dérivent automatiquement                                                     |
+| `--color-action-deep-bg` (nouveau)                       | `var(--color-blue-500)`  | `#2C63C4` (littéral — le bleu 500 éclairci ne passe plus AA sur texte blanc) |
+| `--color-action-deep-bg-hover`                           | `var(--color-blue-600)`  | `#3B74D8`                                                                    |
+| `--color-action-deep-bg-active`                          | `var(--color-blue-700)`  | `#5088E0`                                                                    |
+| `--color-action-deep-fg`                                 | `#FFFFFF`                | inchangé                                                                     |
+| `--color-action-ghost-fg` (nouveau)                      | `var(--color-ink)`       | `#E9EFF7`                                                                    |
+| `--color-action-ghost-bg-hover` (nouveau)                | `var(--color-n-100)`     | `#1A2637`                                                                    |
 
 ### Divers
 
-| Token | Clair | Sombre |
-| --- | --- | --- |
-| `--color-focus-ring` (nouveau) | `var(--color-blue-500)` | `#7FA3E3` |
-| `--color-overlay-scrim` (nouveau) | `rgba(7,28,57,.62)` | `rgba(4,9,16,.72)` |
-| `--color-verdict-unchecked/-bg` (nouveau) | `#544E47` / `#F1EEE9` | `#A9B4C4` / `#1A2637` |
-| `--color-verdict-true/-false/-misleading(+bg)` (existants) | inchangés | true `#4ECB93`/`#10281D`, false `#FF8B7D`/`#2B1512`, misleading `#FFB866`/`#2B1D0B` |
-| `--shadow-stamp` | `5px 5px 0 var(--color-blue-500)` (existant) | `5px 5px 0 var(--color-orange-500)` (couleur change, pas juste la variable sous-jacente) |
-| `--shadow-raise` (nouveau) | `0 1px 2px rgba(14,27,46,.06), 0 8px 24px rgba(14,27,46,.08)` | `0 4px 16px rgba(0,0,0,.52)` |
-| `--shadow-overlay` (existant) | `0 24px 60px rgba(7,28,57,.22)` | `0 14px 38px rgba(0,0,0,.64)` |
-| `--pattern-dots` (existant, `:root`) | `radial-gradient(currentColor 1px, transparent 1px)` | `radial-gradient(rgba(233,239,247,.13) 1px, transparent 1px)` (littéral en sombre) |
-| `--pattern-stripes` (existant, `:root`) | `repeating-linear-gradient(118deg, rgba(255,255,255,.14) 0 2px, transparent 2px 12px)` | même dégradé, opacité `.085` |
-| `color-scheme` | `light` | `dark` |
+| Token                                                      | Clair                                                                                  | Sombre                                                                                   |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `--color-focus-ring` (nouveau)                             | `var(--color-blue-500)`                                                                | `#7FA3E3`                                                                                |
+| `--color-overlay-scrim` (nouveau)                          | `rgba(7,28,57,.62)`                                                                    | `rgba(4,9,16,.72)`                                                                       |
+| `--color-verdict-unchecked/-bg` (nouveau)                  | `#544E47` / `#F1EEE9`                                                                  | `#A9B4C4` / `#1A2637`                                                                    |
+| `--color-verdict-true/-false/-misleading(+bg)` (existants) | inchangés                                                                              | true `#4ECB93`/`#10281D`, false `#FF8B7D`/`#2B1512`, misleading `#FFB866`/`#2B1D0B`      |
+| `--shadow-stamp`                                           | `5px 5px 0 var(--color-blue-500)` (existant)                                           | `5px 5px 0 var(--color-orange-500)` (couleur change, pas juste la variable sous-jacente) |
+| `--shadow-raise` (nouveau)                                 | `0 1px 2px rgba(14,27,46,.06), 0 8px 24px rgba(14,27,46,.08)`                          | `0 4px 16px rgba(0,0,0,.52)`                                                             |
+| `--shadow-overlay` (existant)                              | `0 24px 60px rgba(7,28,57,.22)`                                                        | `0 14px 38px rgba(0,0,0,.64)`                                                            |
+| `--pattern-dots` (existant, `:root`)                       | `radial-gradient(currentColor 1px, transparent 1px)`                                   | `radial-gradient(rgba(233,239,247,.13) 1px, transparent 1px)` (littéral en sombre)       |
+| `--pattern-stripes` (existant, `:root`)                    | `repeating-linear-gradient(118deg, rgba(255,255,255,.14) 0 2px, transparent 2px 12px)` | même dégradé, opacité `.085`                                                             |
+| `color-scheme`                                             | `light`                                                                                | `dark`                                                                                   |
 
 Compatibilité composants (traduits en classes/props, pas en CSS `.mec-*`) :
 
@@ -194,7 +194,7 @@ publics) :
 - `app/globals.css` : `body { color: #2b3646 }` → `color: var(--color-text-body)`.
 - `components/features/site/site-header.tsx` : `bg-[#faf8f5]/90` → `bg-surface-blur` (nouveau
   token). Ajouter le bouton de bascule de thème (3 icônes SVG identiques à la maquette, `<span
-  data-mec-icon="…">` + CSS de visibilité) à côté du CTA "Rejoindre le mouvement", avant lui dans
+data-mec-icon="…">` + CSS de visibilité) à côté du CTA "Rejoindre le mouvement", avant lui dans
   l'ordre visuel (comme la maquette).
 - `components/features/ressources/download-dialog.tsx` : `bg-ink/50` → `bg-overlay-scrim` (nouveau
   token, remplace l'approximation).

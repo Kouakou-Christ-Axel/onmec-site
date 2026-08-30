@@ -23,7 +23,9 @@ export function ImpactNumbers() {
           {STATS.map((stat, i) => (
             <Reveal key={stat.label} delay={i * 80}>
               <div className="rounded-md border border-ink/10 p-7">
-                <div className={`text-4xl leading-none font-semibold tracking-tight tabular-nums lg:text-5xl ${stat.accent}`}>
+                <div
+                  className={`text-4xl leading-none font-semibold tracking-tight tabular-nums lg:text-5xl ${stat.accent}`}
+                >
                   {stat.value}
                 </div>
                 <div className="mt-2.5 text-base text-ink">{stat.label}</div>

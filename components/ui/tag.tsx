@@ -5,11 +5,11 @@ type TagTone = "neutral" | "orange" | "blue" | "solid" | "outline" | "invert";
 type TagSize = "sm" | "md";
 
 const TONE_CLASSES: Record<TagTone, string> = {
-  neutral: "bg-n-100 text-[#2b3646]",
+  neutral: "bg-n-100 text-text-body",
   orange: "bg-orange-100 text-orange-800",
   blue: "bg-blue-100 text-blue-700",
   solid: "bg-orange-500 text-white",
-  outline: "bg-transparent text-[#2b3646] border border-ink/24",
+  outline: "bg-transparent text-text-body border border-ink/24",
   invert: "bg-white/16 text-white",
 };
 

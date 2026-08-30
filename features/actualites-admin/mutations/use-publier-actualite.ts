@@ -6,6 +6,7 @@ import type { ActualiteAdmin } from "@/features/actualites-admin/types/actualite
 
 export function usePublierActualite() {
   return useMutation({
-    mutationFn: (id: string) => patchJson<ActualiteAdmin>(`/api/admin/actualites/${id}/publier`, {}),
+    mutationFn: (id: string) =>
+      patchJson<ActualiteAdmin>(`/api/admin/actualites/${id}/publier`, {}),
   });
 }

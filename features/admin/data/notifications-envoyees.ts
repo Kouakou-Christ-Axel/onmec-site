@@ -8,9 +8,30 @@ export interface NotificationEnvoyee {
 }
 
 export const NOTIFICATIONS_ENVOYEES: NotificationEnvoyee[] = [
-  { titre: "Passage piéton de Marcory : dossier transmis à la mairie", destinataires: "Tous les utilisateurs", date: "20/08/2026", recuePar: "2 140", ouverture: "38 %", ouvertureForte: true },
-  { titre: "Caravane à Bouaké : rendez-vous samedi", destinataires: "Bénévoles vérifiés", date: "15/08/2026", recuePar: "2 090", ouverture: "44 %", ouvertureForte: true },
-  { titre: "Guide du jeune citoyen disponible", destinataires: "Tous les utilisateurs", date: "06/08/2026", recuePar: "1 980", ouverture: "31 %", ouvertureForte: false },
+  {
+    titre: "Passage piéton de Marcory : dossier transmis à la mairie",
+    destinataires: "Tous les utilisateurs",
+    date: "20/08/2026",
+    recuePar: "2 140",
+    ouverture: "38 %",
+    ouvertureForte: true,
+  },
+  {
+    titre: "Caravane à Bouaké : rendez-vous samedi",
+    destinataires: "Bénévoles vérifiés",
+    date: "15/08/2026",
+    recuePar: "2 090",
+    ouverture: "44 %",
+    ouvertureForte: true,
+  },
+  {
+    titre: "Guide du jeune citoyen disponible",
+    destinataires: "Tous les utilisateurs",
+    date: "06/08/2026",
+    recuePar: "1 980",
+    ouverture: "31 %",
+    ouvertureForte: false,
+  },
 ];
 
 export const CIBLES_NOTIFICATION = [

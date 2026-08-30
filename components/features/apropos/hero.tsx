@@ -12,7 +12,10 @@ export function AproposHero() {
             Former des citoyens <em className="font-serif font-normal italic">informés</em>
           </h1>
         </Reveal>
-        <Reveal delay={80} className="max-w-[52ch] text-lg leading-relaxed text-white/80 text-pretty">
+        <Reveal
+          delay={80}
+          className="max-w-[52ch] text-lg leading-relaxed text-white/80 text-pretty"
+        >
           <p>
             Le MEC est une organisation ivoirienne d’éducation à la citoyenneté. Nous intervenons
             dans les établissements scolaires, sur les campus et dans les quartiers.

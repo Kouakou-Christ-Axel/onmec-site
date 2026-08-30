@@ -17,8 +17,8 @@ export function RejoindreHero() {
         </Reveal>
         <Reveal delay={80} className="mt-5 max-w-[52ch] text-lg leading-relaxed text-white/90">
           <p>
-            Quatre façons de vous engager auprès du MEC. L’adhésion est gratuite : nous ne
-            demandons aucune cotisation.
+            Quatre façons de vous engager auprès du MEC. L’adhésion est gratuite : nous ne demandons
+            aucune cotisation.
           </p>
         </Reveal>
       </div>

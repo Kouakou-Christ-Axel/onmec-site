@@ -38,7 +38,7 @@ export function SignalementUpdatesPanel({ signalement, onChange }: SignalementUp
               <span className="text-[0.6875rem] text-muted-foreground">
                 {u.date} · {u.auteur}
               </span>
-              <span className="text-sm leading-relaxed text-[#2b3646]">{u.texte}</span>
+              <span className="text-sm leading-relaxed text-text-body">{u.texte}</span>
             </span>
           ))}
         </div>
@@ -47,7 +47,10 @@ export function SignalementUpdatesPanel({ signalement, onChange }: SignalementUp
           Aucune mise à jour. Le citoyen ne voit encore que son signalement.
         </span>
       )}
-      <Field label="Ajouter une mise à jour" hint="Visible par le citoyen dans l’app, avec la date et votre nom">
+      <Field
+        label="Ajouter une mise à jour"
+        hint="Visible par le citoyen dans l’app, avec la date et votre nom"
+      >
         <Textarea
           rows={3}
           value={maj}

@@ -42,9 +42,11 @@ Vitest.
 ## Task 1: Requête de liste admin
 
 **Files:**
+
 - Create: `features/librairie-admin/requests/list-librairie-admin.ts`
 
 **Interfaces:**
+
 - Consumes: `apiFetch` (`lib/api-client.ts`), `AdminLibrairieDocument`
   (`features/librairie/types/document.ts`).
 - Produces: `listLibrairieAdmin(): Promise<LibrairieAdminListResponse>` — consommé par
@@ -57,7 +59,10 @@ Pas de test : wrapper `apiFetch` fin, même convention que `list-actualites-admi
 ```ts
 // features/librairie-admin/requests/list-librairie-admin.ts
 import { apiFetch } from "@/lib/api-client";
-import type { AdminLibrairieDocument, LibrairieListMeta } from "@/features/librairie/types/document";
+import type {
+  AdminLibrairieDocument,
+  LibrairieListMeta,
+} from "@/features/librairie/types/document";
 
 export interface LibrairieAdminListResponse {
   data: AdminLibrairieDocument[];
@@ -88,10 +93,12 @@ git commit -m "feat(librairie-admin): requete de liste admin"
 ## Task 2: Upload direct vers R2 (`putFileToUploadUrl`)
 
 **Files:**
+
 - Create: `features/librairie-admin/lib/upload-to-r2.ts`
 - Test: `features/librairie-admin/lib/upload-to-r2.test.ts`
 
 **Interfaces:**
+
 - Produces: `putFileToUploadUrl(uploadUrl: string, file: File, contentType: string): Promise<void>`
   — consommé par `create-document-with-upload.ts` (Task 4).
 
@@ -184,13 +191,15 @@ git commit -m "feat(librairie-admin): PUT direct vers une url presignee R2"
 ## Task 3: Demande d'URL présignée (requête + route handler)
 
 **Files:**
+
 - Create: `features/librairie-admin/requests/request-upload-url.ts`
 - Create: `app/api/admin/librairie/upload-url/route.ts`
 
 **Interfaces:**
+
 - Consumes: `apiFetch` (`lib/api-client.ts`), `toErrorResponse` (`lib/to-error-response.ts`).
 - Produces: `requestUploadUrl(body): Promise<UploadUrlResult>` (server), route `POST
-  /api/admin/librairie/upload-url` — consommés par `create-document-with-upload.ts` (Task 4).
+/api/admin/librairie/upload-url` — consommés par `create-document-with-upload.ts` (Task 4).
 
 Pas de test dédié : wrapper `apiFetch` fin + route handler proxy, même convention que
 `create-actualite.ts`/`app/api/admin/actualites/route.ts` (non testés isolément — couverts par la
@@ -260,12 +269,14 @@ git commit -m "feat(librairie-admin): demande d'url presignee (fichier ou couver
 ## Task 4: Orchestration de la création (upload + finalisation)
 
 **Files:**
+
 - Create: `features/librairie-admin/requests/create-librairie-admin.ts`
 - Create: `features/librairie-admin/lib/create-document-with-upload.ts`
 - Test: `features/librairie-admin/lib/create-document-with-upload.test.ts`
 - Create: `app/api/admin/librairie/route.ts`
 
 **Interfaces:**
+
 - Consumes: `requestUploadUrl` (Task 3, via la route `/api/admin/librairie/upload-url`),
   `putFileToUploadUrl` (Task 2), `postJson` (`lib/fetch-json.ts`), `apiFetch`
   (`lib/api-client.ts`), `AdminLibrairieDocument` (`features/librairie/types/document.ts`).
@@ -534,15 +545,17 @@ git commit -m "feat(librairie-admin): orchestration creation (upload url + PUT R
 ## Task 5: Édition et suppression
 
 **Files:**
+
 - Create: `features/librairie-admin/requests/update-librairie-admin.ts`
 - Create: `features/librairie-admin/requests/delete-librairie-admin.ts`
 - Create: `app/api/admin/librairie/[id]/route.ts`
 
 **Interfaces:**
+
 - Consumes: `apiFetch` (`lib/api-client.ts`), `toErrorResponse` (`lib/to-error-response.ts`),
   `AdminLibrairieDocument` (`features/librairie/types/document.ts`).
 - Produces: `updateLibrairieAdmin(id, payload)`, `deleteLibrairieAdmin(id)`, routes `PATCH`/`DELETE
-  /api/admin/librairie/{id}` — consommés par les mutations (Task 6).
+/api/admin/librairie/{id}` — consommés par les mutations (Task 6).
 
 Pas de test dédié : même convention que `update-actualite.ts`/`delete-actualite.ts` et leurs routes
 (non testés isolément).
@@ -630,11 +643,13 @@ git commit -m "feat(librairie-admin): edition et suppression"
 ## Task 6: Mutations client (TanStack Query)
 
 **Files:**
+
 - Create: `features/librairie-admin/mutations/use-create-document.ts`
 - Create: `features/librairie-admin/mutations/use-update-document.ts`
 - Create: `features/librairie-admin/mutations/use-delete-document.ts`
 
 **Interfaces:**
+
 - Consumes: `createDocumentWithUpload`/`CreateDocumentInput` (Task 4), `patchJson`/`deleteJson`
   (`lib/fetch-json.ts`), `AdminLibrairieDocument` (`features/librairie/types/document.ts`).
 - Produces: `useCreateDocument()`, `useUpdateDocument()`, `useDeleteDocument()` — consommés par
@@ -719,9 +734,11 @@ git commit -m "feat(librairie-admin): mutations create/update/delete"
 ## Task 7: `UploadDocumentDialog`
 
 **Files:**
+
 - Create: `components/features/librairie-admin/upload-document-dialog.tsx`
 
 **Interfaces:**
+
 - Consumes: `useCreateDocument` (Task 6), `CreateDocumentStep` (Task 4), `Dialog`/`DialogTitle`
   (`components/ui/dialog.tsx`), `Button`/`IconButton`/`Field`/`Input`
   (`components/ui/*`), `AdminLibrairieDocument` (`features/librairie/types/document.ts`).
@@ -854,7 +871,12 @@ export function UploadDocumentDialog({
           </datalist>
         </Field>
         <Field label="Fichier PDF" hint="Obligatoire">
-          <Input type="file" accept="application/pdf" onChange={handleFileChange} disabled={pending} />
+          <Input
+            type="file"
+            accept="application/pdf"
+            onChange={handleFileChange}
+            disabled={pending}
+          />
         </Field>
         <Field label="Couverture" hint="Facultatif — jpg, png ou webp">
           <Input
@@ -901,9 +923,11 @@ git commit -m "feat(librairie-admin): dialogue d'upload multi-etapes"
 ## Task 8: `EditDocumentDialog`
 
 **Files:**
+
 - Create: `components/features/librairie-admin/edit-document-dialog.tsx`
 
 **Interfaces:**
+
 - Consumes: `useUpdateDocument` (Task 6), `Dialog`/`DialogTitle`, `Button`/`IconButton`/`Field`/
   `Input`, `AdminLibrairieDocument` (`features/librairie/types/document.ts`).
 - Produces: `<EditDocumentDialog document onClose categories onUpdated />` — consommé par
@@ -1034,9 +1058,11 @@ git commit -m "feat(librairie-admin): dialogue d'edition (titre/description/cate
 ## Task 9: `LibrairieAdminClient` (liste + actions)
 
 **Files:**
+
 - Create: `components/features/librairie-admin/librairie-admin-client.tsx`
 
 **Interfaces:**
+
 - Consumes: `useDeleteDocument` (Task 6), `UploadDocumentDialog` (Task 7), `EditDocumentDialog`
   (Task 8), `ConfirmDialog` (`components/ui/alert-dialog.tsx`), `Button`/`IconButton`,
   `useAdminShell` (`components/features/admin/admin-shell-context.tsx`), `AdminLibrairieDocument`
@@ -1074,10 +1100,7 @@ interface LibrairieAdminClientProps {
   categories: string[];
 }
 
-export function LibrairieAdminClient({
-  initialDocuments,
-  categories,
-}: LibrairieAdminClientProps) {
+export function LibrairieAdminClient({ initialDocuments, categories }: LibrairieAdminClientProps) {
   const shell = useAdminShell();
   const [documents, setDocuments] = useState(initialDocuments);
   const [showUpload, setShowUpload] = useState(false);
@@ -1227,11 +1250,13 @@ git commit -m "feat(librairie-admin): liste, upload, edition et suppression"
 ## Task 10: Page admin + nettoyage du mock
 
 **Files:**
+
 - Modify: `app/admin/(shell)/ressources/page.tsx`
 - Delete: `features/admin/data/ressources.ts`
 - Delete: `components/features/admin/new-ressource-dialog.tsx`
 
 **Interfaces:**
+
 - Consumes: `listLibrairieAdmin` (Task 1), `listLibrairieCategories`
   (`features/librairie/requests/list-librairie-categories.ts`, plan catalogue public — endpoint
   public, réutilisable tel quel côté admin), `LibrairieAdminClient` (Task 9).

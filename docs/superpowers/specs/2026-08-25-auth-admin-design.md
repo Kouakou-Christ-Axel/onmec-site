@@ -62,9 +62,15 @@ Le Swagger ne type pas explicitement les réponses de succès de `/auth/admin/*`
 
 ```json
 {
-  "id": "...", "type": "admin", "role": "ADMIN_NATIONAL",
-  "email": "...", "fullname": "...", "phone": "...", "avatar": null,
-  "isActive": true, "mustChangePassword": true
+  "id": "...",
+  "type": "admin",
+  "role": "ADMIN_NATIONAL",
+  "email": "...",
+  "fullname": "...",
+  "phone": "...",
+  "avatar": null,
+  "isActive": true,
+  "mustChangePassword": true
 }
 ```
 
@@ -84,7 +90,7 @@ back-office est donc **entièrement client** : effacer les cookies, aucun appel 
 corps non vérifié en live (mutation destructive sur un compte seedé partagé, écartée
 avec l'utilisateur). **Hypothèse retenue, justifiée** : l'auth est explicitement
 stateless (le JWT n'encode ni hash ni version de mot de passe ; la description de
-`/auth/logout` le dit noir sur blanc : *"l'authentification étant sans état..."*) → un
+`/auth/logout` le dit noir sur blanc : _"l'authentification étant sans état..."_) → un
 changement de mot de passe n'invalide vraisemblablement pas les tokens déjà émis. Le
 flow ne repose donc pas de nouveaux cookies après `change-password`, il se contente de
 re-fetcher `/me` (qui doit renvoyer `mustChangePassword: false`) avant de rediriger vers
@@ -95,8 +101,8 @@ point acquis.
 
 ### Garde d'auth : edge (`proxy.ts`), pas seulement dans le layout
 
-`docs/ARCHITECTURE.md` annonce déjà ce chantier (*"la garde d'auth edge est toujours à
-poser"*). Vérifié en conditions réelles le 2026-08-25 (redémarrage du dev server local,
+`docs/ARCHITECTURE.md` annonce déjà ce chantier (_"la garde d'auth edge est toujours à
+poser"_). Vérifié en conditions réelles le 2026-08-25 (redémarrage du dev server local,
 `proxy.ts` avec `response.cookies.set(...)` sur un matcher de test, `Set-Cookie` observé
 dans la réponse `curl`) : **vinext 1.0.0-beta.8 pose bien les cookies depuis
 `proxy.ts`**. Le design edge n'est donc pas spéculatif.
@@ -116,7 +122,7 @@ dans la réponse `curl`) : **vinext 1.0.0-beta.8 pose bien les cookies depuis
       efface les cookies, redirect `/admin/connexion`.
     - Aucun des deux présent → redirect `/admin/connexion`.
   - Cette règle s'applique uniformément à `/admin/(shell)/*` **et**
-    `/admin/changer-mot-de-passe` : les deux exigent juste *une session valide*, pas de
+    `/admin/changer-mot-de-passe` : les deux exigent juste _une session valide_, pas de
     logique `mustChangePassword` à ce niveau (elle est spécifique au dashboard, traitée
     plus bas).
 
@@ -167,16 +173,16 @@ Nommage aligné sur `components/features/admin-auth/` déjà existant (pas
 - `types/admin-auth.ts` — `AdminRole`, `AdminLoginResponse` (forme vérifiée ci-dessus),
   `AdminSession` (sous-ensemble renvoyé par `/me`).
 - `schemas/admin-login-schema.ts` — `{ email: z.email().max(254), password:
-  z.string().min(1) }`. Bornes reprises de l'OpenAPI (`LoginUserDto.email.maxLength:
-  254`), **pas** recopiées de `features/auth/schemas/login-schema.ts` (`max(100)`,
+z.string().min(1) }`. Bornes reprises de l'OpenAPI (`LoginUserDto.email.maxLength:
+254`), **pas** recopiées de `features/auth/schemas/login-schema.ts` (`max(100)`,
   incohérent avec le backend réel).
 - `schemas/admin-change-password-schema.ts` — `{ oldPassword: z.string().min(1),
-  password: z.string().min(12).max(128) }` (bornes `ChangePasswordDto`, pas de
+password: z.string().min(12).max(128) }` (bornes `ChangePasswordDto`, pas de
   `confirmPassword` — le DTO backend n'en a pas).
 - `requests/admin-login.ts` — `POST /auth/admin/login`, `auth: false`.
 - `requests/admin-me.ts` — `GET /auth/admin/me`, `auth: true` (défaut).
 - `requests/admin-change-password.ts` — `POST /auth/admin/change-password`, `auth:
-  true`.
+true`.
   (Pas de `requests/admin-refresh-token.ts` : le refresh ne vit que dans `proxy.ts`,
   aucun retry-on-401 côté client n'est demandé dans cette tâche.)
 - `lib/map-admin-role.ts` — mapping pur `ADMIN_NATIONAL → "Administrateur national"`,
@@ -205,7 +211,7 @@ Routes BFF miroir, `app/api/auth/admin/{login,change-password,logout}/route.ts` 
   `Alert` de `components/ui/`, déjà présent). Succès → redirect côté client selon
   `mustChangePassword`.
 - **Nouvelle vue `changer-mot-de-passe-view.tsx`** + `app/admin/changer-mot-de-
-  passe/page.tsx` : formulaire `oldPassword`/`password` (pas de confirmation, le DTO
+passe/page.tsx` : formulaire `oldPassword`/`password` (pas de confirmation, le DTO
   n'en a pas), `useAdminChangePassword`, succès → redirect `/admin`.
 - **`admin-sidebar.tsx`** : le `<Link href="/admin/connexion">` de déconnexion (ligne
   88-94 actuelle) devient un bouton `onClick` → `useAdminLogout().mutate()` puis
@@ -243,7 +249,7 @@ Routes BFF miroir, `app/api/auth/admin/{login,change-password,logout}/route.ts` 
 - Accès avec refresh également invalide/expiré → cookies effacés, redirect
   `/admin/connexion`.
 - `mustChangePassword: true` → redirect systématique vers `/admin/changer-mot-de-
-  passe` tant que non résolu, y compris en visitant directement une autre URL `/admin/*`.
+passe` tant que non résolu, y compris en visitant directement une autre URL `/admin/*`.
 - Changement de mot de passe réussi → redirect `/admin`, plus de redirect vers
   changer-mot-de-passe (donc `/me` renvoie bien `mustChangePassword: false` après
   coup — **point à vérifier manuellement en premier**, cf. hypothèse stateless).
@@ -253,6 +259,6 @@ Routes BFF miroir, `app/api/auth/admin/{login,change-password,logout}/route.ts` 
 
 ## Mise à jour de la documentation existante
 
-`docs/ARCHITECTURE.md` ligne *"Pas de garde d'auth edge... dashboard non protégé"* dans
+`docs/ARCHITECTURE.md` ligne _"Pas de garde d'auth edge... dashboard non protégé"_ dans
 la section « Décisions actuelles » devient fausse dès que cette tâche atterrit — à
 corriger dans le cadre de cette tâche, pas après.

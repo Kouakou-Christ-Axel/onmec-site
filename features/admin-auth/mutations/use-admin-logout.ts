@@ -5,7 +5,6 @@ import { postJson } from "@/lib/fetch-json";
 
 export function useAdminLogout() {
   return useMutation({
-    mutationFn: () =>
-      postJson<{ ok: true }>("/api/auth/admin/logout", {}),
+    mutationFn: () => postJson<{ ok: true }>("/api/auth/admin/logout", {}),
   });
 }

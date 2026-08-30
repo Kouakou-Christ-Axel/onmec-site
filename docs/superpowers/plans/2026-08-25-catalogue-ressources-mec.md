@@ -70,24 +70,24 @@ export const FORMATS: Format[] = ["PDF", "DOCX", "PNG"];
 export const ACCES_VALUES: Acces[] = ["Public", "Adhérents"];
 ```
 
-  Valeurs par guide (import `Format`/`Acces` en tête de fichier à ajouter à côté de l'import
-  `Ressource, Theme` existant) :
+Valeurs par guide (import `Format`/`Acces` en tête de fichier à ajouter à côté de l'import
+`Ressource, Theme` existant) :
 
-  | slug | format | acces |
-  | --- | --- | --- |
-  | g1 | `"PDF"` | `"Public"` |
-  | g2 | `"PDF"` | `"Public"` |
-  | g3 | `"PDF"` | `"Adhérents"` |
-  | g4 | `"PDF"` | `"Public"` |
-  | g5 | `"PDF"` | `"Public"` |
-  | g6 | `"DOCX"` | `"Adhérents"` |
-  | g7 | `"PNG"` | `"Public"` |
-  | g8 | `"PDF"` | `"Public"` |
-  | g9 | `"PDF"` | `"Public"` |
+| slug | format   | acces         |
+| ---- | -------- | ------------- |
+| g1   | `"PDF"`  | `"Public"`    |
+| g2   | `"PDF"`  | `"Public"`    |
+| g3   | `"PDF"`  | `"Adhérents"` |
+| g4   | `"PDF"`  | `"Public"`    |
+| g5   | `"PDF"`  | `"Public"`    |
+| g6   | `"DOCX"` | `"Adhérents"` |
+| g7   | `"PNG"`  | `"Public"`    |
+| g8   | `"PDF"`  | `"Public"`    |
+| g9   | `"PDF"`  | `"Public"`    |
 
-  (g3 = guide encadreur remis en formation, g6 = trame de séance éditable, g7 = infographie image —
-  ces trois choix justifient naturellement les valeurs non-`"PDF"`/non-`"Public"` demandées par la
-  spec, pas de contrainte narrative au-delà.)
+(g3 = guide encadreur remis en formation, g6 = trame de séance éditable, g7 = infographie image —
+ces trois choix justifient naturellement les valeurs non-`"PDF"`/non-`"Public"` demandées par la
+spec, pas de contrainte narrative au-delà.)
 
 - [x] **Vérifier** : `pnpm run typecheck` — doit passer sans erreur (aucune ressource ne doit
       manquer `format`/`acces`, sinon TypeScript le signale immédiatement sur la déclaration du
@@ -204,9 +204,9 @@ export function sortRessources(list: Ressource[], sort: SortKey): Ressource[] {
 </div>
 ```
 
-  Reste du fichier inchangé (le composant est utilisé tel quel par `related-ressources.tsx`, aucune
-  prop supplémentaire n'est nécessaire — `ressource.format` existe déjà sur toutes les données
-  depuis l'étape 1).
+Reste du fichier inchangé (le composant est utilisé tel quel par `related-ressources.tsx`, aucune
+prop supplémentaire n'est nécessaire — `ressource.format` existe déjà sur toutes les données
+depuis l'étape 1).
 
 - [x] **Vérifier** : `pnpm run typecheck` + `pnpm run lint` passent.
 
@@ -346,10 +346,10 @@ export function RessourceToolbar({
 }
 ```
 
-  Note : `SelectInput` (`components/features/site/form-controls.tsx`) impose déjà sa propre
-  hauteur/style (`h-11 ${inputClass}`) et ignore tout `className` qu'on lui passerait (le composant
-  l'écrase) — ne pas essayer de le personnaliser ici, l'utiliser tel quel comme partout ailleurs
-  dans le site (formulaire de contact, etc.).
+Note : `SelectInput` (`components/features/site/form-controls.tsx`) impose déjà sa propre
+hauteur/style (`h-11 ${inputClass}`) et ignore tout `className` qu'on lui passerait (le composant
+l'écrase) — ne pas essayer de le personnaliser ici, l'utiliser tel quel comme partout ailleurs
+dans le site (formulaire de contact, etc.).
 
 - [x] **Vérifier** : `pnpm run typecheck` + `pnpm run lint` passent (le composant n'est pas encore
       monté nulle part, donc pas de vérification visuelle à ce stade).
@@ -785,7 +785,7 @@ export default function RessourcesPage() {
   - Colonne Thème : la maquette utilise `color: var(--blue-600)`, majuscules, `font-weight:600`,
     letter-spacing — le tableau livré par §5 ci-dessus utilisait du texte gris plat
     (`text-text-muted`). Corrigé en `text-[0.75rem] font-semibold tracking-wide text-blue-600
-    uppercase` (token déjà existant, s'adapte déjà au mode sombre).
+uppercase` (token déjà existant, s'adapte déjà au mode sombre).
   - Colonne Format : la maquette combine format + nombre de pages + poids en une seule chaîne (ex.
     "PDF · 48 pages · 3,2 Mo"), pas le code format seul. Corrigé en conséquence — aucune nouvelle
     donnée requise (`pages`/`weight` existaient déjà sur `Ressource`).

@@ -7,7 +7,6 @@ import type { AdminUser } from "@/features/admin-auth/types/admin-auth";
 
 export function useAdminLogin() {
   return useMutation({
-    mutationFn: (input: AdminLoginInput) =>
-      postJson<AdminUser>("/api/auth/admin/login", input),
+    mutationFn: (input: AdminLoginInput) => postJson<AdminUser>("/api/auth/admin/login", input),
   });
 }

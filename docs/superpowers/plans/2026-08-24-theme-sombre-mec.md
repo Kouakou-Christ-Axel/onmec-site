@@ -7,10 +7,10 @@ Suit la spec `docs/superpowers/specs/2026-08-24-theme-sombre-mec-design.md`.
 - [x] `app/globals.css` : tokens sémantiques ajoutés au bloc `@theme` (table complète de la spec),
       `--color-muted-foreground` conservé tel quel (réutilisé par `/admin`, non fusionné — voir
       Écarts) et `--color-text-muted` ajouté à part. Bloc `html[data-mec-theme="dark"]
-      [data-mec-public] { … }` (scope ajouté, voir Écarts) avec toutes les valeurs sombres.
+[data-mec-public] { … }` (scope ajouté, voir Écarts) avec toutes les valeurs sombres.
       `@custom-variant dark (&:where(html[data-mec-theme="dark"] [data-mec-public], html[data-mec-theme="dark"] [data-mec-public] *));`.
       `--shadow-stamp` change bien de couleur (bleu → orange) sous le bloc sombre. `body { color:
-      var(--color-text-body) }`.
+var(--color-text-body) }`.
 - [x] `components/features/site/theme-toggle.tsx` (nouveau, `"use client"`) : logique portée de
       `mec-theme.js` (3 états auto/light/dark, `localStorage`, `matchMedia` pour `auto`), icône
       pilotée en CSS pur (`data-mec-mode`/`data-mec-icon`).
@@ -24,7 +24,7 @@ Suit la spec `docs/superpowers/specs/2026-08-24-theme-sombre-mec-design.md`.
 - [x] `components/features/ressources/download-dialog.tsx` : `bg-ink/50` → `bg-overlay-scrim`,
       `bg-white` → `bg-surface-card` (carte modale).
 - [x] `components/features/site/photo-placeholder.tsx` : `dark:brightness-[.86]
-      dark:saturate-[.94]` sur le conteneur (tous les placeholders, pas seulement `duotone`, pour
+dark:saturate-[.94]` sur le conteneur (tous les placeholders, pas seulement `duotone`, pour
       matcher la règle `.mec-photo` de la maquette).
 
 ## 2. Vérification thème sombre sur chaque route publique
@@ -82,7 +82,7 @@ Suit la spec `docs/superpowers/specs/2026-08-24-theme-sombre-mec-design.md`.
   ressource) — `ink` s'inverse en sombre (devient clair), donc le texte blanc fixe devenait
   invisible. Corrigé en `bg-ink text-surface-page` (les deux tokens s'inversent ensemble, comme le
   fait `.mec-tag--active{color:var(--surface-page)}` dans `mec-dark.css`). Fichiers : `ressource-
-  card.tsx`, `ressource-filter.tsx`, `news-filter.tsx`, `form-sidebar.tsx`. Même bug inverse sur le
+card.tsx`, `ressource-filter.tsx`, `news-filter.tsx`, `form-sidebar.tsx`. Même bug inverse sur le
   bouton blanc du hero d'accueil (`bg-white text-ink` → `bg-white text-fill-ink`, `fill-ink` reste
   sombre dans les deux thèmes contrairement à `ink`).
 - **`app/(public)/layout.tsx` : `min-h-screen` ajouté** au wrapper `data-mec-public` — sans ça, une

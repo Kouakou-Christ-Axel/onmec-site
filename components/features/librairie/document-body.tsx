@@ -12,9 +12,9 @@ export function DocumentBody({ document }: { document: PublicLibrairieDocument }
         <div className="flex flex-col gap-5 text-lg leading-relaxed text-text-body">
           <p>{document.description}</p>
           <p className="text-base text-text-muted">
-            Le guide est libre d&apos;usage en classe et en club, photocopie comprise. Merci de conserver
-            la mention du MEC en pied de page. Toute réédition ou traduction demande notre accord
-            écrit.
+            Le guide est libre d&apos;usage en classe et en club, photocopie comprise. Merci de
+            conserver la mention du MEC en pied de page. Toute réédition ou traduction demande notre
+            accord écrit.
           </p>
         </div>
       </div>

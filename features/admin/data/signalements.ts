@@ -63,7 +63,8 @@ export const SIGNALEMENTS: Signalement[] = [
     statut: "validation",
     publie: false,
     responsable: "",
-    contenu: "Dépôt sauvage installé sur le trottoir de l’entrée des élèves. Odeurs signalées par les parents.",
+    contenu:
+      "Dépôt sauvage installé sur le trottoir de l’entrée des élèves. Odeurs signalées par les parents.",
     updates: [],
   },
   {
@@ -92,12 +93,14 @@ export const SIGNALEMENTS: Signalement[] = [
     statut: "encours",
     publie: true,
     responsable: "Konan Yao",
-    contenu: "Marquage au sol totalement effacé à la sortie des classes, sur une voie à double sens.",
+    contenu:
+      "Marquage au sol totalement effacé à la sortie des classes, sur une voie à double sens.",
     updates: [
       {
         date: "20/08/2026",
         auteur: "Konan Yao",
-        texte: "Signalement transmis à la mairie de Marcory. Dossier enregistré sous la référence M-2026-311.",
+        texte:
+          "Signalement transmis à la mairie de Marcory. Dossier enregistré sous la référence M-2026-311.",
       },
     ],
   },
@@ -112,12 +115,14 @@ export const SIGNALEMENTS: Signalement[] = [
     statut: "encours",
     publie: true,
     responsable: "Aminata Traoré",
-    contenu: "Deux tôles arrachées au-dessus de la classe de 4e. La salle est inutilisable les jours de pluie.",
+    contenu:
+      "Deux tôles arrachées au-dessus de la classe de 4e. La salle est inutilisable les jours de pluie.",
     updates: [
       {
         date: "20/08/2026",
         auteur: "Aminata Traoré",
-        texte: "Visite effectuée avec le proviseur. Devis de réparation demandé à la direction régionale.",
+        texte:
+          "Visite effectuée avec le proviseur. Devis de réparation demandé à la direction régionale.",
       },
     ],
   },
@@ -134,8 +139,16 @@ export const SIGNALEMENTS: Signalement[] = [
     responsable: "Salif Ouattara",
     contenu: "Plaque manquante sur un trottoir très fréquenté, à côté d’un arrêt de gbaka.",
     updates: [
-      { date: "18/08/2026", auteur: "Salif Ouattara", texte: "Zone balisée par les riverains, photo transmise au district d’Abidjan." },
-      { date: "20/08/2026", auteur: "Salif Ouattara", texte: "Intervention annoncée pour la semaine du 25/08." },
+      {
+        date: "18/08/2026",
+        auteur: "Salif Ouattara",
+        texte: "Zone balisée par les riverains, photo transmise au district d’Abidjan.",
+      },
+      {
+        date: "20/08/2026",
+        auteur: "Salif Ouattara",
+        texte: "Intervention annoncée pour la semaine du 25/08.",
+      },
     ],
   },
   {
@@ -151,8 +164,16 @@ export const SIGNALEMENTS: Signalement[] = [
     responsable: "Aminata Traoré",
     contenu: "Fuite continue depuis trois jours à l’angle de la rue du marché, chaussée inondée.",
     updates: [
-      { date: "16/08/2026", auteur: "Aminata Traoré", texte: "Signalement transmis au service des eaux, référence SODECI 8842." },
-      { date: "19/08/2026", auteur: "Aminata Traoré", texte: "Réparation effectuée le 19/08. Signalement clôturé après vérification sur place." },
+      {
+        date: "16/08/2026",
+        auteur: "Aminata Traoré",
+        texte: "Signalement transmis au service des eaux, référence SODECI 8842.",
+      },
+      {
+        date: "19/08/2026",
+        auteur: "Aminata Traoré",
+        texte: "Réparation effectuée le 19/08. Signalement clôturé après vérification sur place.",
+      },
     ],
   },
   {
@@ -168,8 +189,16 @@ export const SIGNALEMENTS: Signalement[] = [
     responsable: "Konan Yao",
     contenu: "Affaissement de la chaussée gênant les livraisons du matin.",
     updates: [
-      { date: "13/08/2026", auteur: "Konan Yao", texte: "Transmis à la mairie de Cocody avec les photos du signalant." },
-      { date: "18/08/2026", auteur: "Konan Yao", texte: "Rebouchage réalisé le 17/08. Le citoyen a confirmé la réparation." },
+      {
+        date: "13/08/2026",
+        auteur: "Konan Yao",
+        texte: "Transmis à la mairie de Cocody avec les photos du signalant.",
+      },
+      {
+        date: "18/08/2026",
+        auteur: "Konan Yao",
+        texte: "Rebouchage réalisé le 17/08. Le citoyen a confirmé la réparation.",
+      },
     ],
   },
   {
@@ -188,7 +217,8 @@ export const SIGNALEMENTS: Signalement[] = [
       {
         date: "11/08/2026",
         auteur: "Salif Ouattara",
-        texte: "Hors périmètre du dispositif : signalement redirigé vers la commission électorale locale.",
+        texte:
+          "Hors périmètre du dispositif : signalement redirigé vers la commission électorale locale.",
       },
     ],
   },
@@ -204,9 +234,17 @@ export const CATEGORIES_SIGNALEMENT = [
   "Autre",
 ] as const;
 
-export const RESPONSABLES = ["Aminata Traoré", "Konan Yao", "Salif Ouattara", "Mariam Bakayoko"] as const;
+export const RESPONSABLES = [
+  "Aminata Traoré",
+  "Konan Yao",
+  "Salif Ouattara",
+  "Mariam Bakayoko",
+] as const;
 
-export const STATUT_META: Record<SignalementStatut, { label: string; tone: "orange" | "blue" | "neutral" | "outline" }> = {
+export const STATUT_META: Record<
+  SignalementStatut,
+  { label: string; tone: "orange" | "blue" | "neutral" | "outline" }
+> = {
   validation: { label: "En validation", tone: "orange" },
   encours: { label: "En cours", tone: "blue" },
   resolu: { label: "Résolu", tone: "neutral" },

@@ -65,11 +65,15 @@ export function ErrorPageBanner({
   return (
     <section className={background}>
       <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-6 px-5 py-14 sm:grid-cols-[auto_1fr] sm:gap-10 sm:px-8 sm:py-20 lg:px-16">
-        <span className={`text-7xl leading-[0.8] font-semibold tracking-tight sm:text-8xl lg:text-9xl ${numberClassName}`}>
+        <span
+          className={`text-7xl leading-[0.8] font-semibold tracking-tight sm:text-8xl lg:text-9xl ${numberClassName}`}
+        >
           {number}
         </span>
         <div className="flex flex-col gap-4">
-          <span className={`text-xs font-semibold tracking-widest uppercase ${eyebrowClassName}`}>{eyebrow}</span>
+          <span className={`text-xs font-semibold tracking-widest uppercase ${eyebrowClassName}`}>
+            {eyebrow}
+          </span>
           <h1 className="max-w-[24ch] text-4xl leading-none font-semibold tracking-tight text-white sm:text-5xl">
             {title}
           </h1>

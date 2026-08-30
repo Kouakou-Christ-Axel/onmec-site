@@ -33,7 +33,14 @@ function setMode(mode: Mode) {
   applyMode(mode);
 }
 
-export function ThemeToggle() {
+interface ThemeToggleProps {
+  className?: string;
+}
+
+const DEFAULT_CLASSNAME =
+  "flex size-9 flex-none items-center justify-center rounded-sm border border-border-subtle bg-surface-card text-text-muted transition-colors hover:border-border-strong hover:text-ink";
+
+export function ThemeToggle({ className = DEFAULT_CLASSNAME }: ThemeToggleProps = {}) {
   useEffect(() => {
     const mq = window.matchMedia?.("(prefers-color-scheme: dark)");
     if (!mq) return;
@@ -51,17 +58,35 @@ export function ThemeToggle() {
       title="Thème : automatique, clair, sombre"
       aria-label="Changer de thème"
       data-mec-theme-toggle=""
-      className="flex size-9 flex-none items-center justify-center rounded-sm border border-border-subtle bg-surface-card text-text-muted transition-colors hover:border-border-strong hover:text-ink"
+      className={className}
     >
       <span data-mec-icon="auto">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          width="17"
+          height="17"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.75"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <rect x="2" y="3" width="20" height="14" rx="2" />
           <path d="M8 21h8" />
           <path d="M12 17v4" />
         </svg>
       </span>
       <span data-mec-icon="light">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          width="17"
+          height="17"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.75"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <circle cx="12" cy="12" r="4" />
           <path d="M12 2v2" />
           <path d="M12 20v2" />
@@ -74,7 +99,16 @@ export function ThemeToggle() {
         </svg>
       </span>
       <span data-mec-icon="dark">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          width="17"
+          height="17"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.75"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
         </svg>
       </span>

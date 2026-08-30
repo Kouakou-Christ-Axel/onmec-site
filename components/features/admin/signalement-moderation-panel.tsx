@@ -7,10 +7,15 @@ interface SignalementModerationPanelProps {
   onChange: (id: string, patch: Partial<Signalement>) => void;
 }
 
-export function SignalementModerationPanel({ signalement, onChange }: SignalementModerationPanelProps) {
+export function SignalementModerationPanel({
+  signalement,
+  onChange,
+}: SignalementModerationPanelProps) {
   return (
     <div className="flex flex-col gap-3.5 rounded-lg border border-border-subtle bg-surface-card p-4.5">
-      <span className="text-xs font-semibold tracking-[0.13em] text-muted-foreground uppercase">Modération</span>
+      <span className="text-xs font-semibold tracking-[0.13em] text-muted-foreground uppercase">
+        Modération
+      </span>
       <div className="grid grid-cols-2 gap-2">
         <button
           type="button"
@@ -22,13 +27,14 @@ export function SignalementModerationPanel({ signalement, onChange }: Signalemen
         <button
           type="button"
           onClick={() => onChange(signalement.id, { publie: false })}
-          className={`h-9.5 rounded-md border text-sm font-semibold text-[#2b3646] ${!signalement.publie ? "border-ink bg-white shadow-stamp" : "border-border-strong bg-white"}`}
+          className={`h-9.5 rounded-md border text-sm font-semibold text-text-body ${!signalement.publie ? "border-ink bg-white shadow-stamp" : "border-border-strong bg-white"}`}
         >
           Masquer
         </button>
       </div>
       <span className="text-xs leading-relaxed text-muted-foreground">
-        Un signalement masqué reste traité en interne, mais n’apparaît pas dans la carte publique de l’app.
+        Un signalement masqué reste traité en interne, mais n’apparaît pas dans la carte publique de
+        l’app.
       </span>
       <span className="h-px bg-border-subtle" />
       <span className="text-xs font-semibold tracking-[0.13em] text-muted-foreground uppercase">

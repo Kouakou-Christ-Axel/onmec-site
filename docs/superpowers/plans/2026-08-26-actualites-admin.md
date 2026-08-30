@@ -15,7 +15,7 @@
 - Tiptap packages pinned to exact version `3.30.3` (`@tiptap/react`, `@tiptap/pm`, `@tiptap/starter-kit`, `@tiptap/core`) — never `"latest"`, matching the project's exact-pin rule.
 - `StarterKit` in Tiptap v3 already bundles `Bold`, `Italic`, `Link`, `BulletList`, `OrderedList`, `Heading`, etc. — do not add `@tiptap/extension-link` or any other extension package separately.
 - Never set a `Content-Type` header manually on a request whose body is a `FormData` — let `fetch` set `multipart/form-data; boundary=...` itself.
-- The backend's `publier` endpoint (`PATCH /actualites/:id/publier`) is documented as idempotent and notification-safe (the backend only sends the "new article" notification on the *first* publish, gated on `publishedAt === null`). This plan always calls create-or-update **then** unconditionally calls `publier` — do not branch on the article's current `statut` before calling it. This is a deliberate simplification over the spec's phrasing ("PATCH seul suffit" for an already-published edit) — strictly simpler, provably equally correct, ruling recorded here so no implementer re-litigates it.
+- The backend's `publier` endpoint (`PATCH /actualites/:id/publier`) is documented as idempotent and notification-safe (the backend only sends the "new article" notification on the _first_ publish, gated on `publishedAt === null`). This plan always calls create-or-update **then** unconditionally calls `publier` — do not branch on the article's current `statut` before calling it. This is a deliberate simplification over the spec's phrasing ("PATCH seul suffit" for an already-published edit) — strictly simpler, provably equally correct, ruling recorded here so no implementer re-litigates it.
 - The `StatutActualite` values are `BROUILLON | PUBLIEE | ARCHIVEE` — never invent `"En relecture"` or `"Programmé"` anywhere in new code (the old mock's 4-state workflow is gone).
 - Reuse `AdminRole` from `@/features/admin-auth/types/admin-auth` for `ActualiteAuthor.role` — do not redeclare a second role union type.
 - No pagination UI this round: `listActualitesAdmin()` always requests `limit=50`. Do not build a pager.
@@ -29,12 +29,14 @@
 ## Task 1: Shared transport layer — `FormData` support and new HTTP verbs
 
 **Files:**
+
 - Modify: `lib/api-client.ts`
 - Modify: `lib/fetch-json.ts`
 - Test: `lib/api-client.test.ts`
 - Test: `lib/fetch-json.test.ts`
 
 **Interfaces:**
+
 - Produces: `apiFetch<T>(path, options)` (existing signature, unchanged) now skips its automatic `Content-Type: application/json` when `options.body instanceof FormData`. New browser-safe helpers from `@/lib/fetch-json`: `getJson<T>(path): Promise<T>`, `postJson<T>(path, body): Promise<T>` (existing, behavior unchanged), `patchJson<T>(path, body): Promise<T>`, `deleteJson<T>(path): Promise<T>`, `sendFormData<T>(path, method: "POST" | "PATCH", formData: FormData): Promise<T>`.
 
 Both files stay server/browser split exactly as today — `api-client.ts` remains server-only (depends on `next/headers`), `fetch-json.ts` remains browser-safe (no `next/headers` import).
@@ -255,19 +257,19 @@ Expected: FAIL on the first test — the current code sets `Content-Type: applic
 In `apiFetch`, change:
 
 ```ts
-  const requestHeaders = new Headers(headers);
-  if (!requestHeaders.has("Content-Type") && init.body) {
-    requestHeaders.set("Content-Type", "application/json");
-  }
+const requestHeaders = new Headers(headers);
+if (!requestHeaders.has("Content-Type") && init.body) {
+  requestHeaders.set("Content-Type", "application/json");
+}
 ```
 
 to:
 
 ```ts
-  const requestHeaders = new Headers(headers);
-  if (!requestHeaders.has("Content-Type") && init.body && !(init.body instanceof FormData)) {
-    requestHeaders.set("Content-Type", "application/json");
-  }
+const requestHeaders = new Headers(headers);
+if (!requestHeaders.has("Content-Type") && init.body && !(init.body instanceof FormData)) {
+  requestHeaders.set("Content-Type", "application/json");
+}
 ```
 
 - [ ] **Step 8: Run it to verify it passes**
@@ -296,11 +298,13 @@ need PATCH/DELETE verbs that lib/fetch-json.ts didn't expose yet."
 ## Task 2: `features/actualites-admin` — types and form schema
 
 **Files:**
+
 - Create: `features/actualites-admin/types/actualite-admin.ts`
 - Create: `features/actualites-admin/schemas/actualite-form-schema.ts`
 - Test: `features/actualites-admin/schemas/actualite-form-schema.test.ts`
 
 **Interfaces:**
+
 - Produces: types `StatutActualite`, `ActualiteAuthor`, `ActualiteTaxon`, `Categorie`, `ActualiteAdmin`, `ActualiteAdminListResponse` from `@/features/actualites-admin/types/actualite-admin`. Schema `actualiteFormSchema`/`ActualiteFormInput` from `@/features/actualites-admin/schemas/actualite-form-schema`.
 - Consumes: `AdminRole` from `@/features/admin-auth/types/admin-auth` (existing).
 
@@ -445,6 +449,7 @@ git commit -m "feat(actualites-admin): types mirroring the backend DTOs and a fo
 ## Task 3: `features/actualites-admin` — server requests and FormData builder
 
 **Files:**
+
 - Create: `features/actualites-admin/requests/list-actualites-admin.ts`
 - Create: `features/actualites-admin/requests/list-categories.ts`
 - Create: `features/actualites-admin/requests/create-actualite.ts`
@@ -456,6 +461,7 @@ git commit -m "feat(actualites-admin): types mirroring the backend DTOs and a fo
 - Test: `features/actualites-admin/lib/build-actualite-form-data.test.ts`
 
 **Interfaces:**
+
 - Consumes: `apiFetch<T>(path, options)` from `@/lib/api-client` (Task 1). `ActualiteAdmin`, `ActualiteAdminListResponse`, `Categorie` from `@/features/actualites-admin/types/actualite-admin` (Task 2).
 - Produces: `listActualitesAdmin(): Promise<ActualiteAdminListResponse>`, `listCategoriesAdmin(): Promise<Categorie[]>`, `createActualiteAdmin(formData: FormData): Promise<ActualiteAdmin>`, `updateActualiteAdmin(id: string, formData: FormData): Promise<ActualiteAdmin>`, `publierActualiteAdmin(id: string): Promise<ActualiteAdmin>`, `depublierActualiteAdmin(id: string): Promise<ActualiteAdmin>`, `deleteActualiteAdmin(id: string): Promise<ActualiteAdmin>` — all server-only. `buildActualiteFormData(fields, categorieId, image): FormData` — pure, no server dependency.
 
@@ -633,6 +639,7 @@ git commit -m "feat(actualites-admin): server requests for list/create/update/pu
 ## Task 4: `features/actualites-admin` — client query and mutations
 
 **Files:**
+
 - Create: `features/actualites-admin/queries/use-categories.ts`
 - Create: `features/actualites-admin/mutations/use-create-actualite.ts`
 - Create: `features/actualites-admin/mutations/use-update-actualite.ts`
@@ -641,6 +648,7 @@ git commit -m "feat(actualites-admin): server requests for list/create/update/pu
 - Create: `features/actualites-admin/mutations/use-delete-actualite.ts`
 
 **Interfaces:**
+
 - Consumes: `getJson`, `patchJson`, `deleteJson`, `sendFormData` from `@/lib/fetch-json` (Task 1). `ActualiteAdmin`, `Categorie` from `@/features/actualites-admin/types/actualite-admin` (Task 2).
 - Produces: `useCategories()` → `useQuery` whose `.data` resolves to `Categorie[]`. `useCreateActualite()` → `mutate(formData: FormData)` / `mutateAsync(formData: FormData)` resolving to `ActualiteAdmin`. `useUpdateActualite()` → `mutateAsync({id, formData})` resolving to `ActualiteAdmin`. `usePublierActualite()`, `useDepublierActualite()` → `mutateAsync(id: string)` resolving to `ActualiteAdmin`. `useDeleteActualite()` → `mutateAsync(id: string)` resolving to `ActualiteAdmin`.
 
@@ -713,7 +721,8 @@ import type { ActualiteAdmin } from "@/features/actualites-admin/types/actualite
 
 export function usePublierActualite() {
   return useMutation({
-    mutationFn: (id: string) => patchJson<ActualiteAdmin>(`/api/admin/actualites/${id}/publier`, {}),
+    mutationFn: (id: string) =>
+      patchJson<ActualiteAdmin>(`/api/admin/actualites/${id}/publier`, {}),
   });
 }
 ```
@@ -729,7 +738,8 @@ import type { ActualiteAdmin } from "@/features/actualites-admin/types/actualite
 
 export function useDepublierActualite() {
   return useMutation({
-    mutationFn: (id: string) => patchJson<ActualiteAdmin>(`/api/admin/actualites/${id}/depublier`, {}),
+    mutationFn: (id: string) =>
+      patchJson<ActualiteAdmin>(`/api/admin/actualites/${id}/depublier`, {}),
   });
 }
 ```
@@ -767,6 +777,7 @@ git commit -m "feat(actualites-admin): TanStack Query hooks for categories, CRUD
 ## Task 5: BFF routes `app/api/admin/actualites/*`
 
 **Files:**
+
 - Create: `app/api/admin/actualites/route.ts`
 - Create: `app/api/admin/actualites/categories/route.ts`
 - Create: `app/api/admin/actualites/[id]/route.ts`
@@ -774,6 +785,7 @@ git commit -m "feat(actualites-admin): TanStack Query hooks for categories, CRUD
 - Create: `app/api/admin/actualites/[id]/depublier/route.ts`
 
 **Interfaces:**
+
 - Consumes: `createActualiteAdmin`, `updateActualiteAdmin`, `publierActualiteAdmin`, `depublierActualiteAdmin`, `deleteActualiteAdmin`, `listCategoriesAdmin` (Task 3). `toErrorResponse` from `@/lib/to-error-response` (existing, from the auth-admin plan).
 - Produces: `POST /api/admin/actualites` (multipart body → 201 `ActualiteAdmin`), `GET /api/admin/actualites/categories` (→ 200 `Categorie[]`), `PATCH /api/admin/actualites/:id` (multipart body → 200 `ActualiteAdmin`), `DELETE /api/admin/actualites/:id` (→ 200 `ActualiteAdmin`), `PATCH /api/admin/actualites/:id/publier` (→ 200 `ActualiteAdmin`), `PATCH /api/admin/actualites/:id/depublier` (→ 200 `ActualiteAdmin`).
 
@@ -907,10 +919,12 @@ git commit -m "feat(actualites-admin): BFF routes proxying CRUD and publication 
 ## Task 6: Tiptap body editor
 
 **Files:**
+
 - Create: `components/features/admin/article-body-editor.tsx`
 - Modify: `package.json` (new dependencies)
 
 **Interfaces:**
+
 - Produces: `ArticleBodyEditor` component with props `{ initialContent?: string; onChange: (html: string, text: string) => void }`. `onChange` fires once on mount (via Tiptap's `onCreate`) and again on every edit (via `onUpdate`), so a caller always has an accurate word count from the very first render — including when `initialContent` is pre-filled for an edit.
 
 - [ ] **Step 1: Install Tiptap, pinned to the exact version already resolved**
@@ -1034,6 +1048,7 @@ that caller is rewritten too. Splitting these into separate tasks would leave a 
 every commit green, per that constraint.
 
 **Files:**
+
 - Modify: `components/features/admin/article-editor.tsx`
 - Modify: `components/features/admin/publish-popover.tsx`
 - Create: `components/features/admin/actualites-admin-client.tsx`
@@ -1041,6 +1056,7 @@ every commit green, per that constraint.
 - Delete: `features/admin/data/articles.ts`
 
 **Interfaces:**
+
 - Consumes: `ArticleBodyEditor` (Task 6). `useCategories` (Task 4). `useCreateActualite`, `useUpdateActualite`, `usePublierActualite`, `useDepublierActualite`, `useDeleteActualite` (Task 4). `buildActualiteFormData` (Task 3). `actualiteFormSchema` (Task 2). `listActualitesAdmin` (Task 3). `useAdminShell` from `@/components/features/admin/admin-shell-context` (existing, exposes `canEdito`). `ActualiteAdmin`, `StatutActualite` (Task 2).
 - Produces: `ArticleEditor` with props `{ existing: ActualiteAdmin | null; onClose: () => void; onSaved: (actualite: ActualiteAdmin) => void }`. `PublishPopover` with props `{ existing: ActualiteAdmin | null; fields: { title: string; excerpt: string; content: string; date: string }; image: File | null; onClose: () => void; onPublished: (actualite: ActualiteAdmin) => void }`. `ActualitesAdminClient` with props `{ initialActualites: ActualiteAdmin[] }` — the interactive table + editor host for `/admin/actualites`.
 
@@ -1077,7 +1093,13 @@ interface PublishPopoverProps {
   onPublished: (actualite: ActualiteAdmin) => void;
 }
 
-export function PublishPopover({ existing, fields, image, onClose, onPublished }: PublishPopoverProps) {
+export function PublishPopover({
+  existing,
+  fields,
+  image,
+  onClose,
+  onPublished,
+}: PublishPopoverProps) {
   const categoriesQuery = useCategories();
   const createMutation = useCreateActualite();
   const updateMutation = useUpdateActualite();
@@ -1087,7 +1109,8 @@ export function PublishPopover({ existing, fields, image, onClose, onPublished }
   const [error, setError] = useState<string | null>(null);
 
   const categories = categoriesQuery.data ?? [];
-  const submitting = createMutation.isPending || updateMutation.isPending || publierMutation.isPending;
+  const submitting =
+    createMutation.isPending || updateMutation.isPending || publierMutation.isPending;
 
   async function handlePublish() {
     const parsed = actualiteFormSchema.safeParse({ ...fields, categorieId });
@@ -1138,7 +1161,12 @@ export function PublishPopover({ existing, fields, image, onClose, onPublished }
         <p className="text-xs leading-relaxed text-muted-foreground">
           Les membres de l'app seront notifiés automatiquement à la publication.
         </p>
-        <Button variant="primary" full disabled={submitting || !categorieId} onClick={handlePublish}>
+        <Button
+          variant="primary"
+          full
+          disabled={submitting || !categorieId}
+          onClick={handlePublish}
+        >
           {submitting ? "Publication..." : "Publier l'article"}
         </Button>
         <span className="text-xs leading-relaxed text-muted-foreground">
@@ -1191,7 +1219,12 @@ export function ArticleEditor({ existing, onClose, onSaved }: ArticleEditorProps
           <span className="text-xs whitespace-nowrap text-muted-foreground tabular-nums">
             {motCount} mots
           </span>
-          <Button variant="primary" size="sm" disabled={!titre.trim()} onClick={() => setShowPublish(true)}>
+          <Button
+            variant="primary"
+            size="sm"
+            disabled={!titre.trim()}
+            onClick={() => setShowPublish(true)}
+          >
             Publier
           </Button>
         </span>
@@ -1217,7 +1250,10 @@ export function ArticleEditor({ existing, onClose, onSaved }: ArticleEditorProps
             className="border-0 bg-transparent p-0 font-serif text-[clamp(1.125rem,2vw,1.5rem)] leading-snug text-muted-foreground italic outline-none placeholder:text-n-300"
           />
           <div className="flex flex-wrap items-center gap-4">
-            <label htmlFor="article-date" className="text-[0.8125rem] font-medium text-muted-foreground">
+            <label
+              htmlFor="article-date"
+              className="text-[0.8125rem] font-medium text-muted-foreground"
+            >
               Date
               <input
                 id="article-date"
@@ -1227,7 +1263,10 @@ export function ArticleEditor({ existing, onClose, onSaved }: ArticleEditorProps
                 className="ml-2 rounded-control border border-border-subtle bg-white px-2.5 py-1.5 text-sm text-ink outline-none focus:border-blue-500"
               />
             </label>
-            <label htmlFor="article-image" className="text-[0.8125rem] font-medium text-muted-foreground">
+            <label
+              htmlFor="article-image"
+              className="text-[0.8125rem] font-medium text-muted-foreground"
+            >
               Image de couverture
               <input
                 id="article-image"
@@ -1288,7 +1327,10 @@ import { useAdminShell } from "@/components/features/admin/admin-shell-context";
 import { usePublierActualite } from "@/features/actualites-admin/mutations/use-publier-actualite";
 import { useDepublierActualite } from "@/features/actualites-admin/mutations/use-depublier-actualite";
 import { useDeleteActualite } from "@/features/actualites-admin/mutations/use-delete-actualite";
-import type { ActualiteAdmin, StatutActualite } from "@/features/actualites-admin/types/actualite-admin";
+import type {
+  ActualiteAdmin,
+  StatutActualite,
+} from "@/features/actualites-admin/types/actualite-admin";
 
 const STATUT_LABELS: Record<StatutActualite, string> = {
   BROUILLON: "Brouillon",
@@ -1410,11 +1452,25 @@ export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClie
               <span className="flex justify-end gap-1.5">
                 {shell.canEdito ? (
                   <>
-                    <IconButton icon={Pencil} label="Modifier" size="sm" onClick={() => openEdit(actualite)} />
-                    <Button size="sm" variant="secondary" onClick={() => handleTogglePublication(actualite)}>
+                    <IconButton
+                      icon={Pencil}
+                      label="Modifier"
+                      size="sm"
+                      onClick={() => openEdit(actualite)}
+                    />
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => handleTogglePublication(actualite)}
+                    >
                       {actualite.statut === "PUBLIEE" ? "Dépublier" : "Publier"}
                     </Button>
-                    <IconButton icon={Trash2} label="Supprimer" size="sm" onClick={() => handleDelete(actualite)} />
+                    <IconButton
+                      icon={Trash2}
+                      label="Supprimer"
+                      size="sm"
+                      onClick={() => handleDelete(actualite)}
+                    />
                   </>
                 ) : null}
               </span>
@@ -1424,7 +1480,11 @@ export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClie
       </div>
 
       {showEditor ? (
-        <ArticleEditor existing={editing} onClose={() => setShowEditor(false)} onSaved={handleSaved} />
+        <ArticleEditor
+          existing={editing}
+          onClose={() => setShowEditor(false)}
+          onSaved={handleSaved}
+        />
       ) : null}
     </div>
   );

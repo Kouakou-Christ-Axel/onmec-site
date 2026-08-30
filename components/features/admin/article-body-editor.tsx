@@ -10,7 +10,7 @@ import { GripVertical, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useUploadActualiteImage } from "@/features/actualites-admin/mutations/use-upload-actualite-image";
 import { ApiError } from "@/lib/api-error";
-import { MAX_IMAGE_BYTES, MAX_IMAGE_LABEL } from "@/features/actualites-admin/lib/image-limits";
+import { MAX_IMAGE_BYTES, MAX_IMAGE_LABEL } from "@/lib/image-limits";
 import { convertToWebp } from "@/features/actualites-admin/lib/convert-to-webp";
 import { SlashCommand } from "@/features/actualites-admin/lib/slash-command-extension";
 import { ImageCaption } from "@/features/actualites-admin/lib/image-caption-extension";
@@ -40,7 +40,8 @@ export function ArticleBodyEditor({ initialContent = "", onChange }: ArticleBody
     onUpdate: ({ editor }) => onChange(editor.getHTML(), editor.getText()),
     editorProps: {
       attributes: {
-        class: "mec-article-body min-h-[44vh] font-sans text-lg leading-relaxed text-text-body outline-none",
+        class:
+          "mec-article-body min-h-[44vh] font-sans text-lg leading-relaxed text-text-body outline-none",
       },
     },
   });

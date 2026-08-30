@@ -3,13 +3,18 @@
 /*
  * Thème sombre : porté depuis mec-dark.css (Claude Design). Scindé en deux —
  * `data-mec-theme="dark"` sur <html> (piloté par components/features/site/theme-toggle.tsx),
- * et un marqueur `data-mec-public` posé une seule fois par app/(public)/layout.tsx. Sans ce
- * second marqueur, les variables de couleur redéfinies plus bas s'appliqueraient à tout le
- * document (elles héritent le long de l'arbre DOM) — y compris /admin, qui réutilise les mêmes
- * tokens (n-*, border-subtle, muted-foreground…) mais n'a pas été conçu ni vérifié pour le mode
- * sombre. Le scope confine donc l'inversion de thème au site public uniquement.
+ * et un marqueur posé une seule fois par le layout racine de chaque zone : `data-mec-public`
+ * (app/(public)/layout.tsx) pour le site public, `data-mec-admin` (app/admin/layout.tsx) pour le
+ * dashboard admin. Sans ce marqueur, les variables de couleur redéfinies plus bas s'appliqueraient
+ * à tout le document (elles héritent le long de l'arbre DOM). Les deux zones ne sont jamais
+ * montées simultanément, donc partager les mêmes tokens entre elles est sans risque.
  */
-@custom-variant dark (&:where(html[data-mec-theme="dark"] [data-mec-public], html[data-mec-theme="dark"] [data-mec-public] *));
+@custom-variant dark (&:where(
+  html[data-mec-theme="dark"] [data-mec-public],
+  html[data-mec-theme="dark"] [data-mec-public] *,
+  html[data-mec-theme="dark"] [data-mec-admin],
+  html[data-mec-theme="dark"] [data-mec-admin] *
+));
 
 /*
  * Tokens portés depuis le design system Claude Design "MEC-Citoyenneté"
@@ -280,17 +285,29 @@
   margin-top: 2em;
 }
 
-.mec-article-body h2 { font-size: 1.75rem; }
-.mec-article-body h3 { font-size: 1.375rem; }
-.mec-article-body h4 { font-size: 1.125rem; }
+.mec-article-body h2 {
+  font-size: 1.75rem;
+}
+.mec-article-body h3 {
+  font-size: 1.375rem;
+}
+.mec-article-body h4 {
+  font-size: 1.125rem;
+}
 
 .mec-article-body ul,
 .mec-article-body ol {
   padding-left: 1.5em;
 }
-.mec-article-body ul { list-style: disc; }
-.mec-article-body ol { list-style: decimal; }
-.mec-article-body li + li { margin-top: 0.4em; }
+.mec-article-body ul {
+  list-style: disc;
+}
+.mec-article-body ol {
+  list-style: decimal;
+}
+.mec-article-body li + li {
+  margin-top: 0.4em;
+}
 
 .mec-article-body blockquote {
   border-left: 3px solid var(--color-orange-500);
@@ -304,7 +321,9 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.mec-article-body a:hover { color: var(--color-text-link-hover); }
+.mec-article-body a:hover {
+  color: var(--color-text-link-hover);
+}
 
 .mec-article-body img {
   border-radius: var(--radius-md);
@@ -360,7 +379,8 @@ body {
 }
 
 /* Thème sombre — voir le commentaire sur @custom-variant plus haut pour le pourquoi du scope. */
-html[data-mec-theme="dark"] [data-mec-public] {
+html[data-mec-theme="dark"] [data-mec-public],
+html[data-mec-theme="dark"] [data-mec-admin] {
   color-scheme: dark;
 
   --color-n-50: #0d1622;

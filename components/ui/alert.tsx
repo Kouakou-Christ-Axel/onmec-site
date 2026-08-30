@@ -15,7 +15,9 @@ interface AlertProps {
 
 export function Alert({ tone = "info", title, children }: AlertProps) {
   return (
-    <div className={`flex gap-4 rounded-md border p-5 text-sm leading-relaxed ${TONE_CLASSES[tone]}`}>
+    <div
+      className={`flex gap-4 rounded-md border p-5 text-sm leading-relaxed ${TONE_CLASSES[tone]}`}
+    >
       <div className="flex flex-col gap-1">
         {title ? <p className="text-base font-semibold">{title}</p> : null}
         <p>{children}</p>

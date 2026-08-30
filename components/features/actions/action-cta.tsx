@@ -13,8 +13,8 @@ export function ActionCta() {
             Votre établissement, notre prochaine étape
           </h2>
           <p className="mt-4 max-w-[48ch] text-[1.0625rem] leading-relaxed text-white/80">
-            Nous intervenons sur demande d’un chef d’établissement, d’une association étudiante
-            ou d’une mairie. Une séance dure deux heures.
+            Nous intervenons sur demande d’un chef d’établissement, d’une association étudiante ou
+            d’une mairie. Une séance dure deux heures.
           </p>
         </div>
         <div className="flex flex-wrap gap-3">

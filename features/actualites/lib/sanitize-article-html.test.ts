@@ -11,8 +11,10 @@ describe("sanitizeArticleHtml", () => {
   });
 
   it("retire les balises hors liste blanche", () => {
-    expect(sanitizeArticleHtml('<p>ok</p><script>alert(1)</script>')).not.toContain("alert(1)");
-    expect(sanitizeArticleHtml('<iframe src="https://evil.test"></iframe>')).not.toContain("iframe");
+    expect(sanitizeArticleHtml("<p>ok</p><script>alert(1)</script>")).not.toContain("alert(1)");
+    expect(sanitizeArticleHtml('<iframe src="https://evil.test"></iframe>')).not.toContain(
+      "iframe",
+    );
   });
 
   it("retire les gestionnaires d'évènements", () => {
@@ -21,11 +23,15 @@ describe("sanitizeArticleHtml", () => {
 
   it("bloque les URL à schéma dangereux, que la liste blanche laisserait passer", () => {
     expect(sanitizeArticleHtml('<a href="javascript:alert(1)">x</a>')).not.toContain("javascript:");
-    expect(sanitizeArticleHtml('<img src="data:text/html;base64,PHN2Zz4=">')).not.toContain("data:");
+    expect(sanitizeArticleHtml('<img src="data:text/html;base64,PHN2Zz4=">')).not.toContain(
+      "data:",
+    );
   });
 
   it("laisse passer les liens http(s) et internes", () => {
-    expect(sanitizeArticleHtml('<a href="https://mec-ci.org">x</a>')).toContain("https://mec-ci.org");
+    expect(sanitizeArticleHtml('<a href="https://mec-ci.org">x</a>')).toContain(
+      "https://mec-ci.org",
+    );
     expect(sanitizeArticleHtml('<a href="/actualites">x</a>')).toContain('href="/actualites"');
   });
 });

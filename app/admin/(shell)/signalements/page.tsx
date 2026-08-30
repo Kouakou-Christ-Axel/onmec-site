@@ -27,12 +27,15 @@ export default function SignalementsPage() {
 
   const openSignalement = signalements.find((s) => s.id === openId) ?? null;
 
-  const count = (statut: SignalementStatut) => signalements.filter((s) => s.statut === statut).length;
+  const count = (statut: SignalementStatut) =>
+    signalements.filter((s) => s.statut === statut).length;
 
   const rows = useMemo(
     () =>
       signalements.filter(
-        (s) => (filtre === "tous" || s.statut === filtre) && (categorie === "Toutes les catégories" || s.categorie === categorie),
+        (s) =>
+          (filtre === "tous" || s.statut === filtre) &&
+          (categorie === "Toutes les catégories" || s.categorie === categorie),
       ),
     [signalements, filtre, categorie],
   );
@@ -45,11 +48,15 @@ export default function SignalementsPage() {
     <div className="flex max-w-[1320px] flex-col gap-5.5">
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">Application mobile</span>
-          <h1 className="text-[1.75rem] leading-[1.12] font-semibold tracking-[-0.028em] text-ink">Signalements</h1>
+          <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">
+            Application mobile
+          </span>
+          <h1 className="text-[1.75rem] leading-[1.12] font-semibold tracking-[-0.028em] text-ink">
+            Signalements
+          </h1>
           <p className="text-[0.9375rem] text-muted-foreground">
-            En validation → En cours → Résolu · vous décidez de ce qui est visible dans l’app · 34 signalements
-            clôturés les mois précédents
+            En validation → En cours → Résolu · vous décidez de ce qui est visible dans l’app · 34
+            signalements clôturés les mois précédents
           </p>
         </div>
         <Button variant="secondary" icon={Download}>
@@ -61,16 +68,36 @@ export default function SignalementsPage() {
         <Tag tone="outline" size="md" active={filtre === "tous"} onClick={() => setFiltre("tous")}>
           Tous
         </Tag>
-        <Tag tone="outline" size="md" active={filtre === "validation"} onClick={() => setFiltre("validation")}>
+        <Tag
+          tone="outline"
+          size="md"
+          active={filtre === "validation"}
+          onClick={() => setFiltre("validation")}
+        >
           En validation · {count("validation")}
         </Tag>
-        <Tag tone="outline" size="md" active={filtre === "encours"} onClick={() => setFiltre("encours")}>
+        <Tag
+          tone="outline"
+          size="md"
+          active={filtre === "encours"}
+          onClick={() => setFiltre("encours")}
+        >
           En cours · {count("encours")}
         </Tag>
-        <Tag tone="outline" size="md" active={filtre === "resolu"} onClick={() => setFiltre("resolu")}>
+        <Tag
+          tone="outline"
+          size="md"
+          active={filtre === "resolu"}
+          onClick={() => setFiltre("resolu")}
+        >
           Résolu · {count("resolu")}
         </Tag>
-        <Tag tone="outline" size="md" active={filtre === "rejete"} onClick={() => setFiltre("rejete")}>
+        <Tag
+          tone="outline"
+          size="md"
+          active={filtre === "rejete"}
+          onClick={() => setFiltre("rejete")}
+        >
           Rejeté · {count("rejete")}
         </Tag>
         <span className="ml-auto w-57.5">
@@ -101,7 +128,9 @@ export default function SignalementsPage() {
               onClick={() => setOpenId(r.id)}
               className="grid w-full grid-cols-[116px_minmax(200px,1fr)_158px_84px_124px_112px_96px] items-center gap-3.5 border-b border-border-subtle px-4 py-3 text-left text-sm last:border-b-0 hover:bg-n-50"
             >
-              <span className="text-[0.8125rem] font-semibold text-muted-foreground tabular-nums">{r.id}</span>
+              <span className="text-[0.8125rem] font-semibold text-muted-foreground tabular-nums">
+                {r.id}
+              </span>
               <span className="flex min-w-0 flex-col gap-0.5">
                 <span className="truncate font-medium text-ink">{r.sujet}</span>
                 <span className="truncate text-xs text-muted-foreground">
@@ -109,8 +138,10 @@ export default function SignalementsPage() {
                 </span>
               </span>
               <span className="truncate text-[0.8125rem] text-muted-foreground">{r.categorie}</span>
-              <span className="text-[0.8125rem] text-muted-foreground tabular-nums">{r.recu.slice(0, 5)}</span>
-              <span className="text-[0.8125rem] text-[#2b3646]">{r.responsable || "—"}</span>
+              <span className="text-[0.8125rem] text-muted-foreground tabular-nums">
+                {r.recu.slice(0, 5)}
+              </span>
+              <span className="text-[0.8125rem] text-text-body">{r.responsable || "—"}</span>
               <span>
                 <Tag tone={STATUT_META[r.statut].tone}>{STATUT_META[r.statut].label}</Tag>
               </span>
@@ -124,7 +155,11 @@ export default function SignalementsPage() {
         </div>
       </div>
 
-      <SignalementDrawer signalement={openSignalement} onClose={() => setOpenId(null)} onChange={patch} />
+      <SignalementDrawer
+        signalement={openSignalement}
+        onClose={() => setOpenId(null)}
+        onChange={patch}
+      />
     </div>
   );
 }

@@ -1,4 +1,8 @@
-export const PERIODES = ["Janvier → août 2026", "2e trimestre 2026", "Année scolaire 2025-2026"] as const;
+export const PERIODES = [
+  "Janvier → août 2026",
+  "2e trimestre 2026",
+  "Année scolaire 2025-2026",
+] as const;
 
 export interface StatMoisSensibilisation {
   label: string;

@@ -102,7 +102,7 @@ export function SignalementDrawer({ signalement, onClose, onChange }: Signalemen
           <span className="text-xs font-semibold tracking-[0.13em] text-muted-foreground uppercase">
             Description du citoyen
           </span>
-          <p className="text-[0.9375rem] leading-relaxed text-[#2b3646]">{shown.contenu}</p>
+          <p className="text-[0.9375rem] leading-relaxed text-text-body">{shown.contenu}</p>
         </div>
 
         <SignalementModerationPanel signalement={shown} onChange={onChange} />
