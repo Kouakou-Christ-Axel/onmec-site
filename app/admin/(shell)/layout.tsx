@@ -17,11 +17,12 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
   return (
     <AdminShellProvider
+      id={session.id}
       initialRole={mapAdminRole(session.role)}
       fullname={session.fullname}
       email={session.email}
     >
-      <div className="flex min-h-screen bg-surface-page text-[#2b3646]">
+      <div className="flex min-h-screen bg-surface-page text-text-body">
         <AdminSidebar />
         <div className="flex min-w-0 flex-1 flex-col">
           <AdminHeader />

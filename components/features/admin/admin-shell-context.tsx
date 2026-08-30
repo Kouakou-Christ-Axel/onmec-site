@@ -1,26 +1,27 @@
 "use client";
 
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
-import { ADMIN_ROLE_LABELS_LIST, type AdminRoleLabel } from "@/features/admin-auth/lib/map-admin-role";
+import { createContext, useContext, useMemo, type ReactNode } from "react";
+import type { AdminRoleLabel } from "@/features/admin-auth/lib/map-admin-role";
 
 export type AdminRole = AdminRoleLabel;
 
-export const ADMIN_ROLES: AdminRole[] = ADMIN_ROLE_LABELS_LIST;
-
 interface AdminShellState {
+  id: string;
   role: AdminRole;
-  setRole: (role: AdminRole) => void;
   fullname: string;
   email: string;
   canSig: boolean;
   canEdito: boolean;
   canUsers: boolean;
+  canMembres: boolean;
+  canQuiz: boolean;
 }
 
 const AdminShellContext = createContext<AdminShellState | null>(null);
 
 interface AdminShellProviderProps {
   children: ReactNode;
+  id: string;
   initialRole?: AdminRole;
   fullname?: string;
   email?: string;
@@ -28,23 +29,24 @@ interface AdminShellProviderProps {
 
 export function AdminShellProvider({
   children,
+  id,
   initialRole = "Administrateur national",
   fullname = "",
   email = "",
 }: AdminShellProviderProps) {
-  const [role, setRole] = useState<AdminRole>(initialRole);
-
   const value = useMemo<AdminShellState>(
     () => ({
-      role,
-      setRole,
+      id,
+      role: initialRole,
       fullname,
       email,
-      canSig: role !== "Chargée de communication",
-      canEdito: role !== "Modérateur",
-      canUsers: role === "Administrateur national",
+      canSig: initialRole !== "Chargée de communication",
+      canEdito: initialRole !== "Modérateur",
+      canUsers: initialRole === "Administrateur national",
+      canMembres: initialRole !== "Chargée de communication",
+      canQuiz: initialRole !== "Modérateur",
     }),
-    [role, fullname, email],
+    [id, initialRole, fullname, email],
   );
 
   return <AdminShellContext.Provider value={value}>{children}</AdminShellContext.Provider>;
