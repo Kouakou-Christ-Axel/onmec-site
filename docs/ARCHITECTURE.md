@@ -7,17 +7,17 @@ JSON plutôt que de poser un cookie.
 
 ## Règle de layering
 
-| Dossier                                   | Contenu                                                                    | Peut importer depuis                      |
-| ----------------------------------------- | -------------------------------------------------------------------------- | ----------------------------------------- |
-| `config/`                                 | Configuration transverse (env typé, constantes cookies)                    | rien d'autre                              |
-| `lib/`                                    | Transport/utils **agnostiques du domaine**                                 | `config/` uniquement, jamais `features/`  |
-| `features/<domaine>/types`, `schemas`     | Types et validation Zod du domaine                                         | `config/`                                 |
-| `features/<domaine>/data`                 | Données statiques/mockées du domaine (constantes + types, pas de logique)  | `types/`                                  |
-| `features/<domaine>/requests`             | Appels **serveur uniquement** vers `onmec_backend`                         | `lib/api-client.ts`, `types/`, `schemas/` |
-| `features/<domaine>/mutations`, `queries` | Hooks TanStack Query **client uniquement**                                 | `lib/fetch-json.ts`, `types/`, `schemas/` |
-| `features/<domaine>/lib`                  | Logique du domaine qui n'est ni request/mutation/schema (ex. cookies auth, dérivation de données) | `config/`, `types/`, `data/`      |
-| `components/features/<domaine>/`          | UI pure, wire les hooks de `features/<domaine>/mutations` au JSX           | `features/<domaine>/mutations`            |
-| `components/ui/`                          | Primitives de design system génériques (Button, Tag, Field, Drawer...)     | rien                                      |
+| Dossier                                   | Contenu                                                                                           | Peut importer depuis                      |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `config/`                                 | Configuration transverse (env typé, constantes cookies)                                           | rien d'autre                              |
+| `lib/`                                    | Transport/utils **agnostiques du domaine**                                                        | `config/` uniquement, jamais `features/`  |
+| `features/<domaine>/types`, `schemas`     | Types et validation Zod du domaine                                                                | `config/`                                 |
+| `features/<domaine>/data`                 | Données statiques/mockées du domaine (constantes + types, pas de logique)                         | `types/`                                  |
+| `features/<domaine>/requests`             | Appels **serveur uniquement** vers `onmec_backend`                                                | `lib/api-client.ts`, `types/`, `schemas/` |
+| `features/<domaine>/mutations`, `queries` | Hooks TanStack Query **client uniquement**                                                        | `lib/fetch-json.ts`, `types/`, `schemas/` |
+| `features/<domaine>/lib`                  | Logique du domaine qui n'est ni request/mutation/schema (ex. cookies auth, dérivation de données) | `config/`, `types/`, `data/`              |
+| `components/features/<domaine>/`          | UI pure, wire les hooks de `features/<domaine>/mutations` au JSX                                  | `features/<domaine>/mutations`            |
+| `components/ui/`                          | Primitives de design system génériques (Button, Tag, Field, Drawer...)                            | rien                                      |
 
 **Règle d'or** : une couche ne connaît que celle juste en dessous. Un composant n'appelle jamais une
 route handler ou l'API directement — toujours via un hook de `features/<domaine>/mutations`.
@@ -67,6 +67,47 @@ partout côté serveur.
 
 C'est une règle, pas une préférence — tout écart doit être justifié en revue.
 
+## Filtres, onglets et pagination côté client : jamais `router.push`/`router.refresh`
+
+**Piège rencontré deux fois** (`quiz-admin-client.tsx`, `membres-admin-client.tsx`) : une page liste
+sous `app/admin/(shell)/` (Server Component qui lit `searchParams`) avec un composant client qui
+synchronise un filtre/onglet/page dans l'URL via `router.push(...)`, ou rafraîchit après mutation
+via `router.refresh()`.
+
+`app/admin/(shell)/loading.tsx` **couvre tout le segment shell et ses enfants** (documenté dans son
+propre commentaire). N'importe quelle navigation qui fait réexécuter un Server Component enfant —
+y compris `router.push`/`router.refresh` déclenché par une simple frappe dans un champ recherche ou
+un clic d'onglet — réaffiche ce squelette plein écran, pas juste la zone de contenu concernée. En
+prime, sous vinext, une navigation vers la même route avec seulement les `searchParams` qui
+changent ne réexécute pas toujours le Server Component de façon fiable : le filtre ou l'onglet
+donne l'impression de ne pas fonctionner tant qu'on n'a pas rechargé la page à la main.
+
+**Règle** : toute interaction qui reste sur le même écran (filtre, recherche, onglet, pagination,
+rafraîchissement après mutation) passe par TanStack Query côté client contre les route handlers
+`app/api/admin/*` existants — jamais par le router. Patron à suivre (voir
+`features/quiz-admin/queries/use-quiz-list.ts` / `use-results.ts`, et
+`features/membres-admin/queries/use-membres-list.ts`) :
+
+- Un hook `features/<domaine>/queries/use-<x>-list.ts` : `useQuery` avec la même query key que les
+  filtres (`[nom, search, filtre, page]`), `initialData` = la prop SSR **seulement** quand tous les
+  filtres sont à leur valeur par défaut (sinon le premier fetch filtré resterait bloqué sur les
+  données non filtrées), `placeholderData: keepPreviousData` pour éviter un flash vide en changeant
+  de page/filtre.
+- Le composant garde le filtre en `useState` local, débounce la recherche texte (~300 ms) avant de
+  l'injecter dans la query key — jamais de fetch à chaque frappe, jamais besoin d'appuyer sur Entrée
+  non plus.
+- L'URL reste synchronisée pour le partage de lien via `syncUrlParams()` (`lib/sync-url.ts`,
+  `history.replaceState`) — jamais `router.push`/`router.replace`, qui redéclenchent le Server
+  Component.
+- Après une mutation qui doit rafraîchir la liste : `queryClient.invalidateQueries({ queryKey:
+  [...] })`, jamais `router.refresh()`.
+- Le Server Component de la page (`page.tsx`) garde son fetch initial pour le premier rendu SSR (lit
+  toujours `searchParams` pour permettre un lien profond) — c'est uniquement la ré-interaction
+  côté client qui change de mécanisme.
+
+Un vrai changement d'écran (créer, éditer, voir le détail d'une autre ressource) reste un
+`router.push` normal — le squelette de `loading.tsx` y est légitime.
+
 ## Contrat d'erreur
 
 Une seule classe d'erreur, `ApiError` (`lib/api-error.ts`), levée par `lib/api-client.ts` et
@@ -93,7 +134,7 @@ réellement.
   depuis le design system Claude Design. **Pas de kit tiers** — ni shadcn/ui, ni `components.json`,
   ni cva : les tokens (`surface-*`, `text-*`, `action-*`, `shadow-stamp`, typo fluide) et les
   classes restent les nôtres.
-  **Nuance assumée : Radix fournit le *comportement* des overlays, pas leur style.** `Dialog`,
+  **Nuance assumée : Radix fournit le _comportement_ des overlays, pas leur style.** `Dialog`,
   `Drawer`, `ConfirmDialog` (`ui/alert-dialog.tsx`) et le popover de publication s'appuient sur
   `@radix-ui/react-{dialog,alert-dialog,popover}` pour le piège de focus, Escape, `aria-modal`, le
   verrou de scroll et l'ancrage réel — six comportements qu'aucune des cinq coquilles de modale
@@ -105,10 +146,11 @@ réellement.
   100 % maison. En particulier `ui/select.tsx` est un `<select>` natif : meilleur que Radix Select
   en accessibilité et sans JS, on n'y touche pas.
   Point de vigilance : Radix portalise vers `document.body`, or le thème sombre est scopé à
-  `html[data-mec-theme="dark"] [data-mec-public]` et ses tokens s'héritent. Le site public rend donc
-  un `#mec-overlay-root` dans ce marqueur (`app/(public)/layout.tsx`) que les portails ciblent via
-  `useOverlayContainer()`. Côté `/admin`, portail sur `body` : `dark:` y est inerte, ne pas en
-  écrire.
+  `html[data-mec-theme="dark"] [data-mec-public]` / `[data-mec-admin]` et ses tokens s'héritent. Le
+  site public et le dashboard admin rendent donc chacun un `#mec-overlay-root` dans leur marqueur
+  respectif (`app/(public)/layout.tsx`, `app/admin/layout.tsx`) que les portails ciblent via
+  `useOverlayContainer()`. Les popovers Radix qui n'utilisent pas ce hook (rares — vérifier au cas
+  par cas) doivent retirer leur `<Popover.Portal>` plutôt que de rendre sur `body`, hors scope.
 - **Tester ces overlays : deux pièges.** (1) Chrome **gèle l'horloge des animations CSS dans un
   onglet non visible**. Radix attend `animationend` pour démonter : dans un onglet caché, une modale
   correctement fermée reste montée indéfiniment et donne l'illusion d'un bug. En pilotage automatisé
