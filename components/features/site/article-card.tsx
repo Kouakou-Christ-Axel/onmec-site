@@ -18,10 +18,10 @@ export function ArticleCard({ article }: { article: Article }) {
         <span>·</span>
         <span>{estimateReadingTime(article.content)} de lecture</span>
       </div>
-      <h3 className="text-h3 leading-snug font-semibold text-ink transition-colors group-hover:text-orange-700">
+      <h3 className="line-clamp-2 text-h3 leading-snug font-semibold text-ink transition-colors group-hover:text-orange-700">
         {article.title}
       </h3>
-      <p className="text-sm leading-relaxed text-text-muted">{article.excerpt}</p>
+      <p className="line-clamp-3 text-sm leading-relaxed text-text-muted">{article.excerpt}</p>
     </Link>
   );
 }
