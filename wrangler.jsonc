@@ -23,5 +23,8 @@
 			"binding": "mec_r2",
 			"remote": true
 		}
-	]
+	],
+	"vars": {
+		"API_BASE_URL": "https://api.mec-ci.org/api/v1"
+	}
 }
