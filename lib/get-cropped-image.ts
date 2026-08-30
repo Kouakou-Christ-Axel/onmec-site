@@ -1,5 +1,5 @@
 import type { Area } from "react-easy-crop";
-import { WEBP_QUALITY } from "@/features/actualites-admin/lib/image-limits";
+import { WEBP_QUALITY } from "@/lib/image-limits";
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {

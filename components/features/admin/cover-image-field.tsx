@@ -9,9 +9,15 @@ interface CoverImageFieldProps {
   file: File | null;
   onChange: (file: File | null) => void;
   existingUrl?: string | null;
+  aspectRatio?: number;
 }
 
-export function CoverImageField({ file, onChange, existingUrl }: CoverImageFieldProps) {
+export function CoverImageField({
+  file,
+  onChange,
+  existingUrl,
+  aspectRatio,
+}: CoverImageFieldProps) {
   const inputId = useId();
   const [dragOver, setDragOver] = useState(false);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
@@ -55,7 +61,8 @@ export function CoverImageField({ file, onChange, existingUrl }: CoverImageField
           setDragOver(false);
           handleFiles(event.dataTransfer.files);
         }}
-        className={`relative flex h-72 w-full flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border-2 border-dashed transition-colors ${
+        style={aspectRatio ? { aspectRatio } : undefined}
+        className={`relative flex ${aspectRatio ? "" : "h-72"} w-full flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border-2 border-dashed transition-colors ${
           dragOver
             ? "border-blue-500 bg-blue-50"
             : "border-border-subtle bg-n-50 hover:border-border-strong"
@@ -110,6 +117,7 @@ export function CoverImageField({ file, onChange, existingUrl }: CoverImageField
         open={pendingFile !== null}
         imageSrc={pendingUrl}
         fileName={pendingFile?.name ?? ""}
+        aspectRatio={aspectRatio}
         onCancel={() => setPendingFile(null)}
         onConfirm={(croppedFile) => {
           onChange(croppedFile);

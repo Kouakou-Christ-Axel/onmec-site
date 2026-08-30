@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Upload, Pencil, Trash2, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,6 @@ import { IconButton } from "@/components/ui/icon-button";
 import { ConfirmDialog } from "@/components/ui/alert-dialog";
 import { useAdminShell } from "@/components/features/admin/admin-shell-context";
 import { useDeleteDocument } from "@/features/librairie-admin/mutations/use-delete-document";
-import { UploadDocumentDialog } from "@/components/features/librairie-admin/upload-document-dialog";
 import { EditDocumentDialog } from "@/components/features/librairie-admin/edit-document-dialog";
 import type { AdminLibrairieDocument } from "@/features/librairie/types/document";
 
@@ -23,8 +23,8 @@ interface LibrairieAdminClientProps {
 
 export function LibrairieAdminClient({ initialDocuments, categories }: LibrairieAdminClientProps) {
   const shell = useAdminShell();
+  const router = useRouter();
   const [documents, setDocuments] = useState(initialDocuments);
-  const [showUpload, setShowUpload] = useState(false);
   const [editing, setEditing] = useState<AdminLibrairieDocument | null>(null);
   const [pendingDelete, setPendingDelete] = useState<AdminLibrairieDocument | null>(null);
 
@@ -58,7 +58,11 @@ export function LibrairieAdminClient({ initialDocuments, categories }: Librairie
           </p>
         </div>
         {shell.canEdito ? (
-          <Button variant="primary" icon={Upload} onClick={() => setShowUpload(true)}>
+          <Button
+            variant="primary"
+            icon={Upload}
+            onClick={() => router.push("/admin/ressources/nouveau")}
+          >
             Ajouter un document
           </Button>
         ) : null}
@@ -119,13 +123,6 @@ export function LibrairieAdminClient({ initialDocuments, categories }: Librairie
           })}
         </div>
       </div>
-
-      <UploadDocumentDialog
-        open={showUpload}
-        onClose={() => setShowUpload(false)}
-        categories={categories}
-        onCreated={(document) => setDocuments((prev) => [document, ...prev])}
-      />
 
       <EditDocumentDialog
         document={editing}

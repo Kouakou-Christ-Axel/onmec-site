@@ -5,15 +5,14 @@ import Cropper, { type Area } from "react-easy-crop";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTitle, useLastNonNull } from "@/components/ui/dialog";
-import { getCroppedImageFile } from "@/features/actualites-admin/lib/get-cropped-image";
-import { MAX_IMAGE_BYTES, MAX_IMAGE_LABEL } from "@/features/actualites-admin/lib/image-limits";
-
-const ASPECT_RATIO = 16 / 9;
+import { getCroppedImageFile } from "@/lib/get-cropped-image";
+import { MAX_IMAGE_BYTES, MAX_IMAGE_LABEL } from "@/lib/image-limits";
 
 interface CoverImageCropperProps {
   open: boolean;
   imageSrc: string | null;
   fileName: string;
+  aspectRatio?: number;
   onCancel: () => void;
   onConfirm: (file: File) => void;
 }
@@ -22,6 +21,7 @@ export function CoverImageCropper({
   open,
   imageSrc,
   fileName,
+  aspectRatio = 16 / 9,
   onCancel,
   onConfirm,
 }: CoverImageCropperProps) {
@@ -75,7 +75,7 @@ export function CoverImageCropper({
           image={shownSrc}
           crop={crop}
           zoom={zoom}
-          aspect={ASPECT_RATIO}
+          aspect={aspectRatio}
           onCropChange={setCrop}
           onZoomChange={setZoom}
           onCropComplete={handleCropComplete}

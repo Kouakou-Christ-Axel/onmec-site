@@ -1,4 +1,4 @@
-import { WEBP_QUALITY } from "@/features/actualites-admin/lib/image-limits";
+import { WEBP_QUALITY } from "@/lib/image-limits";
 
 export async function convertToWebp(file: File): Promise<File> {
   const bitmap = await createImageBitmap(file);

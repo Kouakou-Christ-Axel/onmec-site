@@ -1,5 +1,8 @@
 import { apiFetch } from "@/lib/api-client";
-import type { AdminLibrairieDocument, LibrairieListMeta } from "@/features/librairie/types/document";
+import type {
+  AdminLibrairieDocument,
+  LibrairieListMeta,
+} from "@/features/librairie/types/document";
 
 export interface LibrairieAdminListResponse {
   data: AdminLibrairieDocument[];
