@@ -23,5 +23,24 @@
 			"binding": "mec_r2",
 			"remote": true
 		}
-	]
+	],
+	"vars": {
+		"API_BASE_URL": "https://admin.mec-ci.org/api/v1"
+	},
+	"observability": {
+		"enabled": false,
+		"head_sampling_rate": 1,
+		"redact_query_string": false,
+		"logs": {
+			"enabled": true,
+			"head_sampling_rate": 1,
+			"persist": true,
+			"invocation_logs": true
+		},
+		"traces": {
+			"enabled": false,
+			"persist": true,
+			"head_sampling_rate": 1
+		}
+	}
 }

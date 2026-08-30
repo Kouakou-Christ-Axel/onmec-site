@@ -2,7 +2,7 @@
 
 Frontend de la plateforme **Citoyen+** (MEC — actualités, signalements citoyens, bibliothèque de
 documents, quiz éducatifs, gamification). Consomme l'API du backend NestJS **onmec_backend**
-(repo GitHub séparé, aucun code partagé) déployé sur `https://api.mec-ci.org`.
+(repo GitHub séparé, aucun code partagé) déployé sur `https://admin.mec-ci.org`.
 
 ## Stack
 
@@ -29,10 +29,10 @@ comportement des overlays).
 ## Convention d'appel à l'API (règle la plus importante du projet)
 
 onmec-site est un **BFF** (backend-for-frontend) : le navigateur ne parle jamais directement à
-`api.mec-ci.org`.
+`admin.mec-ci.org`.
 
 - **Un seul point d'entrée serveur** vers l'API : `apiFetch()` dans
-  [lib/api-client.ts](lib/api-client.ts). Aucun `fetch` brut vers `api.mec-ci.org` ailleurs dans le
+  [lib/api-client.ts](lib/api-client.ts). Aucun `fetch` brut vers `admin.mec-ci.org` ailleurs dans le
   code. Ce module est **server-only** (dépend de `next/headers`) — jamais importé par un fichier
   `"use client"`.
 - Le backend renvoie le JWT en **JSON** (`{ token, refreshToken }`), il ne pose **pas** de cookie
