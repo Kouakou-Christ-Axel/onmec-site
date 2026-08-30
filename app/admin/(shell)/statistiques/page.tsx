@@ -1,88 +1,109 @@
-import { Download } from "lucide-react";
 import { Stat } from "@/components/ui/stat";
-import { Select } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { PERIODES, MOIS, REGIONS } from "@/features/admin/data/statistiques";
+import { ApiError } from "@/lib/api-error";
+import { getAdminStatistics } from "@/features/statistiques-admin/requests/get-admin-statistics";
+import type { AdminStatistics } from "@/features/statistiques-admin/types/admin-statistics";
 
-export default function StatistiquesPage() {
+const STATUT_LABELS: Record<keyof AdminStatistics["signalements"]["parStatut"], string> = {
+  NOUVEAU: "En validation",
+  EN_COURS: "En cours",
+  RESOLU: "Résolu",
+  REJETE: "Rejeté",
+};
+
+async function loadStats(): Promise<AdminStatistics | null> {
+  try {
+    return await getAdminStatistics();
+  } catch (error) {
+    if (error instanceof ApiError) return null;
+    throw error;
+  }
+}
+
+export default async function StatistiquesPage() {
+  const stats = await loadStats();
+
   return (
     <div className="flex max-w-[1320px] flex-col gap-6.5">
-      <div className="flex flex-wrap items-end justify-between gap-5">
-        <div className="flex flex-col gap-2">
-          <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">
-            Redevabilité
-          </span>
-          <h1 className="text-[1.75rem] leading-[1.12] font-semibold tracking-[-0.028em] text-ink">
-            Statistiques et rapports
-          </h1>
-        </div>
-        <div className="flex items-center gap-2.5">
-          <span className="w-47.5">
-            <Select defaultValue={PERIODES[0]}>
-              {PERIODES.map((p) => (
-                <option key={p}>{p}</option>
-              ))}
-            </Select>
-          </span>
-          <Button variant="deep" icon={Download}>
-            Générer le rapport
-          </Button>
-        </div>
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-semibold tracking-[0.13em] text-orange-700 uppercase">
+          Redevabilité
+        </span>
+        <h1 className="text-[1.75rem] leading-[1.12] font-semibold tracking-[-0.028em] text-ink">
+          Statistiques et rapports
+        </h1>
       </div>
 
+      {stats ? <StatistiquesContent stats={stats} /> : <StatistiquesAVenir />}
+    </div>
+  );
+}
+
+function StatistiquesContent({ stats }: { stats: AdminStatistics }) {
+  return (
+    <>
       <div className="grid grid-cols-2 gap-4 rounded-lg border border-border-subtle bg-surface-card p-6.5 lg:grid-cols-4">
-        <Stat value="3 180" label="personnes sensibilisées" meta="Janvier → août 2026" />
+        <Stat value={String(stats.signalements.total)} label="signalements reçus" />
         <Stat
-          value="44"
-          label="signalements reçus"
-          meta="Depuis le lancement de l’app, mars 2026"
+          value={String(stats.signalements.parStatut.RESOLU)}
+          label="signalements résolus"
           rule
         />
-        <Stat value="26" label="signalements résolus" meta="Janvier → août 2026" rule />
-        <Stat value="12" label="campus et lycées couverts" meta="Année scolaire 2025-2026" rule />
+        <Stat value={String(stats.membres.actifs)} label="membres actifs" rule />
+        <Stat
+          value={String(stats.quiz.totalTentatives)}
+          label="tentatives de quiz"
+          meta={`${stats.quiz.totalQuiz} quiz · score moyen ${stats.quiz.scoreMoyenGlobal.toFixed(0)}%`}
+          rule
+        />
       </div>
 
-      <div className="grid items-start gap-5.5 lg:grid-cols-[1.35fr_1fr]">
-        <div className="rounded-lg border border-border-subtle bg-surface-card p-6">
-          <span className="text-xs font-semibold tracking-[0.13em] text-muted-foreground uppercase">
-            Personnes sensibilisées par mois
-          </span>
-          <div className="mt-6 grid h-47.5 grid-cols-8 items-end gap-3.5">
-            {MOIS.map((m) => (
-              <span key={m.label} className="flex h-full flex-col items-center justify-end gap-2">
-                <span
-                  className={`w-full rounded-t-sm ${m.orange ? "bg-orange-500" : "bg-blue-500"}`}
-                  style={{ height: `${m.hauteur}%` }}
-                />
-                <span className="text-[0.6875rem] text-muted-foreground">{m.label}</span>
-              </span>
-            ))}
-          </div>
-          <p className="mt-4.5 text-[0.8125rem] leading-relaxed text-muted-foreground">
-            En orange : mois de caravane. Juillet est le creux des vacances scolaires.
-          </p>
-        </div>
-
+      <div className="grid items-start gap-5.5 lg:grid-cols-2">
         <div className="overflow-hidden rounded-lg border border-border-subtle bg-surface-card">
-          <div className="grid grid-cols-[minmax(0,1fr)_92px_96px_88px] gap-3 border-b border-border-subtle bg-n-50 px-4 py-2.5 text-[0.6875rem] font-semibold tracking-[0.09em] text-muted-foreground uppercase">
-            <span>Région</span>
-            <span className="text-right">Séances</span>
-            <span className="text-right">Personnes</span>
-            <span className="text-right">Signal.</span>
+          <div className="border-b border-border-subtle bg-n-50 px-4 py-2.5 text-[0.6875rem] font-semibold tracking-[0.09em] text-muted-foreground uppercase">
+            Signalements par statut
           </div>
-          {REGIONS.map((r) => (
+          {(Object.keys(STATUT_LABELS) as (keyof typeof STATUT_LABELS)[]).map((statut) => (
             <div
-              key={r.region}
-              className="grid grid-cols-[minmax(0,1fr)_92px_96px_88px] gap-3 border-b border-border-subtle px-4 py-3 text-sm tabular-nums last:border-b-0"
+              key={statut}
+              className="flex items-center justify-between border-b border-border-subtle px-4 py-3 text-sm last:border-b-0"
             >
-              <span className="font-medium text-ink">{r.region}</span>
-              <span className="text-right">{r.seances}</span>
-              <span className="text-right">{r.personnes}</span>
-              <span className="text-right">{r.signalements}</span>
+              <span className="font-medium text-ink">{STATUT_LABELS[statut]}</span>
+              <span className="tabular-nums text-muted-foreground">
+                {stats.signalements.parStatut[statut]}
+              </span>
             </div>
           ))}
         </div>
+
+        <div className="overflow-hidden rounded-lg border border-border-subtle bg-surface-card">
+          <div className="border-b border-border-subtle bg-n-50 px-4 py-2.5 text-[0.6875rem] font-semibold tracking-[0.09em] text-muted-foreground uppercase">
+            Signalements par catégorie
+          </div>
+          {stats.signalements.parCategorie.length === 0 ? (
+            <p className="px-4 py-3 text-sm text-muted-foreground">Aucune catégorie.</p>
+          ) : (
+            stats.signalements.parCategorie.map((c) => (
+              <div
+                key={c.categorieId}
+                className="flex items-center justify-between border-b border-border-subtle px-4 py-3 text-sm last:border-b-0"
+              >
+                <span className="font-medium text-ink">{c.nom}</span>
+                <span className="tabular-nums text-muted-foreground">{c.total}</span>
+              </div>
+            ))
+          )}
+        </div>
       </div>
+    </>
+  );
+}
+
+function StatistiquesAVenir() {
+  return (
+    <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed border-border-subtle bg-surface-card px-5 py-10 text-center">
+      <p className="text-sm text-muted-foreground">
+        Statistiques bientôt disponibles — en attente de l’endpoint d’agrégats côté backend.
+      </p>
     </div>
   );
 }
