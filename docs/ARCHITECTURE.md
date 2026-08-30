@@ -160,9 +160,12 @@ réellement.
   depuis un parent (ligne de tableau, sélection de fichier), `ui/dialog.tsx` capture explicitement la
   cible dans `onOpenAutoFocus` et la restitue dans `onCloseAutoFocus` : sans ce filet, le focus
   retombe sur `<body>` à la fermeture. Ne pas le retirer.
-- **Prérequis de déploiement** : `wrangler.jsonc` n'a actuellement aucun bloc `vars`. `API_BASE_URL`
-  doit être fournie via les vars/secrets Cloudflare au déploiement — `config/env.ts` échoue
-  bruyamment en production si elle manque (pas de fallback silencieux vers `localhost`).
+- **Variables d'environnement du worker** : `API_BASE_URL` est déclarée dans le bloc `vars` de
+  `wrangler.jsonc` (valeur de production `https://admin.mec-ci.org/api/v1` — vérifié en direct :
+  `api.mec-ci.org` ne répond pas comme l'API NestJS, seul `admin.mec-ci.org` le fait) —
+  `config/env.ts` échoue bruyamment si elle manque au runtime (pas de fallback silencieux vers
+  `localhost`). Ce n'est pas un secret (URL publique) : pas besoin de `wrangler secret put` pour
+  celle-ci.
 
 ## Conventions transverses
 
