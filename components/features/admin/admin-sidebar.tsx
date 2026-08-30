@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Inbox,
   Flag,
   Newspaper,
   BookOpen,
@@ -15,7 +14,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useAdminShell } from "@/components/features/admin/admin-shell-context";
-import { buildQueue } from "@/features/admin/lib/build-queue";
 import { SIGNALEMENTS } from "@/features/admin/data/signalements";
 
 interface NavItem {
@@ -26,14 +24,14 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { href: "/admin", label: "File de travail", icon: Inbox, requires: null },
   { href: "/admin/signalements", label: "Signalements", icon: Flag, requires: "canSig" },
   { href: "/admin/actualites", label: "Actualités et blog", icon: Newspaper, requires: "canEdito" },
   { href: "/admin/ressources", label: "Ressources", icon: BookOpen, requires: "canEdito" },
   { href: "/admin/membres", label: "Membres", icon: Users2, requires: "canMembres" },
   { href: "/admin/quiz", label: "Quiz", icon: GraduationCap, requires: "canQuiz" },
-  // Campagnes et Notifications app masqués temporairement : pas d'endpoint backend
-  // pour ces domaines pour l'instant (routes/pages conservées, non retirées).
+  // Campagnes, Notifications app et File de travail masqués temporairement :
+  // pas d'endpoint backend pour Campagnes/Push, et File de travail encore en
+  // mock (routes/pages conservées, non retirées).
   { href: "/admin/statistiques", label: "Statistiques", icon: Landmark, requires: null },
   { href: "/admin/utilisateurs", label: "Utilisateurs", icon: Users, requires: "canUsers" },
 ];
@@ -41,7 +39,6 @@ const NAV_ITEMS: NavItem[] = [
 export function AdminSidebar() {
   const pathname = usePathname();
   const shell = useAdminShell();
-  const queue = buildQueue(shell);
   const cntOuverts = SIGNALEMENTS.filter(
     (s) => s.statut === "validation" || s.statut === "encours",
   ).length;
@@ -60,12 +57,7 @@ export function AdminSidebar() {
       <nav className="flex flex-col gap-0.5">
         {visibleItems.map((item) => {
           const active = pathname === item.href;
-          const badge =
-            item.href === "/admin"
-              ? queue.length
-              : item.href === "/admin/signalements"
-                ? cntOuverts
-                : null;
+          const badge = item.href === "/admin/signalements" ? cntOuverts : null;
           return (
             <Link
               key={item.href}
@@ -79,11 +71,7 @@ export function AdminSidebar() {
               <item.icon size={18} />
               <span>{item.label}</span>
               {badge !== null && badge > 0 ? (
-                <span
-                  className={`ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[0.6875rem] font-bold ${
-                    item.href === "/admin" ? "bg-orange-500 text-white" : "bg-white/14 text-white"
-                  }`}
-                >
+                <span className="ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-white/14 px-1.5 text-[0.6875rem] font-bold text-white">
                   {badge}
                 </span>
               ) : null}
