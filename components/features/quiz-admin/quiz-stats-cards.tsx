@@ -36,12 +36,12 @@ export function QuizStatsCards({ stats }: QuizStatsCardsProps) {
             Aucune tentative pour l’instant.
           </p>
         ) : (
-          stats.recentAttempts.map((attempt) => (
+          stats.recentAttempts.map((attempt, i) => (
             <div
-              key={attempt.id}
+              key={`${attempt.user.id}-${attempt.completedAt ?? i}`}
               className="flex items-center justify-between gap-3 border-b border-border-subtle px-4.5 py-2.75 text-sm last:border-b-0"
             >
-              <span className="truncate text-ink">Membre {attempt.userId.slice(0, 8)}</span>
+              <span className="truncate text-ink">{attempt.user.fullname}</span>
               <span className="text-xs text-muted-foreground">{formatDate(attempt.completedAt)}</span>
               <span className={`font-semibold tabular-nums ${scoreColor(attempt.score)}`}>
                 {Math.round(attempt.score)}%
