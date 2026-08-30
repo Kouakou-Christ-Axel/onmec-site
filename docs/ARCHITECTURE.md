@@ -161,9 +161,11 @@ réellement.
   cible dans `onOpenAutoFocus` et la restitue dans `onCloseAutoFocus` : sans ce filet, le focus
   retombe sur `<body>` à la fermeture. Ne pas le retirer.
 - **Variables d'environnement du worker** : `API_BASE_URL` est déclarée dans le bloc `vars` de
-  `wrangler.jsonc` (valeur de production `https://api.mec-ci.org/api/v1`) — `config/env.ts` échoue
-  bruyamment si elle manque au runtime (pas de fallback silencieux vers `localhost`). Ce n'est pas un
-  secret (URL publique) : pas besoin de `wrangler secret put` pour celle-ci.
+  `wrangler.jsonc` (valeur de production `https://admin.mec-ci.org/api/v1` — vérifié en direct :
+  `api.mec-ci.org` ne répond pas comme l'API NestJS, seul `admin.mec-ci.org` le fait) —
+  `config/env.ts` échoue bruyamment si elle manque au runtime (pas de fallback silencieux vers
+  `localhost`). Ce n'est pas un secret (URL publique) : pas besoin de `wrangler secret put` pour
+  celle-ci.
 
 ## Conventions transverses
 
