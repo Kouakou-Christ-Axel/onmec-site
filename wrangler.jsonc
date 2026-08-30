@@ -26,5 +26,11 @@
 	],
 	"vars": {
 		"API_BASE_URL": "https://admin.mec-ci.org/api/v1"
+	},
+	"observability": {
+		"logs": {
+			"enabled": true,
+			"invocation_logs": true
+		}
 	}
 }
