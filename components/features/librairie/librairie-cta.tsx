@@ -8,7 +8,7 @@ export function LibrairieCta() {
         <Reveal className="relative overflow-hidden rounded-lg bg-blue-800 text-white">
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 text-white/10"
+            className="pointer-events-none absolute inset-0 text-white/5"
             style={{ backgroundImage: "var(--pattern-dots)", backgroundSize: "22px 22px" }}
           />
           <div className="relative flex flex-col items-start gap-6 p-8 sm:p-12 lg:p-16">
