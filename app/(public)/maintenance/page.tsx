@@ -1,6 +1,17 @@
+import type { Metadata } from "next";
 import { Flag, Users, CalendarDays } from "lucide-react";
 import { ErrorPageBanner } from "@/components/features/site/error-page-banner";
 import { MaintenanceRetryButton } from "@/components/features/site/maintenance-retry-button";
+
+// Page volontairement non indexable : jamais de lien entrant, réponse 200 « site en
+// maintenance » — un contenu qui n'a rien à faire dans l'index (voir audit SEO §2.6).
+export const metadata: Metadata = {
+  title: "Site en maintenance",
+  description:
+    "Le site du MEC est temporairement indisponible pour une mise à jour prévue. Nos réseaux sociaux et l'application de signalement restent actifs.",
+  alternates: { canonical: "/maintenance" },
+  robots: { index: false },
+};
 
 const REASSURANCES = [
   { icon: Flag, text: "L’application de signalement fonctionne normalement." },

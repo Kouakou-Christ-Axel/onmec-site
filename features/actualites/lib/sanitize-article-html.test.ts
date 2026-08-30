@@ -17,6 +17,12 @@ describe("sanitizeArticleHtml", () => {
     );
   });
 
+  it("dégrade un h1 du corps en h2 sans perdre son texte, pour éviter un second h1 sur la page", () => {
+    const result = sanitizeArticleHtml("<h1>Titre posé par erreur</h1><p>suite</p>");
+    expect(result).not.toContain("<h1");
+    expect(result).toContain("<h2>Titre posé par erreur</h2>");
+  });
+
   it("retire les gestionnaires d'évènements", () => {
     expect(sanitizeArticleHtml('<p onclick="alert(1)">x</p>')).not.toContain("onclick");
   });

@@ -1,85 +1,88 @@
-"use client";
-
+import Link from "next/link";
 import { Search } from "lucide-react";
 import { SORT_OPTIONS, type SortKey } from "@/features/librairie/lib/sort-documents";
-import { SelectInput } from "@/components/features/site/form-controls";
+import { buildRessourcesHref } from "@/components/features/librairie/librairie-href";
 
 const pillClass = (isActive: boolean) =>
   `inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold tracking-wide uppercase transition-colors duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring ${
     isActive ? "bg-ink text-surface-page" : "bg-n-100 text-text-body hover:bg-n-200"
   }`;
 
-export const ALL_CATEGORIES = "Toutes les catégories" as const;
-export type CategorieFilter = string | typeof ALL_CATEGORIES;
-
+/**
+ * Serveur : filtres, tri et recherche passent par l'URL (`<Link>` + formulaire GET natif), plus de
+ * `useState`. Le champ de recherche reste utilisable sans JavaScript — un `<form method="GET">` se
+ * soumet nativement à l'appui sur Entrée.
+ */
 export function LibrairieToolbar({
   query,
-  onQueryChange,
   categorie,
-  onCategorieChange,
   categories,
   sort,
-  onSortChange,
   resultCount,
 }: {
   query: string;
-  onQueryChange: (value: string) => void;
-  categorie: CategorieFilter;
-  onCategorieChange: (value: CategorieFilter) => void;
+  categorie?: string;
   categories: string[];
   sort: SortKey;
-  onSortChange: (value: SortKey) => void;
   resultCount: number;
 }) {
   return (
     <div className="sticky top-[72px] z-40 border-b border-ink/10 bg-surface-blur py-4 backdrop-blur-sm">
       <div className="flex flex-wrap items-center gap-3">
-        <label className="relative flex h-10 min-w-[220px] flex-1 items-center sm:flex-none sm:basis-[280px]">
+        <form
+          action="/ressources"
+          method="GET"
+          role="search"
+          className="relative flex h-10 min-w-[220px] flex-1 items-center sm:flex-none sm:basis-[280px]"
+        >
           <Search className="pointer-events-none absolute left-3 h-4 w-4 text-n-400" aria-hidden />
-          <span className="sr-only">Rechercher un guide</span>
+          <label htmlFor="ressources-search" className="sr-only">
+            Rechercher un guide
+          </label>
           <input
+            id="ressources-search"
             type="search"
-            value={query}
-            onChange={(e) => onQueryChange(e.target.value)}
+            name="q"
+            defaultValue={query}
             placeholder="Rechercher un guide"
             className="h-10 w-full rounded-full border border-ink/10 bg-surface-card pr-4 pl-9 text-sm text-ink outline-none placeholder:text-n-400 focus:border-blue-500 focus:ring-3 focus:ring-blue-500/25"
           />
-        </label>
+          {categorie ? <input type="hidden" name="categorie" value={categorie} /> : null}
+          {sort !== "recent" ? <input type="hidden" name="sort" value={sort} /> : null}
+        </form>
 
         <div className="flex flex-wrap items-center gap-2.5">
-          <button
-            type="button"
-            onClick={() => onCategorieChange(ALL_CATEGORIES)}
-            aria-pressed={categorie === ALL_CATEGORIES}
-            className={pillClass(categorie === ALL_CATEGORIES)}
+          <Link
+            href={buildRessourcesHref({ q: query, sort })}
+            aria-current={!categorie ? "page" : undefined}
+            className={pillClass(!categorie)}
           >
-            {ALL_CATEGORIES}
-          </button>
+            Toutes les catégories
+          </Link>
           {categories.map((c) => (
-            <button
+            <Link
               key={c}
-              type="button"
-              onClick={() => onCategorieChange(c)}
-              aria-pressed={categorie === c}
+              href={buildRessourcesHref({ categorie: c, q: query, sort })}
+              aria-current={categorie === c ? "page" : undefined}
               className={pillClass(categorie === c)}
             >
               {c}
-            </button>
+            </Link>
           ))}
         </div>
 
-        <div className="w-[168px] flex-none">
-          <SelectInput
-            aria-label="Trier"
-            value={sort}
-            onChange={(e) => onSortChange(e.target.value as SortKey)}
-          >
-            {SORT_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </SelectInput>
+        <div className="flex flex-none flex-wrap items-center gap-1.5">
+          <span className="sr-only">Trier :</span>
+          {SORT_OPTIONS.map((opt) => (
+            <Link
+              key={opt.value}
+              href={buildRessourcesHref({ categorie, q: query, sort: opt.value })}
+              aria-current={sort === opt.value ? "page" : undefined}
+              className={pillClass(sort === opt.value)}
+            >
+              {opt.label}
+            </Link>
+          ))}
         </div>
 
         <span className="ml-auto text-[13px] text-text-muted">

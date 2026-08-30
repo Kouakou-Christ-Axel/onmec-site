@@ -8,7 +8,6 @@ interface ArticleCoverProps {
   alt: string;
   ratio?: string;
   duotone?: boolean;
-  placeholderLabel?: string;
   /** Largeur rendue selon le point de rupture — sert au choix de la variante par l'optimiseur. */
   sizes?: string;
   priority?: boolean;
@@ -31,19 +30,13 @@ export function ArticleCover({
   alt,
   ratio = "3/2",
   duotone = false,
-  placeholderLabel,
   sizes = "(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw",
   priority = false,
   className,
 }: ArticleCoverProps) {
   if (!src) {
     return (
-      <PhotoPlaceholder
-        ratio={ratio}
-        duotone={duotone}
-        label={placeholderLabel ?? "Photo à fournir"}
-        className={className}
-      />
+      <PhotoPlaceholder ratio={ratio} duotone={duotone} className={className} />
     );
   }
 

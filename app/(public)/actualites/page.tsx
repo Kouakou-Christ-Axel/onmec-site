@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { listActualites } from "@/features/actualites/requests/list-actualites";
 import { listCategoriesActualite } from "@/features/actualites/requests/list-categories-actualite";
 import { NewsList } from "@/components/features/actualites/news-list";
@@ -5,6 +6,31 @@ import { NewsletterCta } from "@/components/features/actualites/newsletter-cta";
 
 interface ActualitesPageProps {
   searchParams: Promise<{ categorie?: string; page?: string }>;
+}
+
+// generateMetadata plutôt qu'un `export const metadata` statique : la page se pagine et se
+// filtre par `searchParams` (?categorie=&page=N) sans changer de route. Un canonical statique sur
+// `/actualites` ferait pointer chaque page 2+ vers la page 1, qui sortirait alors de l'index
+// (voir audit SEO §2.3 : « /actualites?page=2 doit se canonicaliser vers lui-même »).
+export async function generateMetadata({ searchParams }: ActualitesPageProps): Promise<Metadata> {
+  // Garde défensive : non vérifié si vinext transmet bien `searchParams` à `generateMetadata`
+  // (comme pour la page elle-même) — dégrade vers le canonical de base plutôt que de planter.
+  const { categorie, page } = searchParams ? await searchParams : {};
+
+  const query = new URLSearchParams();
+  if (categorie) query.set("categorie", categorie);
+  const pageCourante = Math.max(1, Number(page) || 1);
+  if (pageCourante > 1) query.set("page", String(pageCourante));
+  const queryString = query.toString();
+
+  return {
+    title: "Actualités",
+    description:
+      "Comptes rendus d'activités, bilans, communiqués et annonces d'événements du Mouvement pour l'Éducation à la Citoyenneté, semaine après semaine en Côte d'Ivoire.",
+    alternates: {
+      canonical: queryString ? `/actualites?${queryString}` : "/actualites",
+    },
+  };
 }
 
 export default async function ActualitesPage({ searchParams }: ActualitesPageProps) {

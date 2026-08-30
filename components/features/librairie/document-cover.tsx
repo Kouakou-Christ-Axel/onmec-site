@@ -21,9 +21,7 @@ export function DocumentCover({
   if (!src) {
     return (
       <PhotoPlaceholder
-        ratio={ratio}
-        label="Couverture à fournir"
-        compact={compact}
+        ratio={ratio}        compact={compact}
         className={className}
       />
     );

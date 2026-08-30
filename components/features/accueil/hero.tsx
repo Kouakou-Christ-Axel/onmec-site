@@ -42,12 +42,6 @@ export function AccueilHero() {
                 alt=""
                 className="h-11 w-auto opacity-50"
               />
-              <span className="text-sm font-semibold tracking-widest text-white/80 uppercase">
-                Photo de terrain à fournir
-              </span>
-              <span className="max-w-[24ch] text-sm leading-relaxed text-white/65">
-                Portrait 4/5 — visages, mains, action réelle
-              </span>
             </div>
           </div>
         </Reveal>

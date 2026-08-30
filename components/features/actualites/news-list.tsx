@@ -77,12 +77,10 @@ export function NewsList({ articles, categories, meta, categorieActive }: NewsLi
           >
             <ArticleCover
               src={featured.imageUrl}
-              alt=""
+              alt={featured.title}
               ratio="16/9"
               duotone
-              sizes="(min-width: 1024px) 460px, 100vw"
-              placeholderLabel="Photo de l’activité à fournir"
-            />
+              sizes="(min-width: 1024px) 460px, 100vw"            />
           </Link>
           <div className="flex flex-col gap-4">
             <div className="flex flex-wrap items-center gap-3">
