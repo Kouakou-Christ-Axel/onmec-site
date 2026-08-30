@@ -24,18 +24,23 @@
 			"remote": true
 		}
 	],
-	// SITE_URL est le domaine public de ce site, a ne pas confondre avec API_BASE_URL qui pointe
-	// vers le backend NestJS. Il doit designer le domaine ou ce site est REELLEMENT servi.
+	// SITE_URL est le domaine public de ce site (forme canonique retenue : non-www), a ne pas
+	// confondre avec API_BASE_URL qui pointe vers le backend NestJS.
 	//
-	// A ce jour c'est workers.dev : mec-ci.org sert encore l'ancien site. Y pointer les canonicals
-	// des maintenant les ferait referencer un contenu etranger.
+	// Volontairement regle sur le domaine FINAL alors que le site tourne encore sur workers.dev :
+	// la bascule est imminente, donc canonicals, Open Graph et sitemap sont deja corrects pour le
+	// jour J. Entre-temps, app/robots.ts sert un "Disallow: /" tant que l'hote de la requete n'est
+	// pas mec-ci.org : le domaine technique n'est donc jamais indexe, et le deblocage suit
+	// automatiquement le domaine sans intervention.
 	//
-	// A la bascule sur mec-ci.org : passer SITE_URL a "https://mec-ci.org", trancher www vs
-	// non-www, et poser les 301 (/about -> /apropos, /documents -> /ressources, et workers.dev ->
-	// mec-ci.org). Voir docs/seo-audit-2026-08-30.md section 5.
+	// Reste a faire le jour de la bascule (voir docs/seo-audit-2026-08-30.md section 5) :
+	//   - faire pointer mec-ci.org sur ce Worker (bloc "routes" absent a ce jour)
+	//   - 301 : /about -> /apropos, /documents -> /ressources
+	//   - 301 : www -> non-www, et workers.dev -> mec-ci.org
+	//   - soumettre le sitemap dans la Search Console
 	"vars": {
 		"API_BASE_URL": "https://admin.mec-ci.org/api/v1",
-		"SITE_URL": "https://onmec-site.kouakoucaxel.workers.dev"
+		"SITE_URL": "https://mec-ci.org"
 	},
 	"observability": {
 		"enabled": false,
