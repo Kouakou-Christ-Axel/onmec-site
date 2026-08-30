@@ -16,8 +16,8 @@ export function AccueilHero() {
             Instruire pour <em className="font-serif font-normal italic">impacter</em>
           </h1>
           <p className="mt-6 max-w-[46ch] text-lg leading-relaxed text-white/90 text-pretty">
-            Nous formons les jeunes Ivoiriens à leurs droits, à leurs devoirs et à la vie
-            citoyenne. Vous agissez, dans votre quartier, votre campus, votre lycée.
+            Nous formons les jeunes Ivoiriens à leurs droits, à leurs devoirs et à la vie citoyenne.
+            Vous agissez, dans votre quartier, votre campus, votre lycée.
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
             <Link
@@ -25,12 +25,6 @@ export function AccueilHero() {
               className="inline-flex h-[54px] items-center gap-2.5 rounded-sm bg-white px-7 text-[1.0625rem] font-semibold text-fill-ink transition-transform hover:-translate-y-0.5"
             >
               Rejoindre le mouvement <span>→</span>
-            </Link>
-            <Link
-              href="/actions"
-              className="inline-flex h-[54px] items-center rounded-sm border border-white/40 px-7 text-[1.0625rem] font-semibold text-white transition-colors hover:bg-white/10"
-            >
-              Découvrir nos actions
             </Link>
           </div>
         </Reveal>

@@ -1,10 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { Inbox, Flag, Newspaper, BookOpen, Megaphone, Smartphone, Landmark, Users, ExternalLink, LogOut, type LucideIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
+import {
+  Inbox,
+  Flag,
+  Newspaper,
+  BookOpen,
+  Users2,
+  GraduationCap,
+  Landmark,
+  Users,
+  ExternalLink,
+  type LucideIcon,
+} from "lucide-react";
 import { useAdminShell } from "@/components/features/admin/admin-shell-context";
-import { useAdminLogout } from "@/features/admin-auth/mutations/use-admin-logout";
 import { buildQueue } from "@/features/admin/lib/build-queue";
 import { SIGNALEMENTS } from "@/features/admin/data/signalements";
 
@@ -12,7 +22,7 @@ interface NavItem {
   href: string;
   label: string;
   icon: LucideIcon;
-  requires: "canSig" | "canEdito" | "canUsers" | null;
+  requires: "canSig" | "canEdito" | "canUsers" | "canMembres" | "canQuiz" | null;
 }
 
 const NAV_ITEMS: NavItem[] = [
@@ -20,36 +30,23 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/admin/signalements", label: "Signalements", icon: Flag, requires: "canSig" },
   { href: "/admin/actualites", label: "Actualités et blog", icon: Newspaper, requires: "canEdito" },
   { href: "/admin/ressources", label: "Ressources", icon: BookOpen, requires: "canEdito" },
-  { href: "/admin/campagnes", label: "Campagnes", icon: Megaphone, requires: "canEdito" },
-  { href: "/admin/push", label: "Notifications app", icon: Smartphone, requires: "canEdito" },
+  { href: "/admin/membres", label: "Membres", icon: Users2, requires: "canMembres" },
+  { href: "/admin/quiz", label: "Quiz", icon: GraduationCap, requires: "canQuiz" },
+  // Campagnes et Notifications app masqués temporairement : pas d'endpoint backend
+  // pour ces domaines pour l'instant (routes/pages conservées, non retirées).
   { href: "/admin/statistiques", label: "Statistiques", icon: Landmark, requires: null },
   { href: "/admin/utilisateurs", label: "Utilisateurs", icon: Users, requires: "canUsers" },
 ];
 
-function initialsOf(fullname: string): string {
-  const parts = fullname.trim().split(/\s+/).filter(Boolean);
-  const initials = parts.slice(0, 2).map((part) => part[0]?.toUpperCase() ?? "");
-  return initials.join("") || "?";
-}
-
 export function AdminSidebar() {
   const pathname = usePathname();
-  const router = useRouter();
   const shell = useAdminShell();
-  const logout = useAdminLogout();
   const queue = buildQueue(shell);
-  const cntOuverts = SIGNALEMENTS.filter((s) => s.statut === "validation" || s.statut === "encours").length;
+  const cntOuverts = SIGNALEMENTS.filter(
+    (s) => s.statut === "validation" || s.statut === "encours",
+  ).length;
 
   const visibleItems = NAV_ITEMS.filter((item) => item.requires === null || shell[item.requires]);
-
-  function handleLogout() {
-    logout.mutate(undefined, {
-      onSuccess: () => {
-        router.replace("/admin/connexion");
-        router.refresh();
-      },
-    });
-  }
 
   return (
     <aside className="sticky top-0 flex h-screen w-[248px] flex-none flex-col self-start bg-blue-800 px-3.5 pt-5.5 pb-4 text-white">
@@ -63,7 +60,12 @@ export function AdminSidebar() {
       <nav className="flex flex-col gap-0.5">
         {visibleItems.map((item) => {
           const active = pathname === item.href;
-          const badge = item.href === "/admin" ? queue.length : item.href === "/admin/signalements" ? cntOuverts : null;
+          const badge =
+            item.href === "/admin"
+              ? queue.length
+              : item.href === "/admin/signalements"
+                ? cntOuverts
+                : null;
           return (
             <Link
               key={item.href}
@@ -91,28 +93,13 @@ export function AdminSidebar() {
       </nav>
 
       <div className="mt-auto flex flex-col gap-3">
-        <Link href="/" className="flex h-10 items-center gap-2.5 rounded-md px-2.5 text-sm font-medium text-white/60 hover:bg-white/7 hover:text-white">
+        <Link
+          href="/"
+          className="flex h-10 items-center gap-2.5 rounded-md px-2.5 text-sm font-medium text-white/60 hover:bg-white/7 hover:text-white"
+        >
           <ExternalLink size={18} />
           <span>Voir le site public</span>
         </Link>
-        <div className="flex items-center gap-2.5 border-t border-white/14 px-2.5 py-3">
-          <span className="flex h-8 w-8 flex-none items-center justify-center rounded-md bg-orange-500 text-xs font-bold text-white">
-            {initialsOf(shell.fullname)}
-          </span>
-          <span className="flex min-w-0 flex-col leading-tight">
-            <span className="text-[0.8125rem] font-semibold text-white">{shell.fullname}</span>
-            <span className="overflow-hidden text-[0.6875rem] text-ellipsis whitespace-nowrap text-white/55">{shell.role}</span>
-          </span>
-          <button
-            type="button"
-            onClick={handleLogout}
-            title="Se déconnecter"
-            disabled={logout.isPending}
-            className="ml-auto flex h-7.5 w-7.5 flex-none items-center justify-center rounded-md text-white/55 hover:bg-white/9 hover:text-white disabled:opacity-50"
-          >
-            <LogOut size={16} />
-          </button>
-        </div>
       </div>
     </aside>
   );

@@ -1,15 +1,8 @@
 import Link from "next/link";
-import { Megaphone, BookOpen, Newspaper, Users } from "lucide-react";
+import { BookOpen, Newspaper, Users } from "lucide-react";
 
+// "Nos actions" masqué temporairement : page /actions non branchée (route conservée).
 const LINKS = [
-  {
-    href: "/actions",
-    icon: Megaphone,
-    title: "Nos actions",
-    desc: "Campagnes, clubs scolaires et vérification des faits.",
-    cta: "Voir les programmes →",
-    highlight: false,
-  },
   {
     href: "/ressources",
     icon: BookOpen,
@@ -47,7 +40,7 @@ export function ErrorExploreLinks() {
           </span>
           <h2 className="text-h1 font-semibold text-ink">Où aller maintenant</h2>
         </div>
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
           {LINKS.map((link) => (
             <Link
               key={link.href}
@@ -58,9 +51,14 @@ export function ErrorExploreLinks() {
                   : "border-border-subtle bg-surface-card text-ink hover:border-orange-500"
               }`}
             >
-              <link.icon className={`h-7 w-7 ${link.highlight ? "text-white" : "text-blue-500"}`} aria-hidden />
+              <link.icon
+                className={`h-7 w-7 ${link.highlight ? "text-white" : "text-blue-500"}`}
+                aria-hidden
+              />
               <span className="text-[1.0625rem] font-semibold">{link.title}</span>
-              <span className={`text-sm leading-relaxed ${link.highlight ? "text-white/86" : "text-text-muted"}`}>
+              <span
+                className={`text-sm leading-relaxed ${link.highlight ? "text-white/86" : "text-text-muted"}`}
+              >
                 {link.desc}
               </span>
               <span
@@ -72,8 +70,8 @@ export function ErrorExploreLinks() {
           ))}
         </div>
         <p className="mt-7 text-[0.9375rem] text-text-muted">
-          Vous cherchiez autre chose ? <Link href="/contact">Écrivez-nous</Link> en décrivant la page
-          que vous attendiez.
+          Vous cherchiez autre chose ? <Link href="/contact">Écrivez-nous</Link> en décrivant la
+          page que vous attendiez.
         </p>
       </div>
     </section>

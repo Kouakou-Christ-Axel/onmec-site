@@ -30,8 +30,7 @@ export default function NotFound() {
             <h2 className="text-h3 font-semibold text-ink">Trouver un guide ou une page</h2>
             <NotFoundSearch />
             <span className="text-sm leading-relaxed text-text-muted">
-              Pages les plus consultées : <Link href="/actions">Nos actions</Link> ·{" "}
-              <Link href="/ressources">Ressources</Link> ·{" "}
+              Pages les plus consultées : <Link href="/ressources">Ressources</Link> ·{" "}
               <Link href="/rejoindre">Rejoindre le mouvement</Link>
             </span>
           </div>

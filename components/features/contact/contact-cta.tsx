@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { Reveal } from "@/components/features/site/reveal";
 
+// "Accueillir une action" masqué temporairement : page /actions non branchée (route conservée).
 const RACCOURCIS = [
   { title: "Rejoindre le MEC", desc: "Bénévolat, adhésion, partenariat", href: "/rejoindre" },
   { title: "Télécharger un guide", desc: "Neuf guides libres d’accès", href: "/ressources" },
-  { title: "Accueillir une action", desc: "Établissements et mairies", href: "/actions" },
 ];
 
 export function ContactCta() {
@@ -22,7 +22,7 @@ export function ContactCta() {
             Trois demandes sur quatre trouvent leur réponse ici, sans attendre.
           </p>
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {RACCOURCIS.map((item) => (
             <Link
               key={item.href}
