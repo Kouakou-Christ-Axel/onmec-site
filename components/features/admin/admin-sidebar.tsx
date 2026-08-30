@@ -14,7 +14,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useAdminShell } from "@/components/features/admin/admin-shell-context";
-import { SIGNALEMENTS } from "@/features/admin/data/signalements";
+import { useSignalementsOuvertsCount } from "@/features/signalements-admin/queries/use-signalements-ouverts-count";
 
 interface NavItem {
   href: string;
@@ -39,9 +39,7 @@ const NAV_ITEMS: NavItem[] = [
 export function AdminSidebar() {
   const pathname = usePathname();
   const shell = useAdminShell();
-  const cntOuverts = SIGNALEMENTS.filter(
-    (s) => s.statut === "validation" || s.statut === "encours",
-  ).length;
+  const cntOuverts = useSignalementsOuvertsCount().data ?? 0;
 
   const visibleItems = NAV_ITEMS.filter((item) => item.requires === null || shell[item.requires]);
 
