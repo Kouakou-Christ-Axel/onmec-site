@@ -6,27 +6,53 @@ import { DialogTitle, useLastNonNull } from "@/components/ui/dialog";
 import { Tag } from "@/components/ui/tag";
 import { Button } from "@/components/ui/button";
 import { IconButton } from "@/components/ui/icon-button";
-import { SignalementModerationPanel } from "@/components/features/admin/signalement-moderation-panel";
-import { SignalementUpdatesPanel } from "@/components/features/admin/signalement-updates-panel";
+import { SignalementModerationPanel } from "./signalement-moderation-panel";
+import { SignalementUpdatesPanel } from "./signalement-updates-panel";
 import {
-  ETAPES,
-  STATUT_META,
-  type Signalement,
-  type SignalementStatut,
-} from "@/features/admin/data/signalements";
+  SIGNALEMENT_TAB_META,
+  signalementTab,
+  type SignalementAdmin,
+  type SignalementStatutApi,
+  type SignalementUpdate,
+} from "@/features/signalements-admin/types/signalement-admin";
+
+const ETAPES: { statut: SignalementStatutApi; label: string }[] = [
+  { statut: "NOUVEAU", label: "En validation" },
+  { statut: "EN_COURS", label: "En cours" },
+  { statut: "RESOLU", label: "Résolu" },
+];
 
 interface SignalementDrawerProps {
-  signalement: Signalement | null;
+  signalement: SignalementAdmin | null;
   onClose: () => void;
-  onChange: (id: string, patch: Partial<Signalement>) => void;
+  onChangeStatut: (id: string, statut: SignalementStatutApi) => void;
+  onChangeValidation: (id: string, validation: boolean) => void;
+  pending: boolean;
+  updates: SignalementUpdate[];
+  updatesLoading: boolean;
+  addingUpdate: boolean;
+  onAddUpdate: (id: string, texte: string) => void;
 }
 
-export function SignalementDrawer({ signalement, onClose, onChange }: SignalementDrawerProps) {
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("fr-FR");
+}
+
+export function SignalementDrawer({
+  signalement,
+  onClose,
+  onChangeStatut,
+  onChangeValidation,
+  pending,
+  updates,
+  updatesLoading,
+  addingUpdate,
+  onAddUpdate,
+}: SignalementDrawerProps) {
   const shown = useLastNonNull(signalement);
   if (!shown) return null;
 
-  const order: SignalementStatut[] = ["validation", "encours", "resolu"];
-  const currentIndex = order.indexOf(shown.statut);
+  const currentIndex = ETAPES.findIndex((e) => e.statut === shown.statut);
 
   return (
     <Drawer open={signalement !== null} onClose={onClose}>
@@ -36,8 +62,12 @@ export function SignalementDrawer({ signalement, onClose, onChange }: Signalemen
             Signalement citoyen
           </span>
           <span className="flex items-center gap-2.5">
-            <span className="text-base font-semibold text-ink tabular-nums">{shown.id}</span>
-            <Tag tone={STATUT_META[shown.statut].tone}>{STATUT_META[shown.statut].label}</Tag>
+            <span className="text-base font-semibold text-ink tabular-nums">
+              {shown.id.slice(0, 8)}
+            </span>
+            <Tag tone={SIGNALEMENT_TAB_META[signalementTab(shown.statut)].tone}>
+              {SIGNALEMENT_TAB_META[signalementTab(shown.statut)].label}
+            </Tag>
           </span>
         </span>
         <IconButton icon={X} label="Fermer" onClick={onClose} />
@@ -67,34 +97,30 @@ export function SignalementDrawer({ signalement, onClose, onChange }: Signalemen
 
         <DialogTitle asChild>
           <h2 className="text-[1.375rem] leading-tight font-semibold tracking-[-0.026em] text-ink">
-            {shown.sujet}
+            {shown.titre}
           </h2>
         </DialogTitle>
 
         <div className="grid grid-cols-2 gap-3.5 rounded-lg border border-border-subtle bg-surface-card p-4 text-[0.8125rem]">
           <span className="flex flex-col gap-0.5">
             <span className="text-muted-foreground">Catégorie</span>
-            <span className="font-semibold text-ink">{shown.categorie}</span>
+            <span className="font-semibold text-ink">{shown.categorie?.nom ?? "—"}</span>
           </span>
           <span className="flex flex-col gap-0.5">
             <span className="text-muted-foreground">Reçu le</span>
-            <span className="font-semibold text-ink">{shown.recu}</span>
+            <span className="font-semibold text-ink">{formatDate(shown.createdAt)}</span>
           </span>
           <span className="flex flex-col gap-0.5">
             <span className="text-muted-foreground">Localisation</span>
-            <span className="font-semibold text-ink">{shown.lieu}</span>
+            <span className="font-semibold text-ink">{shown.adresse}</span>
           </span>
           <span className="flex flex-col gap-0.5">
             <span className="text-muted-foreground">Signalé par</span>
-            <span className="font-semibold text-ink">{shown.auteur}</span>
+            <span className="font-semibold text-ink">{shown.citoyen?.fullname ?? "—"}</span>
           </span>
           <span className="flex flex-col gap-0.5">
             <span className="text-muted-foreground">Visible dans l’app</span>
-            <span className="font-semibold text-ink">{shown.publie ? "Publié" : "Masqué"}</span>
-          </span>
-          <span className="flex flex-col gap-0.5">
-            <span className="text-muted-foreground">Responsable</span>
-            <span className="font-semibold text-ink">{shown.responsable || "—"}</span>
+            <span className="font-semibold text-ink">{shown.validation ? "Publié" : "Masqué"}</span>
           </span>
         </div>
 
@@ -102,19 +128,29 @@ export function SignalementDrawer({ signalement, onClose, onChange }: Signalemen
           <span className="text-xs font-semibold tracking-[0.13em] text-muted-foreground uppercase">
             Description du citoyen
           </span>
-          <p className="text-[0.9375rem] leading-relaxed text-text-body">{shown.contenu}</p>
+          <p className="text-[0.9375rem] leading-relaxed text-text-body">{shown.description}</p>
         </div>
 
-        <SignalementModerationPanel signalement={shown} onChange={onChange} />
+        <SignalementModerationPanel
+          signalement={shown}
+          disabled={pending}
+          onChangeStatut={(statut) => onChangeStatut(shown.id, statut)}
+          onChangeValidation={(validation) => onChangeValidation(shown.id, validation)}
+        />
 
-        <SignalementUpdatesPanel signalement={shown} onChange={onChange} />
+        <SignalementUpdatesPanel
+          updates={updates}
+          loading={updatesLoading}
+          pending={addingUpdate}
+          onAdd={(texte) => onAddUpdate(shown.id, texte)}
+        />
       </div>
 
       <div className="flex flex-none flex-wrap items-center gap-2.5 border-t border-border-subtle bg-surface-card px-5.5 py-4">
         <Button variant="primary" icon={Check} onClick={onClose}>
           Enregistrer et fermer
         </Button>
-        <Button variant="ghost" onClick={() => onChange(shown.id, { statut: "rejete" })}>
+        <Button variant="ghost" disabled={pending} onClick={() => onChangeStatut(shown.id, "REJETE")}>
           Rejeter le signalement
         </Button>
         <span className="flex-[1_0_100%] text-xs text-muted-foreground">
