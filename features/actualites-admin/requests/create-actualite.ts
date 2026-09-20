@@ -1,9 +1,12 @@
 import { apiFetch } from "@/lib/api-client";
-import type { ActualiteAdmin } from "@/features/actualites-admin/types/actualite-admin";
+import type {
+  ActualiteAdmin,
+  ActualiteAdminPayload,
+} from "@/features/actualites-admin/types/actualite-admin";
 
-export function createActualiteAdmin(formData: FormData): Promise<ActualiteAdmin> {
+export function createActualiteAdmin(payload: ActualiteAdminPayload): Promise<ActualiteAdmin> {
   return apiFetch<ActualiteAdmin>("/actualites", {
     method: "POST",
-    body: formData,
+    body: JSON.stringify(payload),
   });
 }

@@ -3,9 +3,9 @@ import { createActualiteAdmin } from "@/features/actualites-admin/requests/creat
 import { toErrorResponse } from "@/lib/to-error-response";
 
 export async function POST(request: Request) {
-  const formData = await request.formData();
+  const body = await request.json();
   try {
-    const actualite = await createActualiteAdmin(formData);
+    const actualite = await createActualiteAdmin(body);
     return NextResponse.json(actualite, { status: 201 });
   } catch (error) {
     return toErrorResponse(error);

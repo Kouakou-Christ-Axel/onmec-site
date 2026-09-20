@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { R2_PUBLIC_HOST } from "@/lib/r2-public-url";
 
 /**
  * Les images d'actualité sont servies depuis deux hôtes distincts : le CDN d'upload fixe
@@ -10,7 +11,7 @@ import type { NextConfig } from "next";
  * silencieusement (erreur uniquement dans la console navigateur, pas de crash visible).
  */
 function remotePatternsDeLApi(): NonNullable<NextConfig["images"]>["remotePatterns"] {
-  const hotes = new Set<string>(["https://cdn.otw.ci"]);
+  const hotes = new Set<string>([R2_PUBLIC_HOST]);
   if (process.env.API_BASE_URL) {
     try {
       hotes.add(new URL(process.env.API_BASE_URL).origin);

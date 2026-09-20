@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { putFileToUploadUrl } from "@/features/librairie-admin/lib/upload-to-r2";
+import { putFileToUploadUrl } from "@/lib/upload-to-r2";
 
 afterEach(() => {
   vi.unstubAllGlobals();
