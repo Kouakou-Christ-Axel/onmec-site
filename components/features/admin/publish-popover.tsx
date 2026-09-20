@@ -146,7 +146,10 @@ export function PublishPopover({
           </Select>
         </Field>
         <Field label="Diffusion">
-          <Select value={scope} onChange={(event) => setScope(event.target.value as ScopeActualite)}>
+          <Select
+            value={scope}
+            onChange={(event) => setScope(event.target.value as ScopeActualite)}
+          >
             {SCOPE_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
