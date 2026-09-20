@@ -67,9 +67,7 @@ export function ArticleBodyEditor({ initialContent = "", onChange }: ArticleBody
       );
       return;
     }
-    const formData = new FormData();
-    formData.set("image", webpFile);
-    uploadImage.mutate(formData, {
+    uploadImage.mutate(webpFile, {
       onSuccess: ({ url }) => {
         editor.chain().focus().setImage({ src: url }).run();
       },

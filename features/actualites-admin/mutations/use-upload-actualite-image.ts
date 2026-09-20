@@ -1,11 +1,10 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { sendFormData } from "@/lib/fetch-json";
+import { uploadActualiteContentImage } from "@/features/actualites-admin/lib/upload-actualite-content-image";
 
 export function useUploadActualiteImage() {
   return useMutation({
-    mutationFn: (formData: FormData) =>
-      sendFormData<{ url: string }>("/api/admin/actualites/upload-image", "POST", formData),
+    mutationFn: (file: File) => uploadActualiteContentImage(file),
   });
 }

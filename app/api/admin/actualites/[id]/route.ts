@@ -5,9 +5,9 @@ import { toErrorResponse } from "@/lib/to-error-response";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const formData = await request.formData();
+  const body = await request.json();
   try {
-    const actualite = await updateActualiteAdmin(id, formData);
+    const actualite = await updateActualiteAdmin(id, body);
     return NextResponse.json(actualite);
   } catch (error) {
     return toErrorResponse(error);

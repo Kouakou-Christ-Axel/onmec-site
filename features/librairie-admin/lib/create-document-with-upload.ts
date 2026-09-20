@@ -1,5 +1,5 @@
 import { postJson } from "@/lib/fetch-json";
-import { putFileToUploadUrl } from "@/features/librairie-admin/lib/upload-to-r2";
+import { putFileToUploadUrl } from "@/lib/upload-to-r2";
 import type { AdminLibrairieDocument } from "@/features/librairie/types/document";
 // import type est efface a la compilation : reutiliser ces formes n'importe pas apiFetch
 // (server-only) dans ce fichier client, seulement la forme des donnees echangees avec la route.

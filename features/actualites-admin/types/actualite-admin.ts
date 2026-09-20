@@ -40,6 +40,16 @@ export interface ActualiteAdmin {
   deletedAt: string | null;
 }
 
+/** Corps JSON envoyé à `POST /actualites` / `PATCH /actualites/:id`. */
+export interface ActualiteAdminPayload {
+  title: string;
+  excerpt: string;
+  content: string;
+  date: string;
+  categorieId: string;
+  imageKey?: string;
+}
+
 export interface ActualiteAdminListResponse {
   data: ActualiteAdmin[];
   meta: {
