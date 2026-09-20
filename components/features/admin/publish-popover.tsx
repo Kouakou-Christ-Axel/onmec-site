@@ -16,7 +16,16 @@ import { buildActualiteFormData } from "@/features/actualites-admin/lib/build-ac
 import { actualiteFormSchema } from "@/features/actualites-admin/schemas/actualite-form-schema";
 import { MAX_IMAGE_LABEL } from "@/lib/image-limits";
 import { ApiError } from "@/lib/api-error";
-import type { ActualiteAdmin } from "@/features/actualites-admin/types/actualite-admin";
+import type {
+  ActualiteAdmin,
+  ScopeActualite,
+} from "@/features/actualites-admin/types/actualite-admin";
+
+const SCOPE_OPTIONS: { value: ScopeActualite; label: string }[] = [
+  { value: "WEB", label: "Web uniquement" },
+  { value: "MOBILE", label: "Mobile uniquement" },
+  { value: "BOTH", label: "Web et mobile" },
+];
 
 function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
@@ -48,6 +57,7 @@ export function PublishPopover({
 
   const [categorieId, setCategorieId] = useState(existing?.categorie?.id ?? "");
   const [date, setDate] = useState(existing?.date.slice(0, 10) ?? todayIso());
+  const [scope, setScope] = useState<ScopeActualite>(existing?.scope ?? "WEB");
   const [error, setError] = useState<string | null>(null);
 
   const categories = categoriesQuery.data ?? [];
@@ -55,7 +65,7 @@ export function PublishPopover({
     createMutation.isPending || updateMutation.isPending || publierMutation.isPending;
 
   async function handlePublish() {
-    const parsed = actualiteFormSchema.safeParse({ ...fields, date, categorieId });
+    const parsed = actualiteFormSchema.safeParse({ ...fields, date, categorieId, scope });
     if (!parsed.success) {
       setError(parsed.error.issues[0]?.message ?? "Formulaire invalide.");
       return;
@@ -115,6 +125,18 @@ export function PublishPopover({
           {categories.map((categorie) => (
             <option key={categorie.id} value={categorie.id}>
               {categorie.nom}
+            </option>
+          ))}
+        </Select>
+      </Field>
+      <Field label="Diffusion">
+        <Select
+          value={scope}
+          onChange={(event) => setScope(event.target.value as ScopeActualite)}
+        >
+          {SCOPE_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
             </option>
           ))}
         </Select>

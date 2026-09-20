@@ -12,22 +12,13 @@ import { useAdminShell } from "@/components/features/admin/admin-shell-context";
 import { usePublierActualite } from "@/features/actualites-admin/mutations/use-publier-actualite";
 import { useDepublierActualite } from "@/features/actualites-admin/mutations/use-depublier-actualite";
 import { useDeleteActualite } from "@/features/actualites-admin/mutations/use-delete-actualite";
-import type {
-  ActualiteAdmin,
-  StatutActualite,
-} from "@/features/actualites-admin/types/actualite-admin";
-
-const STATUT_LABELS: Record<StatutActualite, string> = {
-  BROUILLON: "Brouillon",
-  PUBLIEE: "Publiée",
-  ARCHIVEE: "Archivée",
-};
-
-const STATUT_TONES: Record<StatutActualite, "orange" | "blue" | "neutral"> = {
-  BROUILLON: "orange",
-  PUBLIEE: "blue",
-  ARCHIVEE: "neutral",
-};
+import type { ActualiteAdmin } from "@/features/actualites-admin/types/actualite-admin";
+import {
+  SCOPE_LABELS,
+  SCOPE_TONES,
+  STATUT_LABELS,
+  STATUT_TONES,
+} from "@/features/actualites-admin/lib/actualite-labels";
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("fr-FR");
@@ -99,9 +90,10 @@ export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClie
 
       <div className="overflow-x-auto rounded-lg border border-border-subtle bg-surface-card">
         <div className="min-w-[860px]">
-          <div className="grid grid-cols-[minmax(0,1fr)_120px_156px_116px_140px_150px] gap-3.5 border-b border-border-subtle bg-n-50 px-4 py-2.5 text-[0.6875rem] font-semibold tracking-[0.09em] text-muted-foreground uppercase">
+          <div className="grid grid-cols-[minmax(0,1fr)_120px_140px_156px_116px_140px_150px] gap-3.5 border-b border-border-subtle bg-n-50 px-4 py-2.5 text-[0.6875rem] font-semibold tracking-[0.09em] text-muted-foreground uppercase">
             <span>Titre</span>
             <span>Statut</span>
+            <span>Diffusion</span>
             <span>Auteur</span>
             <span>Date</span>
             <span>Engagement</span>
@@ -118,11 +110,14 @@ export function ActualitesAdminClient({ initialActualites }: ActualitesAdminClie
             return (
               <div
                 key={actualite.id}
-                className="grid grid-cols-[minmax(0,1fr)_120px_156px_116px_140px_150px] items-center gap-3.5 border-b border-border-subtle px-4 py-3 text-sm last:border-b-0"
+                className="grid grid-cols-[minmax(0,1fr)_120px_140px_156px_116px_140px_150px] items-center gap-3.5 border-b border-border-subtle px-4 py-3 text-sm last:border-b-0"
               >
                 <span className="font-medium text-ink">{actualite.title}</span>
                 <span>
                   <Tag tone={STATUT_TONES[actualite.statut]}>{STATUT_LABELS[actualite.statut]}</Tag>
+                </span>
+                <span>
+                  <Tag tone={SCOPE_TONES[actualite.scope]}>{SCOPE_LABELS[actualite.scope]}</Tag>
                 </span>
                 <span className="text-[0.8125rem] text-muted-foreground">
                   {actualite.author?.fullname ?? "—"}

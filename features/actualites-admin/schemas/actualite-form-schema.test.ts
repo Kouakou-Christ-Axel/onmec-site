@@ -8,10 +8,16 @@ describe("actualiteFormSchema", () => {
     content: "<p>Un corps</p>",
     date: "2026-08-26",
     categorieId: "20000000-0000-0000-0000-000000000001",
+    scope: "WEB" as const,
   };
 
   it("accepte des champs valides", () => {
     expect(actualiteFormSchema.safeParse(valid).success).toBe(true);
+  });
+
+  it("rejette un scope invalide", () => {
+    const result = actualiteFormSchema.safeParse({ ...valid, scope: "TABLETTE" });
+    expect(result.success).toBe(false);
   });
 
   it("rejette un titre vide (espaces seuls)", () => {

@@ -1,6 +1,7 @@
 import type { AdminRole } from "@/features/admin-auth/types/admin-auth";
 
 export type StatutActualite = "BROUILLON" | "PUBLIEE" | "ARCHIVEE";
+export type ScopeActualite = "WEB" | "MOBILE" | "BOTH";
 
 export interface ActualiteAuthor {
   id: string;
@@ -28,6 +29,7 @@ export interface ActualiteAdmin {
   date: string;
   imageUrl: string | null;
   statut: StatutActualite;
+  scope: ScopeActualite;
   publishedAt: string | null;
   author: ActualiteAuthor | null;
   categorie: ActualiteTaxon | null;
