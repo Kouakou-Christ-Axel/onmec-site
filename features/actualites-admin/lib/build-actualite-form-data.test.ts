@@ -2,9 +2,15 @@ import { describe, expect, it } from "vitest";
 import { buildActualiteFormData } from "@/features/actualites-admin/lib/build-actualite-form-data";
 
 describe("buildActualiteFormData", () => {
-  it("inclut tous les champs texte et la categorie", () => {
+  it("inclut tous les champs texte, la categorie et le scope", () => {
     const formData = buildActualiteFormData(
-      { title: "Titre", excerpt: "Chapo", content: "<p>Corps</p>", date: "2026-08-26" },
+      {
+        title: "Titre",
+        excerpt: "Chapo",
+        content: "<p>Corps</p>",
+        date: "2026-08-26",
+        scope: "MOBILE",
+      },
       "cat-1",
       null,
     );
@@ -13,13 +19,14 @@ describe("buildActualiteFormData", () => {
     expect(formData.get("content")).toBe("<p>Corps</p>");
     expect(formData.get("date")).toBe("2026-08-26");
     expect(formData.get("categorieId")).toBe("cat-1");
+    expect(formData.get("scope")).toBe("MOBILE");
     expect(formData.has("image")).toBe(false);
   });
 
   it("inclut l'image seulement si fournie", () => {
     const file = new File(["contenu"], "photo.jpg", { type: "image/jpeg" });
     const formData = buildActualiteFormData(
-      { title: "T", excerpt: "E", content: "C", date: "2026-08-26" },
+      { title: "T", excerpt: "E", content: "C", date: "2026-08-26", scope: "WEB" },
       "cat-1",
       file,
     );

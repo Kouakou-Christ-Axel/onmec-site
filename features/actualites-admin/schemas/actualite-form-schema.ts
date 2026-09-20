@@ -6,6 +6,7 @@ export const actualiteFormSchema = z.object({
   content: z.string().trim().min(1, "Le corps de l'article est requis."),
   date: z.string().min(1, "La date est requise."),
   categorieId: z.string().min(1, "La catégorie est requise."),
+  scope: z.enum(["WEB", "MOBILE", "BOTH"]),
 });
 
 export type ActualiteFormInput = z.infer<typeof actualiteFormSchema>;
