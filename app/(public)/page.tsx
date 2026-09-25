@@ -17,18 +17,31 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-// JSON-LD Organization : alimente le panneau de connaissance des moteurs de recherche.
-// sameAs omis : aucun lien réseau social trouvé dans site-footer.tsx à date de cette implémentation.
+// JSON-LD NGO (sous-type d'Organization) : alimente le panneau de connaissance et le SEO local.
+// `address` se limite à la localité (Abidjan, Côte d'Ivoire) déjà publique dans site-footer.tsx —
+// le siège exact n'est pas encore communiqué (voir contact-details.tsx). Pas de `streetAddress`
+// tant que cette donnée est absente : une adresse partielle correcte vaut mieux qu'une adresse
+// inventée. sameAs omis : aucun lien réseau social trouvé dans site-footer.tsx à date de cette
+// implémentation.
 function organizationJsonLd() {
   const siteUrl = getSiteUrl();
   return {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": "NGO",
     name: "MEC — Mouvement pour l'Éducation à la Citoyenneté",
     url: siteUrl,
     logo: `${siteUrl}/assets/logo/mec-lockup.png`,
     email: "contact@mec-ci.org",
     telephone: "+225 05 64 36 55 53",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Abidjan",
+      addressCountry: "CI",
+    },
+    areaServed: {
+      "@type": "Country",
+      name: "Côte d'Ivoire",
+    },
   };
 }
 

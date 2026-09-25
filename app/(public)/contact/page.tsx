@@ -7,7 +7,7 @@ import { ContactCta } from "@/components/features/contact/contact-cta";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Une question, une invitation, une demande de partenariat ? Contactez le MEC, réponse sous 3 jours ouvrés en moyenne, le jour même pour la presse.",
+    "Contactez le MEC à Abidjan, Côte d'Ivoire : question, invitation, demande de partenariat — réponse sous 3 jours ouvrés en moyenne, le jour même pour la presse.",
   alternates: { canonical: "/contact" },
 };
 
