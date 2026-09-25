@@ -1,13 +1,20 @@
 import Link from "next/link";
 import { Reveal } from "@/components/features/site/reveal";
 
-/**
- * Aucun partenaire réel à afficher pour le moment — voir §4.1 de l'audit SEO. Un nom ou un logo
- * inventé serait indexé comme s'il était réel ; la liste reste vide, et toute la section se masque
- * (cf. le rendu plus bas) tant qu'elle est vide. Elle réapparaît d'elle-même dès qu'un partenaire
- * réel y est ajouté.
- */
-const PARTNERS: { label: string }[] = [];
+const PARTNERS: { label: string; logo: string }[] = [
+  {
+    label: "Ministère de l'Éducation Nationale et de l'Alphabétisation",
+    logo: "/assets/partenaires/mena.webp",
+  },
+  {
+    label: "CNJCI — Conseil National des Jeunes de Côte d'Ivoire",
+    logo: "/assets/partenaires/cnjci.webp",
+  },
+  {
+    label: "Ministère de l'Intérieur et de la Sécurité",
+    logo: "/assets/partenaires/ministere-interieur-securite.webp",
+  },
+];
 
 export function Partners() {
   if (!PARTNERS.length) return null;
@@ -29,11 +36,12 @@ export function Partners() {
         <div className="grid grid-cols-2 gap-px border border-ink/10 bg-ink/10 sm:grid-cols-2 lg:grid-cols-4">
           {PARTNERS.map((partner) => (
             <Reveal key={partner.label}>
-              <div className="flex aspect-square flex-col items-center justify-center gap-2 bg-n-50 p-4 text-center sm:aspect-[3/2] sm:p-6">
-                <span className="text-xs font-semibold tracking-widest text-n-300 uppercase">
-                  Logo à fournir
-                </span>
-                <span className="text-sm text-text-muted">{partner.label}</span>
+              <div className="flex aspect-square flex-col items-center justify-center gap-2 bg-n-50 p-6 text-center sm:aspect-[3/2] sm:p-8">
+                <img
+                  src={partner.logo}
+                  alt={partner.label}
+                  className="max-h-16 w-full object-contain sm:max-h-20"
+                />
               </div>
             </Reveal>
           ))}
@@ -51,9 +59,6 @@ export function Partners() {
             </Link>
           </Reveal>
         </div>
-        <Reveal className="mt-5 text-sm text-text-muted">
-          Trois partenaires à afficher — noms et logos à fournir en fichier vectoriel.
-        </Reveal>
       </div>
     </section>
   );
