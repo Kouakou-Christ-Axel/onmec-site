@@ -28,6 +28,7 @@ function organizationJsonLd() {
     url: siteUrl,
     logo: `${siteUrl}/assets/logo/mec-lockup.png`,
     email: "contact@mec-ci.org",
+    telephone: "+225 05 64 36 55 53",
   };
 }
 
