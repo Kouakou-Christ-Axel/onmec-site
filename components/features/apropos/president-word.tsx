@@ -1,12 +1,20 @@
 import { Reveal } from "@/components/features/site/reveal";
-import { PhotoPlaceholder } from "@/components/features/site/photo-placeholder";
 
 export function PresidentWord() {
   return (
     <section className="border-y border-ink/10 bg-surface-card py-16 sm:py-20 lg:py-28">
       <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-start gap-10 px-5 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16 lg:px-16">
         <Reveal className="flex flex-col gap-5">
-          <PhotoPlaceholder ratio="4/5" />
+          <div
+            style={{ aspectRatio: "4/5" }}
+            className="relative w-full overflow-hidden rounded-md"
+          >
+            <img
+              src="/assets/equipe/mamadou-cone.webp"
+              alt="M. Mamadou Coné, Président du MEC"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          </div>
           <div className="border-t-2 border-ink pt-4">
             <div className="text-xl font-semibold tracking-tight text-ink">M. Mamadou Coné</div>
             <div className="mt-1 text-sm font-semibold text-orange-700">Président du MEC</div>
